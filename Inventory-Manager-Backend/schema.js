@@ -19,8 +19,8 @@ const typeDefs = `
 
   type Query {
     allProducts: [Product!]!
-    findProduct(name: String!): Person
-    allComponents: [Components]
+    findProduct(name: String!): Product
+    allComponents: [Component]
   }
 
   type Mutation {
@@ -30,7 +30,7 @@ const typeDefs = `
         cost: Float
         price: Float
         SKU: String!
-        subComponents: [Component]
+        subComponents: [String]
     ):Product
     addComponent(
         name: String!
@@ -43,14 +43,14 @@ const typeDefs = `
         cost: Float
         price: Float
         SKU: String!
-        subComponents: [Component]
+        subComponents: [String]
     ):Product
     editComponent(
         name: String!
         stock: Float
         cost: Float
-    )
+    ):Component
   }
 `
 
-mo
+module.exports = typeDefs
