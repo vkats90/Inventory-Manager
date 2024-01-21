@@ -1,6 +1,7 @@
-const { GraphQLError } = require('graphql')
+import { Product } from './types'
+import { Component } from './types'
 
-let products = [
+let products: Product[] = [
   {
     name: 'Episode 1: Family Secrets',
     stock: 100,
@@ -21,7 +22,7 @@ let products = [
   },
 ]
 
-let components = [
+let components: Component[] = [
   {
     name: 'Shipping Manifest',
     stock: 500,
@@ -59,7 +60,7 @@ const resolvers = {
       })
     },
     allComponents: () => components,
-    findProduct: (root, { name }) => {
+    findProduct: (_root: Product, { name }: { name: string }) => {
       const product = products.filter((x) => x.name === name)[0]
       return {
         ...product,
@@ -68,7 +69,7 @@ const resolvers = {
     },
   },
   Mutation: {
-    addProduct: (root, args) => {
+    addProduct: (_root: Product, args: Product) => {
       const product = {
         ...args,
         id: '1245',
@@ -79,7 +80,7 @@ const resolvers = {
         subComponents: product.subComponents.map((n) => components.filter((c) => c.name === n)[0]),
       }
     },
-    addComponent: (root, args) => {
+    addComponent: (_root: Product, args: Product) => {
       const component = { ...args, id: '12365' }
       components = components.concat(component)
       return component
@@ -87,4 +88,4 @@ const resolvers = {
   },
 }
 
-module.exports = resolvers
+export default resolvers

@@ -8,10 +8,18 @@
   "version": "1.0.0",
   "main": "index.js",
   "devDependencies": {
-    "nodemon": "^3.0.3"
+    "@types/express": "^4.17.21",
+    "@typescript-eslint/eslint-plugin": "^6.19.0",
+    "@typescript-eslint/parser": "^6.19.0",
+    "eslint": "^8.56.0",
+    "nodemon": "^3.0.3",
+    "ts-node-dev": "^2.0.0",
+    "typescript": "^5.3.3"
   },
   "scripts": {
-    "dev": "nodemon index.js"
+    "dev": "ts-node-dev index.ts",
+    "lint": "eslint --ext .ts .",
+    "tsc": "tsc"
   },
   "author": "Vlad Kats",
   "license": "ISC",
