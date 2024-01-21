@@ -59,7 +59,13 @@ const resolvers = {
       })
     },
     allComponents: () => components,
-    findProduct: (name) => components.filter((x) => x.name === name),
+    findProduct: (root, { name }) => {
+      const product = products.filter((x) => x.name === name)[0]
+      return {
+        ...product,
+        subComponents: product.subComponents.map((n) => components.filter((c) => c.name === n)[0]),
+      }
+    },
   },
   Mutation: {
     addProduct: (root, args) => {
@@ -68,10 +74,13 @@ const resolvers = {
         id: '1245',
       }
       products = products.concat(product)
-      return product
+      return {
+        ...product,
+        subComponents: product.subComponents.map((n) => components.filter((c) => c.name === n)[0]),
+      }
     },
     addComponent: (root, args) => {
-      const component = { ...args }
+      const component = { ...args, id: '12365' }
       components = components.concat(component)
       return component
     },

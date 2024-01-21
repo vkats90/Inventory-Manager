@@ -42,7 +42,7 @@ const typeDefs = `
         stock: Int
         cost: Float
         price: Float
-        SKU: String!
+        SKU: String
         subComponents: [String]
     ):Product
     editComponent(
