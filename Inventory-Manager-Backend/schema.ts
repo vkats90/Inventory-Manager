@@ -1,7 +1,7 @@
 const typeDefs = `
   type Component{
     name: String!
-    stock: Float
+    stock: Float!
     cost: Float
     id: ID!
   }
