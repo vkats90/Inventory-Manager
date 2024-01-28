@@ -15,7 +15,12 @@ const productSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  subComponents: [String],
+  components: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'ComponentModel',
+    },
+  ],
 })
 
-module.exports = mongoose.model('Product', productSchema)
+module.exports = mongoose.model('ProductModel', productSchema)

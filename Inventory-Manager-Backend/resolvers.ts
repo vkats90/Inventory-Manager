@@ -1,14 +1,16 @@
 import { Product } from './types'
 import { Component } from './types'
+const ProductModel = require('./models/product')
+const ComponentModel = require('./models/component')
 
-let products: Product[] = [
+/*let products: Product[] = [
   {
     name: 'Episode 1: Family Secrets',
     stock: 100,
     cost: 2.57,
     price: 19.95,
     SKU: 'EP1',
-    subComponents: ['Shipping Manifest', 'EP1 Flow Card'],
+    components: ['Shipping Manifest', 'EP1 Flow Card'],
     id: '1',
   },
   {
@@ -17,7 +19,7 @@ let products: Product[] = [
     cost: 1.97,
     price: 19.95,
     SKU: 'EP2',
-    subComponents: ['Sonar Sheet', 'EP2 Flow Card'],
+    components: ['Sonar Sheet', 'EP2 Flow Card'],
     id: '2',
   },
 ]
@@ -47,42 +49,31 @@ let components: Component[] = [
     cost: 0.15,
     id: '896',
   },
-]
+]*/
 
 const resolvers = {
   Query: {
-    allProducts: () => {
-      return products.map((x) => {
-        return {
-          ...x,
-          subComponents: x.subComponents.map((n) => components.filter((c) => c.name === n)[0]),
-        }
-      })
+    allProducts: async () => {
+      return ProductModel.find({}).populate('components')
     },
-    allComponents: () => components,
+
+    allComponents: async () => {
+      return ComponentModel.find({})
+    },
     findProduct: (_root: Product, { name }: { name: string }) => {
-      const product = products.filter((x) => x.name === name)[0]
-      return {
-        ...product,
-        subComponents: product.subComponents.map((n) => components.filter((c) => c.name === n)[0]),
-      }
+      return ProductModel.find({ name }).populate('components')
     },
   },
   Mutation: {
-    addProduct: (_root: Product, args: Product) => {
-      const product = {
-        ...args,
-        id: '1245',
-      }
-      products = products.concat(product)
-      return {
-        ...product,
-        subComponents: product.subComponents.map((n) => components.filter((c) => c.name === n)[0]),
-      }
+    addProduct: async (_root: Product, args: Product) => {
+      const product = new ProductModel(args)
+      await product.save()
+      return product
     },
-    addComponent: (_root: Product, args: Product) => {
-      const component = { ...args, id: '12365' }
-      components = components.concat(component)
+
+    addComponent: async (_root: Component, args: Component) => {
+      const component = new ComponentModel(args)
+      await component.save()
       return component
     },
   },

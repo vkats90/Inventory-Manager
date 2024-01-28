@@ -12,7 +12,7 @@ const typeDefs = `
     cost: Float
     price: Float
     SKU: String!
-    subComponents: [Component]
+    components: [Component]
     id: ID!
   }
 
@@ -30,7 +30,7 @@ const typeDefs = `
         cost: Float
         price: Float
         SKU: String!
-        subComponents: [String]
+        components: [String]
     ):Product
     addComponent(
         name: String!
@@ -43,7 +43,7 @@ const typeDefs = `
         cost: Float
         price: Float
         SKU: String
-        subComponents: [String]
+        components: [String]
     ):Product
     editComponent(
         name: String!

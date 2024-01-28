@@ -4,7 +4,7 @@ export interface Product {
   cost: number
   price: number
   SKU: string
-  subComponents: string[]
+  components: string[]
   id: string
 }
 
