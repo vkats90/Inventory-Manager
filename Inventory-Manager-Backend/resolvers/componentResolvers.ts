@@ -16,6 +16,10 @@ const componentResolver = {
     editComponent: async (_root: Component, args: Component) => {
       return await ComponentModel.findOneAndUpdate({ name: args.name }, args, { new: true })
     },
+    deleteComponent: async (_root: Component, args: Component) => {
+      await ComponentModel.findOneAndDelete({ name: args.name })
+      return `Successfully deleted ${args.name}`
+    },
   },
 }
 

@@ -15,6 +15,7 @@ const componentTypeDefs = gql`
   extend type Mutation {
     addComponent(name: String!, stock: Float, cost: Float): Component
     editComponent(name: String!, stock: Float, cost: Float): Component
+    deleteComponent(name: String!): String
   }
 `
 

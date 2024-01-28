@@ -21,6 +21,10 @@ const productResolver = {
     editProduct: async (_root: Product, args: Product) => {
       return await ProductModel.findOneAndUpdate({ name: args.name }, args, { new: true })
     },
+    deleteProduct: async (_root: Product, args: Product) => {
+      await ProductModel.findOneAndDelete({ name: args.name })
+      return `Successfully deleted ${args.name}`
+    },
   },
 }
 

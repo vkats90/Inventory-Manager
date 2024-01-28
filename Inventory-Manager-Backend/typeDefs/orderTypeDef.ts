@@ -5,6 +5,7 @@ const orderTypeDef = gql`
     name: String!
     quantity: Int!
     priority: Int!
+    status: String!
   }
 
   extend type Query {
@@ -12,7 +13,9 @@ const orderTypeDef = gql`
   }
 
   extend type Mutation {
-    addOrder(name: String, quantity: Int, priority: Int!): Order
+    addOrder(name: String, quantity: Int, priority: Int): Order
+    editOrder(name: String, quantity: Int, priority: Int): Order
+    deleteOrder(name: String!): String
   }
 `
 

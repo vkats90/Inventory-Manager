@@ -33,6 +33,7 @@ const productTypeDefs = gql`
       SKU: String
       components: [String]
     ): Product
+    deleteProduct(name: String!): String
   }
 `
 
