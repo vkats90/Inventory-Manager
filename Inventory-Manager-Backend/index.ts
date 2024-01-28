@@ -1,12 +1,23 @@
 import { ApolloServer } from '@apollo/server'
 import { startStandaloneServer } from '@apollo/server/standalone'
+import { buildSubgraphSchema } from '@apollo/federation'
 import mongoose from 'mongoose'
 require('dotenv').config()
 
 const MONGODB_URI = process.env.MONGODB_URI
 
-import typeDefs from './schema'
-import resolvers from './resolvers'
+import componentResolver from './resolvers/componentResolvers'
+import componentTypeDefs from './typeDefs/componentTypeDef'
+import productTypeDefs from './typeDefs/productTypeDef'
+import productResolver from './resolvers/productResolvers'
+import orderTypeDefs from './typeDefs/orderTypeDef'
+import orderResolver from './resolvers/orderResolvers'
+
+const schema = buildSubgraphSchema([
+  { typeDefs: componentTypeDefs, resolvers: componentResolver },
+  { typeDefs: productTypeDefs, resolvers: productResolver },
+  { typeDefs: orderTypeDefs, resolvers: orderResolver },
+])
 
 mongoose
   .connect(MONGODB_URI as string)
@@ -18,8 +29,7 @@ mongoose
   })
 
 const server = new ApolloServer({
-  typeDefs,
-  resolvers,
+  schema,
 })
 
 startStandaloneServer(server, {

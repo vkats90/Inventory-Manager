@@ -12,4 +12,4 @@ const componentSchema = new mongoose.Schema({
   cost: Number,
 })
 
-module.exports = mongoose.model('ComponentModel', componentSchema)
+export default mongoose.model('ComponentModel', componentSchema)

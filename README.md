@@ -2,7 +2,6 @@
 
 ## To DO:
 
-- add Mongoose and connect to a database
-- add mutations for editProduct and editComponent
 - add error handlers
-- add scehmas for Orders
+- add scehma for Orders
+- add delete mutations for all 3 schema
