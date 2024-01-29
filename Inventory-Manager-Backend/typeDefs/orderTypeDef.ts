@@ -4,8 +4,8 @@ const orderTypeDef = gql`
   type Order {
     name: String!
     quantity: Int!
-    priority: Int!
-    status: String!
+    priority: Int
+    status: String
   }
 
   extend type Query {

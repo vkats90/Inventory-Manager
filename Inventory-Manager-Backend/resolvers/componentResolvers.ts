@@ -1,5 +1,6 @@
 import { Component } from '../types'
 import ComponentModel from '../models/component'
+import { GraphQLError } from 'graphql'
 
 const componentResolver = {
   Query: {
@@ -10,14 +11,60 @@ const componentResolver = {
   Mutation: {
     addComponent: async (_root: Component, args: Component) => {
       const component = new ComponentModel(args)
-      await component.save()
-      return component
+      if (args.stock < 0)
+        throw new GraphQLError('stock must be greater than 0', {
+          extensions: {
+            code: 'BAD_USER_INPUT',
+            invalidArgs: args.stock,
+          },
+        })
+      try {
+        await component.save()
+        return component
+      } catch (error) {
+        throw new GraphQLError('failed to add new component', {
+          extensions: {
+            code: 'BAD_USER_INPUT',
+            invalidArgs: args.name,
+            error,
+          },
+        })
+      }
     },
     editComponent: async (_root: Component, args: Component) => {
-      return await ComponentModel.findOneAndUpdate({ name: args.name }, args, { new: true })
+      if (args.stock < 0)
+        throw new GraphQLError('stock must be greater than 0', {
+          extensions: {
+            code: 'BAD_USER_INPUT',
+            invalidArgs: args.stock,
+          },
+        })
+      try {
+        return await ComponentModel.findOneAndUpdate({ name: args.name }, args, {
+          new: true,
+        })
+      } catch (error) {
+        throw new GraphQLError("component doesn't exist", {
+          extensions: {
+            code: 'BAD_USER_INPUT',
+            invalidArgs: args.name,
+            error,
+          },
+        })
+      }
     },
     deleteComponent: async (_root: Component, args: Component) => {
-      await ComponentModel.findOneAndDelete({ name: args.name })
+      try {
+        await ComponentModel.findOneAndDelete({ name: args.name })
+      } catch (error) {
+        throw new GraphQLError("component doesn't exist", {
+          extensions: {
+            code: 'BAD_USER_INPUT',
+            invalidArgs: args.name,
+            error,
+          },
+        })
+      }
       return `Successfully deleted ${args.name}`
     },
   },

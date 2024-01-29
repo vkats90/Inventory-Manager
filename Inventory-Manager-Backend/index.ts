@@ -2,7 +2,8 @@ import { ApolloServer } from '@apollo/server'
 import { startStandaloneServer } from '@apollo/server/standalone'
 import { buildSubgraphSchema } from '@apollo/federation'
 import mongoose from 'mongoose'
-require('dotenv').config()
+import dotenv from 'dotenv'
+dotenv.config()
 
 const MONGODB_URI = process.env.MONGODB_URI
 
@@ -34,6 +35,10 @@ const server = new ApolloServer({
 
 startStandaloneServer(server, {
   listen: { port: 4000 },
-}).then(({ url }) => {
-  console.log(`Server ready at ${url}`)
 })
+  .then(({ url }) => {
+    console.log(`Server ready at ${url}`)
+  })
+  .catch((error) => {
+    console.log(error)
+  })
