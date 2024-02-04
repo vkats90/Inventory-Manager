@@ -14,7 +14,7 @@ import productResolver from './resolvers/productResolvers'
 import orderTypeDefs from './typeDefs/orderTypeDef'
 import orderResolver from './resolvers/orderResolvers'
 
-const schema = buildSubgraphSchema([
+export const schema = buildSubgraphSchema([
   { typeDefs: componentTypeDefs, resolvers: componentResolver },
   { typeDefs: productTypeDefs, resolvers: productResolver },
   { typeDefs: orderTypeDefs, resolvers: orderResolver },
