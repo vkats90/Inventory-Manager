@@ -22,13 +22,6 @@ const orderResolver = {
             invalidArgs: args.quantity,
           },
         })
-      if (!['Created', 'Ordered', 'Finished'].includes(args.status))
-        throw new GraphQLError('Invalid Status', {
-          extensions: {
-            code: 'BAD_USER_INPUT',
-            invalidArgs: args.status,
-          },
-        })
       try {
         await order.save()
       } catch (error) {
