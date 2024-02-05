@@ -25,7 +25,7 @@ const orderResolver = {
       try {
         await order.save()
       } catch (error) {
-        throw new GraphQLError('failed to add new product', {
+        throw new GraphQLError('failed to add new order', {
           extensions: {
             code: 'BAD_USER_INPUT',
             invalidArgs: args.name,
@@ -43,33 +43,47 @@ const orderResolver = {
             invalidArgs: args.quantity,
           },
         })
-      if (!['Created', 'Ordered', 'Finished'].includes(args.status))
-        throw new GraphQLError('Invalid Status', {
+      if (args.status) {
+        if (!['Created', 'Ordered', 'Finished'].includes(args.status))
+          throw new GraphQLError('Invalid Status', {
+            extensions: {
+              code: 'BAD_USER_INPUT',
+              invalidArgs: args.status,
+            },
+          })
+      }
+      if (!args.name)
+        throw new GraphQLError("order doesn't exist", {
           extensions: {
             code: 'BAD_USER_INPUT',
-            invalidArgs: args.status,
+            invalidArgs: args.name,
           },
         })
       try {
         return await OrderModel.findOneAndUpdate({ name: args.name }, args, { new: true })
       } catch (error) {
-        throw new GraphQLError("product doesn't exist", {
+        throw new GraphQLError('failed to add order', {
           extensions: {
             code: 'BAD_USER_INPUT',
-            invalidArgs: args.name,
             error,
           },
         })
       }
     },
     deleteOrder: async (_root: Order, args: Order) => {
-      try {
-        await OrderModel.findOneAndDelete({ name: args.name })
-      } catch (error) {
+      if (!args.name)
         throw new GraphQLError("product doesn't exist", {
           extensions: {
             code: 'BAD_USER_INPUT',
             invalidArgs: args.name,
+          },
+        })
+      try {
+        await OrderModel.findOneAndDelete({ name: args.name })
+      } catch (error) {
+        throw new GraphQLError('failed to delete order', {
+          extensions: {
+            code: 'BAD_USER_INPUT',
             error,
           },
         })
