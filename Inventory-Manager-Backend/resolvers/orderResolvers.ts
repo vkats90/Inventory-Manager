@@ -72,7 +72,7 @@ const orderResolver = {
     },
     deleteOrder: async (_root: Order, args: Order) => {
       if (!args.name)
-        throw new GraphQLError("product doesn't exist", {
+        throw new GraphQLError("order doesn't exist", {
           extensions: {
             code: 'BAD_USER_INPUT',
             invalidArgs: args.name,
@@ -88,7 +88,7 @@ const orderResolver = {
           },
         })
       }
-      return `Successfully deleted ${args.name}`
+      return `Successfully deleted order`
     },
   },
 }

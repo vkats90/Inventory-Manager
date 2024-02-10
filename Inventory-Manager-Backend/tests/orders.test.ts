@@ -42,6 +42,7 @@ beforeAll(async () => {
 
 afterAll(async () => {
   await server.stop()
+  await mongoose.connection.close()
 })
 
 describe('test allOrders', () => {
@@ -249,7 +250,7 @@ describe('test deleteOrder', () => {
       })
 
     expect(res.body.data).toBeDefined()
-    expect(res.body.data.deleteOrder).toBe('Successfully deleted EP3 Flow Card')
+    expect(res.body.data.deleteOrder).toBe('Successfully deleted order')
   })
   test("calling allOrders doesn't includes the deleted record", async () => {
     const res = await request(uri).post('/').send({
@@ -274,8 +275,7 @@ describe('test deleteOrder', () => {
             deleteOrder(name: $name) 
           }`,
       })
-    console.log(res.body)
     expect(res.body.errors).toBeDefined()
-    expect(res.body.errors[0].message).toBe("product doesn't exist")
+    expect(res.body.errors[0].message).toBe("order doesn't exist")
   })
 })

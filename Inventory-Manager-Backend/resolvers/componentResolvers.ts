@@ -39,12 +39,19 @@ const componentResolver = {
             invalidArgs: args.stock,
           },
         })
+      if (!args.name)
+        throw new GraphQLError("component doesn't exist", {
+          extensions: {
+            code: 'BAD_USER_INPUT',
+            invalidArgs: args.name,
+          },
+        })
       try {
         return await ComponentModel.findOneAndUpdate({ name: args.name }, args, {
           new: true,
         })
       } catch (error) {
-        throw new GraphQLError("component doesn't exist", {
+        throw new GraphQLError('failed to edit component', {
           extensions: {
             code: 'BAD_USER_INPUT',
             invalidArgs: args.name,
@@ -54,10 +61,17 @@ const componentResolver = {
       }
     },
     deleteComponent: async (_root: Component, args: Component) => {
+      if (!args.name)
+        throw new GraphQLError("component doesn't exist", {
+          extensions: {
+            code: 'BAD_USER_INPUT',
+            invalidArgs: args.name,
+          },
+        })
       try {
         await ComponentModel.findOneAndDelete({ name: args.name })
       } catch (error) {
-        throw new GraphQLError("component doesn't exist", {
+        throw new GraphQLError('failed to delete component', {
           extensions: {
             code: 'BAD_USER_INPUT',
             invalidArgs: args.name,
