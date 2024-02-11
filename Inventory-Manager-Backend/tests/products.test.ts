@@ -175,18 +175,16 @@ describe('test addProduct', () => {
         }`,
         variables: {
           sku: 'EP2',
+          name: '',
           components: [component_id],
           cost: 2.05,
-          name: 'Episode 2: Missing Person',
           price: 19.95,
           stock: 1250,
         },
       })
 
     expect(res.body.errors).toBeDefined()
-    expect(res.body.errors[0].message).toBe(
-      'Variable "$name" of required type "String!" was not provided.'
-    )
+    expect(res.body.errors[0].message).toBe("name can't be empty")
     expect(res.body.errors[0].extensions.code).toBe('BAD_USER_INPUT')
   })
 
@@ -212,7 +210,7 @@ describe('test addProduct', () => {
           stock: 1250,
         },
       })
-    console.log(res.body)
+
     expect(res.body.errors).toBeDefined()
     expect(res.body.errors[0].message).toBe('failed to add new product')
     expect(res.body.errors[0].extensions.code).toBe('BAD_USER_INPUT')
@@ -246,43 +244,64 @@ describe('test addProduct', () => {
     expect(res.body.errors[0].extensions.invalidArgs).toBe(-650)
   })
 })
-/*
-describe('test editComponent', () => {
+
+describe('test editProduct', () => {
   test('editing a record works', async () => {
     const res = await request(uri)
       .post('/')
       .send({
-        query: `mutation EditComponent($name: String!, $stock: Float, $cost: Float) {
-          editComponent(name: $name, stock: $stock, cost: $cost) {
-            cost
+        query: `mutation Mutation($name: String!, $stock: Int, $cost: Float, $price: Float, $sku: String, $components: [String]) {
+          editProduct(name: $name, stock: $stock, cost: $cost, price: $price, SKU: $sku, components: $components) {
+            SKU
+            components {
+              name
+            }
             name
+            price
             stock
-          }}`,
-        variables: { name: 'EP3 Flow Card', stock: 1850, cost: 0.06 },
+            cost
+          }
+        }`,
+        variables: {
+          sku: 'EP2',
+          components: [component_id],
+          cost: 2.45,
+          name: 'Episode 2: Missing Person',
+          price: 19.95,
+          stock: 1650,
+        },
       })
 
     expect(res.body.data).toBeDefined()
-    expect(res.body.data.editComponent.name).toBe('EP3 Flow Card')
+    expect(res.body.data.editProduct.name).toBe('Episode 2: Missing Person')
   })
-  test('calling allComponents includes the changed record', async () => {
+  test('calling allProducts includes the changed record', async () => {
     const res = await request(uri)
       .post('/')
       .send({
         query: `query Query {
-        allComponents {
-          cost
-          name
-          stock
-        }
-      }`,
+          allProducts {
+            SKU
+            components {
+              name
+            }
+            cost
+            name
+            price
+            stock
+          }
+        }`,
       })
 
-    expect(res.body.data.allComponents).toHaveLength(6)
-    expect(res.body.data?.allComponents.map((x: Component) => JSON.stringify(x))).toContain(
+    expect(res.body.data.allProducts).toHaveLength(2)
+    expect(res.body.data?.allProducts.map((x: Component) => JSON.stringify(x))).toContain(
       JSON.stringify({
-        cost: 0.06,
-        name: 'EP3 Flow Card',
-        stock: 1850,
+        SKU: 'EP2',
+        components: [{ name: component_name }],
+        cost: 2.45,
+        name: 'Episode 2: Missing Person',
+        price: 19.95,
+        stock: 1650,
       })
     )
   })
@@ -290,40 +309,93 @@ describe('test editComponent', () => {
     const res = await request(uri)
       .post('/')
       .send({
-        query: `mutation EditComponent($name: String!, $stock: Float, $cost: Float) {
-          editComponent(name: $name, stock: $stock, cost: $cost) {
-            cost
+        query: `mutation Mutation($name: String!, $stock: Int, $cost: Float, $price: Float, $sku: String, $components: [String]) {
+          editProduct(name: $name, stock: $stock, cost: $cost, price: $price, SKU: $sku, components: $components) {
+            SKU
+            components {
+              name
+            }
             name
+            price
             stock
-          }}`,
-        variables: { stock: 850, cost: 0.04 },
+            cost
+          }
+        }`,
+        variables: {
+          sku: 'EP2',
+          components: [component_id],
+          name: '',
+          cost: 2.45,
+          price: 19.95,
+          stock: 1650,
+        },
       })
 
     expect(res.body.errors).toBeDefined()
-    expect(res.body.errors[0].message).toBe(
-      'Variable "$name" of required type "String!" was not provided.'
-    )
+    expect(res.body.errors[0].message).toBe("name can't be empty")
+  })
+  test("editing a record that doesn't exist returns an error", async () => {
+    const res = await request(uri)
+      .post('/')
+      .send({
+        query: `mutation Mutation($name: String!, $stock: Int, $cost: Float, $price: Float, $sku: String, $components: [String]) {
+          editProduct(name: $name, stock: $stock, cost: $cost, price: $price, SKU: $sku, components: $components) {
+            SKU
+            components {
+              name
+            }
+            name
+            price
+            stock
+            cost
+          }
+        }`,
+        variables: {
+          sku: 'EP2',
+          components: [component_id],
+          name: 'Episdode 4: On The Run',
+          cost: 2.45,
+          price: 19.95,
+          stock: 1650,
+        },
+      })
+    console.log(res.body)
+    expect(res.body.errors).toBeDefined()
+    expect(res.body.errors[0].message).toBe("product doesn't exist")
   })
 
   test('editing a record with negative quantity returns an error', async () => {
     const res = await request(uri)
       .post('/')
       .send({
-        query: `mutation EditComponent($name: String!, $stock: Float, $cost: Float) {
-          editComponent(name: $name, stock: $stock, cost: $cost) {
-            cost
+        query: `mutation Mutation($name: String!, $stock: Int, $cost: Float, $price: Float, $sku: String, $components: [String]) {
+          editProduct(name: $name, stock: $stock, cost: $cost, price: $price, SKU: $sku, components: $components) {
+            SKU
+            components {
+              name
+            }
             name
+            price
             stock
-          }}`,
-        variables: { name: 'EP3 Flow Card', stock: -650, cost: 0.04 },
+            cost
+          }
+        }`,
+        variables: {
+          sku: 'EP2',
+          components: [component_id],
+          name: 'Episode 2: Missing Person',
+          cost: 2.45,
+          price: 19.95,
+          stock: -1650,
+        },
       })
 
     expect(res.body.errors).toBeDefined()
     expect(res.body.errors[0].message).toBe('stock must be greater than 0')
-    expect(res.body.errors[0].extensions.invalidArgs).toBe(-650)
+    expect(res.body.errors[0].extensions.invalidArgs).toBe(-1650)
   })
 })
-
+/*
 describe('test deleteComponent', () => {
   test('deleting a record works', async () => {
     const res = await request(uri)

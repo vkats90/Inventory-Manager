@@ -30,6 +30,13 @@ const productResolver = {
           },
         })
       const product = new ProductModel(args)
+      if (!args.name)
+        throw new GraphQLError("name can't be empty", {
+          extensions: {
+            code: 'BAD_USER_INPUT',
+            invalidArgs: args.name,
+          },
+        })
       try {
         await product.save()
       } catch (error) {
@@ -52,8 +59,18 @@ const productResolver = {
             invalidArgs: args.stock,
           },
         })
+      if (!args.name)
+        throw new GraphQLError("name can't be empty", {
+          extensions: {
+            code: 'BAD_USER_INPUT',
+            invalidArgs: args.name,
+          },
+        })
+
       try {
-        return await ProductModel.findOneAndUpdate({ name: args.name }, args, { new: true })
+        return await ProductModel.findOneAndUpdate({ name: args.name }, args, {
+          new: true,
+        })
       } catch (error) {
         throw new GraphQLError("product doesn't exist", {
           extensions: {
