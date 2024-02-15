@@ -19,5 +19,5 @@ export interface Order {
   name: string
   quantity: number
   priority: 1 | 2 | 3
-  status: 'Created' | 'Ordered' | 'Finished'
+  status: 'Created' | 'Ordered' | 'Shipped' | 'Finished'
 }

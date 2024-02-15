@@ -2,7 +2,9 @@
 
 ## To DO:
 
-- add unit tests with Jest
+- Finish Unit tests with Jest
+- Add "Shipped" status to order
+- Add user handling
 
 ## Hours spent:
 
@@ -13,3 +15,4 @@
     2.03: 4
     2.04: 1
     2.10: 3
+    2.15: 1

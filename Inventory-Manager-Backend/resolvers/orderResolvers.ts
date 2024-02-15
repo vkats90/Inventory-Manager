@@ -44,7 +44,7 @@ const orderResolver = {
           },
         })
       if (args.status) {
-        if (!['Created', 'Ordered', 'Finished'].includes(args.status))
+        if (!['Created', 'Ordered', 'Shipped', 'Finished'].includes(args.status))
           throw new GraphQLError('Invalid Status', {
             extensions: {
               code: 'BAD_USER_INPUT',
@@ -52,7 +52,8 @@ const orderResolver = {
             },
           })
       }
-      if (!args.name)
+      const order = await OrderModel.findOne({ name: args.name })
+      if (!order)
         throw new GraphQLError("order doesn't exist", {
           extensions: {
             code: 'BAD_USER_INPUT',
@@ -71,7 +72,8 @@ const orderResolver = {
       }
     },
     deleteOrder: async (_root: Order, args: Order) => {
-      if (!args.name)
+      const order = await OrderModel.findOne({ name: args.name })
+      if (!order)
         throw new GraphQLError("order doesn't exist", {
           extensions: {
             code: 'BAD_USER_INPUT',

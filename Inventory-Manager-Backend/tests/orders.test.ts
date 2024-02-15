@@ -274,6 +274,19 @@ describe('test deleteOrder', () => {
         query: `mutation DeleteOrder($name: String) {
             deleteOrder(name: $name) 
           }`,
+        variables: { name: '' },
+      })
+    expect(res.body.errors).toBeDefined()
+    expect(res.body.errors[0].message).toBe("order doesn't exist")
+  })
+  test('deleting a non existing record returns an error', async () => {
+    const res = await request(uri)
+      .post('/')
+      .send({
+        query: `mutation DeleteOrder($name: String) {
+            deleteOrder(name: $name) 
+          }`,
+        variables: { name: 'Book Pages' },
       })
     expect(res.body.errors).toBeDefined()
     expect(res.body.errors[0].message).toBe("order doesn't exist")

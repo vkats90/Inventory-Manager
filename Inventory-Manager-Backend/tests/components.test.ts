@@ -51,7 +51,7 @@ beforeAll(async () => {
   startStandaloneServer(server, {
     listen: { port: 0 },
   })
-})
+}, 10000)
 
 afterAll(async () => {
   await server.stop()
@@ -320,10 +320,21 @@ describe('test deleteComponent', () => {
         query: `mutation DeleteComponent($name: String!) {
           deleteComponent(name: $name)
         }`,
+        variables: { name: '' },
       })
     expect(res.body.errors).toBeDefined()
-    expect(res.body.errors[0].message).toBe(
-      'Variable "$name" of required type "String!" was not provided.'
-    )
+    expect(res.body.errors[0].message).toBe("component doesn't exist")
+  })
+  test('deleting a non existing record returns an error', async () => {
+    const res = await request(uri)
+      .post('/')
+      .send({
+        query: `mutation DeleteComponent($name: String!) {
+          deleteComponent(name: $name)
+        }`,
+        variables: { name: 'Book Pages' },
+      })
+    expect(res.body.errors).toBeDefined()
+    expect(res.body.errors[0].message).toBe("component doesn't exist")
   })
 })

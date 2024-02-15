@@ -39,7 +39,8 @@ const componentResolver = {
             invalidArgs: args.stock,
           },
         })
-      if (!args.name)
+      const component = await ComponentModel.findOne({ name: args.name })
+      if (!component)
         throw new GraphQLError("component doesn't exist", {
           extensions: {
             code: 'BAD_USER_INPUT',
@@ -61,7 +62,8 @@ const componentResolver = {
       }
     },
     deleteComponent: async (_root: Component, args: Component) => {
-      if (!args.name)
+      const component = await ComponentModel.findOne({ name: args.name })
+      if (!component)
         throw new GraphQLError("component doesn't exist", {
           extensions: {
             code: 'BAD_USER_INPUT',

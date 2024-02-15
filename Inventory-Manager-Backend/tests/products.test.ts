@@ -42,7 +42,7 @@ beforeAll(async () => {
   startStandaloneServer(server, {
     listen: { port: 0 },
   })
-})
+}, 10000)
 
 afterAll(async () => {
   await server.stop()
@@ -332,7 +332,7 @@ describe('test editProduct', () => {
       })
 
     expect(res.body.errors).toBeDefined()
-    expect(res.body.errors[0].message).toBe("name can't be empty")
+    expect(res.body.errors[0].message).toBe("product doesn't exist")
   })
   test("editing a record that doesn't exist returns an error", async () => {
     const res = await request(uri)
@@ -395,40 +395,48 @@ describe('test editProduct', () => {
     expect(res.body.errors[0].extensions.invalidArgs).toBe(-1650)
   })
 })
-/*
-describe('test deleteComponent', () => {
+
+describe('test deleteProduct', () => {
   test('deleting a record works', async () => {
     const res = await request(uri)
       .post('/')
       .send({
-        query: `mutation DeleteComponent($name: String!) {
-          deleteComponent(name: $name)
+        query: `mutation DeleteProduct($name: String!) {
+          deleteProduct(name: $name)
         }`,
-        variables: { name: 'EP3 Flow Card' },
+        variables: { name: 'Episode 2: Missing Person' },
       })
 
     expect(res.body.data).toBeDefined()
-    expect(res.body.data.deleteComponent).toBe('Successfully deleted EP3 Flow Card')
+    expect(res.body.data.deleteProduct).toBe('Successfully deleted Episode 2: Missing Person')
   })
-  test("calling allComponents doesn't includes the deleted record", async () => {
+  test("calling allProducts doesn't includes the deleted record", async () => {
     const res = await request(uri)
       .post('/')
       .send({
         query: `query Query {
-        allComponents {
-          cost
-          name
-          stock
-        }
-      }`,
+          allProducts {
+            SKU
+            components {
+              name
+            }
+            cost
+            name
+            price
+            stock
+          }
+        }`,
       })
 
-    expect(res.body.data.allComponents).toHaveLength(5)
-    expect(res.body.data?.allComponents.map((x: Component) => JSON.stringify(x))).not.toContain(
+    expect(res.body.data.allProducts).toHaveLength(1)
+    expect(res.body.data?.allProducts.map((x: Product) => JSON.stringify(x))).not.toContain(
       JSON.stringify({
-        name: 'EP3 Flow Card',
-        stock: 1850,
-        cost: 0.06,
+        sku: 'EP2',
+        components: [component_id],
+        cost: 2.05,
+        name: 'Episode 2: Missing Person',
+        price: 19.95,
+        stock: 1250,
       })
     )
   })
@@ -436,14 +444,24 @@ describe('test deleteComponent', () => {
     const res = await request(uri)
       .post('/')
       .send({
-        query: `mutation DeleteComponent($name: String!) {
-          deleteComponent(name: $name)
+        query: `mutation DeleteProduct($name: String!) {
+          deleteProduct(name: $name)
         }`,
+        variables: { name: '' },
       })
     expect(res.body.errors).toBeDefined()
-    expect(res.body.errors[0].message).toBe(
-      'Variable "$name" of required type "String!" was not provided.'
-    )
+    expect(res.body.errors[0].message).toBe("product doesn't exist")
+  })
+  test('deleting a non existing record returns an error', async () => {
+    const res = await request(uri)
+      .post('/')
+      .send({
+        query: `mutation DeleteProduct($name: String!) {
+          deleteProduct(name: $name)
+        }`,
+        variables: { name: 'Episode 6: Buried' },
+      })
+    expect(res.body.errors).toBeDefined()
+    expect(res.body.errors[0].message).toBe("product doesn't exist")
   })
 })
-*/

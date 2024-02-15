@@ -59,20 +59,18 @@ const productResolver = {
             invalidArgs: args.stock,
           },
         })
-      if (!args.name)
-        throw new GraphQLError("name can't be empty", {
+      const product = await ProductModel.findOne({ name: args.name })
+      if (!product)
+        throw new GraphQLError("product doesn't exist", {
           extensions: {
             code: 'BAD_USER_INPUT',
             invalidArgs: args.name,
           },
         })
-
       try {
-        return await ProductModel.findOneAndUpdate({ name: args.name }, args, {
-          new: true,
-        })
+        return await ProductModel.findOneAndUpdate({ name: args.name }, args, { new: true })
       } catch (error) {
-        throw new GraphQLError("product doesn't exist", {
+        throw new GraphQLError('failed to update product', {
           extensions: {
             code: 'BAD_USER_INPUT',
             invalidArgs: args.name,
@@ -82,10 +80,18 @@ const productResolver = {
       }
     },
     deleteProduct: async (_root: Product, args: Product) => {
+      const product = await ProductModel.findOne({ name: args.name })
+      if (!product)
+        throw new GraphQLError("product doesn't exist", {
+          extensions: {
+            code: 'BAD_USER_INPUT',
+            invalidArgs: args.name,
+          },
+        })
       try {
         await ProductModel.findOneAndDelete({ name: args.name })
       } catch (error) {
-        throw new GraphQLError("product doesn't exist", {
+        throw new GraphQLError('failed to delete product', {
           extensions: {
             code: 'BAD_USER_INPUT',
             invalidArgs: args.name,
