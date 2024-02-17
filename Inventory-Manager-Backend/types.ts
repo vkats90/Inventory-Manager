@@ -20,4 +20,11 @@ export interface Order {
   quantity: number
   priority: 1 | 2 | 3
   status: 'Created' | 'Ordered' | 'Shipped' | 'Finished'
+  id: string
+}
+
+export interface User {
+  username: string
+  password: string
+  id: string
 }

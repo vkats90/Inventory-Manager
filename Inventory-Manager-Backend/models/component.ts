@@ -1,5 +1,7 @@
 import mongoose from 'mongoose'
 
+const uniqueValidator = require('mongoose-unique-validator')
+
 const componentSchema = new mongoose.Schema({
   name: {
     type: String,
@@ -12,5 +14,7 @@ const componentSchema = new mongoose.Schema({
   },
   cost: Number,
 })
+
+componentSchema.plugin(uniqueValidator)
 
 export default mongoose.model('ComponentModel', componentSchema)

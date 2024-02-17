@@ -1,4 +1,5 @@
 import mongoose from 'mongoose'
+const uniqueValidator = require('mongoose-unique-validator')
 
 const productSchema = new mongoose.Schema({
   name: {
@@ -23,5 +24,7 @@ const productSchema = new mongoose.Schema({
     },
   ],
 })
+
+productSchema.plugin(uniqueValidator)
 
 export default mongoose.model('ProductModel', productSchema)
