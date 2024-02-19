@@ -1,4 +1,4 @@
-import { Component } from '../types'
+import { Component, User } from '../types'
 import ComponentModel from '../models/component'
 import { GraphQLError } from 'graphql'
 
@@ -9,7 +9,16 @@ const componentResolver = {
     },
   },
   Mutation: {
-    addComponent: async (_root: Component, args: Component) => {
+    addComponent: async (
+      _root: Component,
+      args: Component,
+      { currentUser }: { currentUser: User }
+    ) => {
+      if (!currentUser) {
+        throw new GraphQLError('wrong credentials', {
+          extensions: { code: 'BAD_USER_INPUT' },
+        })
+      }
       const component = new ComponentModel(args)
       if (args.stock < 0)
         throw new GraphQLError('stock must be greater than 0', {
@@ -31,7 +40,16 @@ const componentResolver = {
         })
       }
     },
-    editComponent: async (_root: Component, args: Component) => {
+    editComponent: async (
+      _root: Component,
+      args: Component,
+      { currentUser }: { currentUser: User }
+    ) => {
+      if (!currentUser) {
+        throw new GraphQLError('wrong credentials', {
+          extensions: { code: 'BAD_USER_INPUT' },
+        })
+      }
       if (args.stock < 0)
         throw new GraphQLError('stock must be greater than 0', {
           extensions: {
@@ -61,7 +79,16 @@ const componentResolver = {
         })
       }
     },
-    deleteComponent: async (_root: Component, args: Component) => {
+    deleteComponent: async (
+      _root: Component,
+      args: Component,
+      { currentUser }: { currentUser: User }
+    ) => {
+      if (!currentUser) {
+        throw new GraphQLError('wrong credentials', {
+          extensions: { code: 'BAD_USER_INPUT' },
+        })
+      }
       const component = await ComponentModel.findOne({ name: args.name })
       if (!component)
         throw new GraphQLError("component doesn't exist", {

@@ -5,12 +5,45 @@ import { stopServer } from '../Server'
 import ComponentModel from '../models/component'
 import request from 'supertest'
 import { Component } from '../types'
+import userModel from '../models/user'
 
 const uri = 'http://localhost:4000/'
+let token = ''
 
 beforeAll(async () => {
   StartServer()
   await StartDB()
+
+  await userModel.deleteMany({})
+  const innitialUser = {
+    username: 'marsimillian77',
+    password: '123456',
+  }
+  await request(uri)
+    .post('/')
+    .send({
+      query: `mutation Mutation($username: String!, $password: String!) {
+      createUser(username: $username, password: $password) {
+        id
+        username
+      }
+    }`,
+      variables: innitialUser,
+    })
+
+  const authUser = await request(uri)
+    .post('/')
+    .send({
+      query: `mutation Mutation($username: String!, $password: String!) {
+      login(username: $username, password: $password) {
+        value
+      }
+    }`,
+      variables: { username: 'marsimillian77', password: '123456' },
+    })
+
+  token = 'Bearer ' + authUser.body.data.login.value
+  console.log('TOKEN:', token)
 
   await ComponentModel.deleteMany({})
 
@@ -105,6 +138,7 @@ describe('test addComponent', () => {
         }`,
         variables: { name: 'EP3 Flow Card', stock: 650, cost: 0.04 },
       })
+      .set({ authorization: token })
 
     expect(res.body.data.addComponent).toBeDefined()
     expect(res.body.data.addComponent.name).toBe('EP3 Flow Card')
@@ -144,6 +178,7 @@ describe('test addComponent', () => {
         }`,
         variables: { stock: 650, cost: 0.04 },
       })
+      .set({ authorization: token })
 
     expect(res.body.errors).toBeDefined()
     expect(res.body.errors[0].message).toBe(
@@ -165,6 +200,7 @@ describe('test addComponent', () => {
         }`,
         variables: { name: 'EP3 Flow Card', stock: 650, cost: 0.04 },
       })
+      .set({ authorization: token })
     expect(res.body.errors).toBeDefined()
     expect(res.body.errors[0].message).toBe('failed to add new component')
     expect(res.body.errors[0].extensions.code).toBe('BAD_USER_INPUT')
@@ -183,6 +219,7 @@ describe('test addComponent', () => {
         }`,
         variables: { name: 'EP3 Flow Card', stock: -650, cost: 0.04 },
       })
+      .set({ authorization: token })
 
     expect(res.body.errors).toBeDefined()
     expect(res.body.errors[0].message).toBe('stock must be greater than 0')
@@ -203,6 +240,7 @@ describe('test editComponent', () => {
           }}`,
         variables: { name: 'EP3 Flow Card', stock: 1850, cost: 0.06 },
       })
+      .set({ authorization: token })
 
     expect(res.body.data).toBeDefined()
     expect(res.body.data.editComponent.name).toBe('EP3 Flow Card')
@@ -219,6 +257,7 @@ describe('test editComponent', () => {
         }
       }`,
       })
+      .set({ authorization: token })
 
     expect(res.body.data.allComponents).toHaveLength(6)
     expect(res.body.data?.allComponents.map((x: Component) => JSON.stringify(x))).toContain(
@@ -241,6 +280,7 @@ describe('test editComponent', () => {
           }}`,
         variables: { stock: 850, cost: 0.04 },
       })
+      .set({ authorization: token })
 
     expect(res.body.errors).toBeDefined()
     expect(res.body.errors[0].message).toBe(
@@ -260,6 +300,7 @@ describe('test editComponent', () => {
           }}`,
         variables: { name: 'EP3 Flow Card', stock: -650, cost: 0.04 },
       })
+      .set({ authorization: token })
 
     expect(res.body.errors).toBeDefined()
     expect(res.body.errors[0].message).toBe('stock must be greater than 0')
@@ -277,6 +318,7 @@ describe('test deleteComponent', () => {
         }`,
         variables: { name: 'EP3 Flow Card' },
       })
+      .set({ authorization: token })
 
     expect(res.body.data).toBeDefined()
     expect(res.body.data.deleteComponent).toBe('Successfully deleted EP3 Flow Card')
@@ -312,6 +354,7 @@ describe('test deleteComponent', () => {
         }`,
         variables: { name: '' },
       })
+      .set({ authorization: token })
     expect(res.body.errors).toBeDefined()
     expect(res.body.errors[0].message).toBe("component doesn't exist")
   })
@@ -324,6 +367,7 @@ describe('test deleteComponent', () => {
         }`,
         variables: { name: 'Book Pages' },
       })
+      .set({ authorization: token })
     expect(res.body.errors).toBeDefined()
     expect(res.body.errors[0].message).toBe("component doesn't exist")
   })

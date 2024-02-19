@@ -54,8 +54,9 @@ const StartServer = async () => {
       // @ts-ignore comment
       context: async ({ req }) => {
         const auth = req ? req.headers.authorization : null
+
         if (auth && auth.startsWith('Bearer ')) {
-          const decodedToken = jwt.verify(auth?.substring(7), process.env.JWT_SECRET)
+          const decodedToken = jwt.verify(auth.substring(7), process.env.JWT_SECRET)
           const currentUser: User | null = await userModel.findById(decodedToken.id)
           return { currentUser }
         }

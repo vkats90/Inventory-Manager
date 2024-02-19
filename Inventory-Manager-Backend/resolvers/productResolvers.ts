@@ -1,4 +1,4 @@
-import { Product } from '../types'
+import { Product, User } from '../types'
 import ProductModel from '../models/product'
 import { GraphQLError } from 'graphql'
 
@@ -21,7 +21,12 @@ const productResolver = {
     },
   },
   Mutation: {
-    addProduct: async (_root: Product, args: Product) => {
+    addProduct: async (_root: Product, args: Product, { currentUser }: { currentUser: User }) => {
+      if (!currentUser) {
+        throw new GraphQLError('wrong credentials', {
+          extensions: { code: 'BAD_USER_INPUT' },
+        })
+      }
       if (args.stock < 0)
         throw new GraphQLError('stock must be greater than 0', {
           extensions: {
@@ -51,7 +56,12 @@ const productResolver = {
       return product
     },
 
-    editProduct: async (_root: Product, args: Product) => {
+    editProduct: async (_root: Product, args: Product, { currentUser }: { currentUser: User }) => {
+      if (!currentUser) {
+        throw new GraphQLError('wrong credentials', {
+          extensions: { code: 'BAD_USER_INPUT' },
+        })
+      }
       if (args.stock < 0)
         throw new GraphQLError('stock must be greater than 0', {
           extensions: {
@@ -79,7 +89,16 @@ const productResolver = {
         })
       }
     },
-    deleteProduct: async (_root: Product, args: Product) => {
+    deleteProduct: async (
+      _root: Product,
+      args: Product,
+      { currentUser }: { currentUser: User }
+    ) => {
+      if (!currentUser) {
+        throw new GraphQLError('wrong credentials', {
+          extensions: { code: 'BAD_USER_INPUT' },
+        })
+      }
       const product = await ProductModel.findOne({ name: args.name })
       if (!product)
         throw new GraphQLError("product doesn't exist", {

@@ -1,4 +1,4 @@
-import { Order } from '../types'
+import { Order, User } from '../types'
 import OrderModel from '../models/order'
 import { GraphQLError } from 'graphql'
 
@@ -9,7 +9,13 @@ const orderResolver = {
     },
   },
   Mutation: {
-    addOrder: async (_root: Order, args: Order) => {
+    addOrder: async (_root: Order, args: Order, { currentUser }: { currentUser: User }) => {
+      console.log(currentUser)
+      if (!currentUser) {
+        throw new GraphQLError('wrong credentials', {
+          extensions: { code: 'BAD_USER_INPUT' },
+        })
+      }
       const order = new OrderModel({
         ...args,
         priority: args.priority ? args.priority : 1,
@@ -35,7 +41,12 @@ const orderResolver = {
       }
       return order
     },
-    editOrder: async (_root: Order, args: Order) => {
+    editOrder: async (_root: Order, args: Order, { currentUser }: { currentUser: User }) => {
+      if (!currentUser) {
+        throw new GraphQLError('wrong credentials', {
+          extensions: { code: 'BAD_USER_INPUT' },
+        })
+      }
       if (args.quantity < 0)
         throw new GraphQLError('quantity must be greater than 0', {
           extensions: {
@@ -71,7 +82,12 @@ const orderResolver = {
         })
       }
     },
-    deleteOrder: async (_root: Order, args: Order) => {
+    deleteOrder: async (_root: Order, args: Order, { currentUser }: { currentUser: User }) => {
+      if (!currentUser) {
+        throw new GraphQLError('wrong credentials', {
+          extensions: { code: 'BAD_USER_INPUT' },
+        })
+      }
       const order = await OrderModel.findOne({ name: args.name })
       if (!order)
         throw new GraphQLError("order doesn't exist", {

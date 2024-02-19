@@ -6,15 +6,48 @@ import ProductModel from '../models/product'
 import ComponentModel from '../models/component'
 import request from 'supertest'
 import { Product, Component } from '../types'
+import userModel from '../models/user'
 
 let uri = 'http://localhost:4000/'
 
 let component_id: String
 let component_name: String
+let token = ''
 
 beforeAll(async () => {
   StartServer()
   await StartDB()
+
+  await userModel.deleteMany({})
+  const innitialUser = {
+    username: 'marsimillian77',
+    password: '123456',
+  }
+  await request(uri)
+    .post('/')
+    .send({
+      query: `mutation Mutation($username: String!, $password: String!) {
+      createUser(username: $username, password: $password) {
+        id
+        username
+      }
+    }`,
+      variables: innitialUser,
+    })
+
+  const authUser = await request(uri)
+    .post('/')
+    .send({
+      query: `mutation Mutation($username: String!, $password: String!) {
+      login(username: $username, password: $password) {
+        value
+      }
+    }`,
+      variables: { username: 'marsimillian77', password: '123456' },
+    })
+
+  token = 'Bearer ' + authUser.body.data.login.value
+  console.log('TOKEN:', token)
 
   const components = await ComponentModel.find({})
   component_id = components[0].id
@@ -117,6 +150,8 @@ describe('test addProduct', () => {
           stock: 1250,
         },
       })
+      .set({ authorization: token })
+
     expect(res.body.data.addProduct).toBeDefined()
     expect(res.body.data.addProduct.name).toBe('Episode 2: Missing Person')
   })
@@ -172,6 +207,7 @@ describe('test addProduct', () => {
           stock: 1250,
         },
       })
+      .set({ authorization: token })
 
     expect(res.body.errors).toBeDefined()
     expect(res.body.errors[0].message).toBe("name can't be empty")
@@ -200,6 +236,7 @@ describe('test addProduct', () => {
           stock: 1250,
         },
       })
+      .set({ authorization: token })
 
     expect(res.body.errors).toBeDefined()
     expect(res.body.errors[0].message).toBe('failed to add new product')
@@ -228,6 +265,7 @@ describe('test addProduct', () => {
           stock: -650,
         },
       })
+      .set({ authorization: token })
 
     expect(res.body.errors).toBeDefined()
     expect(res.body.errors[0].message).toBe('stock must be greater than 0')
@@ -261,6 +299,7 @@ describe('test editProduct', () => {
           stock: 1650,
         },
       })
+      .set({ authorization: token })
 
     expect(res.body.data).toBeDefined()
     expect(res.body.data.editProduct.name).toBe('Episode 2: Missing Person')
@@ -282,6 +321,7 @@ describe('test editProduct', () => {
           }
         }`,
       })
+      .set({ authorization: token })
 
     expect(res.body.data.allProducts).toHaveLength(2)
     expect(res.body.data?.allProducts.map((x: Component) => JSON.stringify(x))).toContain(
@@ -320,6 +360,7 @@ describe('test editProduct', () => {
           stock: 1650,
         },
       })
+      .set({ authorization: token })
 
     expect(res.body.errors).toBeDefined()
     expect(res.body.errors[0].message).toBe("product doesn't exist")
@@ -349,7 +390,8 @@ describe('test editProduct', () => {
           stock: 1650,
         },
       })
-    console.log(res.body)
+      .set({ authorization: token })
+
     expect(res.body.errors).toBeDefined()
     expect(res.body.errors[0].message).toBe("product doesn't exist")
   })
@@ -379,6 +421,7 @@ describe('test editProduct', () => {
           stock: -1650,
         },
       })
+      .set({ authorization: token })
 
     expect(res.body.errors).toBeDefined()
     expect(res.body.errors[0].message).toBe('stock must be greater than 0')
@@ -396,6 +439,7 @@ describe('test deleteProduct', () => {
         }`,
         variables: { name: 'Episode 2: Missing Person' },
       })
+      .set({ authorization: token })
 
     expect(res.body.data).toBeDefined()
     expect(res.body.data.deleteProduct).toBe('Successfully deleted Episode 2: Missing Person')
@@ -439,6 +483,8 @@ describe('test deleteProduct', () => {
         }`,
         variables: { name: '' },
       })
+      .set({ authorization: token })
+
     expect(res.body.errors).toBeDefined()
     expect(res.body.errors[0].message).toBe("product doesn't exist")
   })
@@ -451,6 +497,8 @@ describe('test deleteProduct', () => {
         }`,
         variables: { name: 'Episode 6: Buried' },
       })
+      .set({ authorization: token })
+
     expect(res.body.errors).toBeDefined()
     expect(res.body.errors[0].message).toBe("product doesn't exist")
   })

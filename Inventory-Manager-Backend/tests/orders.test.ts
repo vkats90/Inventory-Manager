@@ -5,13 +5,47 @@ import { stopServer } from '../Server'
 import OrderModel from '../models/order'
 import request from 'supertest'
 import { Order } from '../types'
+import userModel from '../models/user'
 
 let uri = 'http://localhost:4000/'
+
+let token = ''
 
 beforeAll(async () => {
   StartServer()
   await StartDB()
   await OrderModel.deleteMany({})
+
+  await userModel.deleteMany({})
+  const innitialUser = {
+    username: 'marsimillian77',
+    password: '123456',
+  }
+  await request(uri)
+    .post('/')
+    .send({
+      query: `mutation Mutation($username: String!, $password: String!) {
+      createUser(username: $username, password: $password) {
+        id
+        username
+      }
+    }`,
+      variables: innitialUser,
+    })
+
+  const authUser = await request(uri)
+    .post('/')
+    .send({
+      query: `mutation Mutation($username: String!, $password: String!) {
+      login(username: $username, password: $password) {
+        value
+      }
+    }`,
+      variables: { username: 'marsimillian77', password: '123456' },
+    })
+
+  token = 'Bearer ' + authUser.body.data.login.value
+  console.log('TOKEN:', token)
 
   await OrderModel.insertMany([
     {
@@ -74,6 +108,7 @@ describe('test addOrder', () => {
           }`,
         variables: { name: 'EP3 Flow Card', quantity: 650 },
       })
+      .set({ authorization: token })
 
     expect(res.body.data.addOrder).toBeDefined()
     expect(res.body.data.addOrder.name).toBe('EP3 Flow Card')
@@ -107,6 +142,7 @@ describe('test addOrder', () => {
           }`,
         variables: { quantity: 650 },
       })
+      .set({ authorization: token })
 
     expect(res.body.errors).toBeDefined()
     expect(res.body.errors[0].message).toBe('failed to add new order')
@@ -127,6 +163,7 @@ describe('test addOrder', () => {
           }`,
         variables: { name: 'EP3 Flow Card', quantity: -650 },
       })
+      .set({ authorization: token })
 
     expect(res.body.errors).toBeDefined()
     expect(res.body.errors[0].message).toBe('quantity must be greater than 0')
@@ -149,6 +186,7 @@ describe('test editOrder', () => {
             }`,
         variables: { name: 'EP3 Flow Card', quantity: 850 },
       })
+      .set({ authorization: token })
 
     expect(res.body.data.editOrder).toBeDefined()
     expect(res.body.data.editOrder.name).toBe('EP3 Flow Card')
@@ -182,6 +220,7 @@ describe('test editOrder', () => {
             }`,
         variables: { quantity: 950 },
       })
+      .set({ authorization: token })
 
     expect(res.body.errors).toBeDefined()
     expect(res.body.errors[0].message).toBe("order doesn't exist")
@@ -201,6 +240,7 @@ describe('test editOrder', () => {
             }`,
         variables: { name: 'EP3 Flow Card', quantity: -650 },
       })
+      .set({ authorization: token })
 
     expect(res.body.errors).toBeDefined()
     expect(res.body.errors[0].message).toBe('quantity must be greater than 0')
@@ -220,6 +260,7 @@ describe('test editOrder', () => {
             }`,
         variables: { name: 'EP3 Flow Card', quantity: 650, status: 'done' },
       })
+      .set({ authorization: token })
 
     expect(res.body.errors).toBeDefined()
     expect(res.body.errors[0].message).toBe('Invalid Status')
@@ -237,6 +278,7 @@ describe('test deleteOrder', () => {
             }`,
         variables: { name: 'EP3 Flow Card' },
       })
+      .set({ authorization: token })
 
     expect(res.body.data).toBeDefined()
     expect(res.body.data.deleteOrder).toBe('Successfully deleted order')
@@ -265,6 +307,7 @@ describe('test deleteOrder', () => {
           }`,
         variables: { name: '' },
       })
+      .set({ authorization: token })
     expect(res.body.errors).toBeDefined()
     expect(res.body.errors[0].message).toBe("order doesn't exist")
   })
@@ -277,6 +320,7 @@ describe('test deleteOrder', () => {
           }`,
         variables: { name: 'Book Pages' },
       })
+      .set({ authorization: token })
     expect(res.body.errors).toBeDefined()
     expect(res.body.errors[0].message).toBe("order doesn't exist")
   })

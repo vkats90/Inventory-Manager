@@ -2,7 +2,6 @@
 
 ## To DO:
 
-- Correct unit tests to include User context
 - Expend Orders to include dates and users
 - Add user handling
 
@@ -16,4 +15,5 @@
     2.04: 1
     2.10: 3
     2.15: 1.5
-    2.18: 0.5
+    2.17: 0.5
+    2.18: 2.5
