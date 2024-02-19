@@ -1,21 +1,16 @@
-import { schema } from '../index'
-import { ApolloServer, BaseContext } from '@apollo/server'
-import mongoose from 'mongoose'
+import StartServer from '../Server'
+import StartDB from '../db'
+import { KillDB } from '../db'
+import { stopServer } from '../Server'
 import OrderModel from '../models/order'
 import request from 'supertest'
-import { startStandaloneServer } from '@apollo/server/standalone'
 import { Order } from '../types'
-import dotenv from 'dotenv'
-dotenv.config()
 
-const MONGODB_URI = process.env.MONGODB_URI
-
-let server: ApolloServer<BaseContext>,
-  uri = 'http://localhost:4000/'
+let uri = 'http://localhost:4000/'
 
 beforeAll(async () => {
-  await mongoose.connect(MONGODB_URI as string)
-
+  StartServer()
+  await StartDB()
   await OrderModel.deleteMany({})
 
   await OrderModel.insertMany([
@@ -32,17 +27,11 @@ beforeAll(async () => {
       status: 'Created',
     },
   ])
-  server = new ApolloServer({
-    schema,
-  })
-  startStandaloneServer(server, {
-    listen: { port: 0 },
-  })
-})
+}, 10000)
 
-afterAll(async () => {
-  await server.stop()
-  await mongoose.connection.close()
+afterAll(() => {
+  KillDB()
+  stopServer()
 })
 
 describe('test allOrders', () => {

@@ -1,20 +1,16 @@
-import { schema } from '../index'
-import { ApolloServer, BaseContext } from '@apollo/server'
-import mongoose from 'mongoose'
+import StartServer from '../Server'
+import StartDB from '../db'
+import { KillDB } from '../db'
+import { stopServer } from '../Server'
 import ComponentModel from '../models/component'
 import request from 'supertest'
-import { startStandaloneServer } from '@apollo/server/standalone'
 import { Component } from '../types'
-import dotenv from 'dotenv'
-dotenv.config()
 
-const MONGODB_URI = process.env.MONGODB_URI
-
-let server: ApolloServer<BaseContext>,
-  uri = 'http://localhost:4000/'
+const uri = 'http://localhost:4000/'
 
 beforeAll(async () => {
-  await mongoose.connect(MONGODB_URI as string)
+  StartServer()
+  await StartDB()
 
   await ComponentModel.deleteMany({})
 
@@ -45,17 +41,11 @@ beforeAll(async () => {
       cost: 0.04,
     },
   ])
-  server = new ApolloServer({
-    schema,
-  })
-  startStandaloneServer(server, {
-    listen: { port: 0 },
-  })
 }, 10000)
 
 afterAll(async () => {
-  await server.stop()
-  await mongoose.connection.close()
+  await KillDB()
+  stopServer()
 })
 
 describe('test allComponents', () => {

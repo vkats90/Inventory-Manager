@@ -1,24 +1,20 @@
-import { schema } from '../index'
-import { ApolloServer, BaseContext } from '@apollo/server'
-import mongoose from 'mongoose'
+import StartServer from '../Server'
+import StartDB from '../db'
+import { KillDB } from '../db'
+import { stopServer } from '../Server'
 import ProductModel from '../models/product'
 import ComponentModel from '../models/component'
 import request from 'supertest'
-import { startStandaloneServer } from '@apollo/server/standalone'
 import { Product, Component } from '../types'
-import dotenv from 'dotenv'
-dotenv.config()
 
-const MONGODB_URI = process.env.MONGODB_URI
-
-let server: ApolloServer<BaseContext>,
-  uri = 'http://localhost:4000/'
+let uri = 'http://localhost:4000/'
 
 let component_id: String
 let component_name: String
 
 beforeAll(async () => {
-  await mongoose.connect(MONGODB_URI as string)
+  StartServer()
+  await StartDB()
 
   const components = await ComponentModel.find({})
   component_id = components[0].id
@@ -36,17 +32,11 @@ beforeAll(async () => {
       components: [component_id],
     },
   ])
-  server = new ApolloServer({
-    schema,
-  })
-  startStandaloneServer(server, {
-    listen: { port: 0 },
-  })
 }, 10000)
 
 afterAll(async () => {
-  await server.stop()
-  await mongoose.connection.close()
+  KillDB()
+  stopServer()
 })
 
 describe('test allProduct', () => {

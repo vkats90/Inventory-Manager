@@ -1,5 +1,11 @@
 import StartServer from './Server'
 import StartDB from './db'
 
-StartDB()
-StartServer()
+const app = () => {
+  StartDB()
+  StartServer()
+}
+
+app()
+
+export default app
