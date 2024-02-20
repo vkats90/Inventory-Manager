@@ -11,6 +11,16 @@ const orderSchema = new mongoose.Schema({
   },
   priority: Number,
   status: String,
+  created_on: Date,
+  created_by: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'UserModel',
+  },
+  updated_on: Date,
+  updated_by: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'UserModel',
+  },
 })
 
 export default mongoose.model('OrderModel', orderSchema)

@@ -2,8 +2,7 @@
 
 ## To DO:
 
-- Expend Orders to include dates and users
-- Add user handling
+- Add OAuth with Google
 
 ## Hours spent:
 
@@ -17,3 +16,4 @@
     2.15: 1.5
     2.17: 0.5
     2.18: 2.5
+    2.19: 1

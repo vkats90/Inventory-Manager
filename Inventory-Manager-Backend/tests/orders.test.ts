@@ -21,7 +21,7 @@ beforeAll(async () => {
     username: 'marsimillian77',
     password: '123456',
   }
-  await request(uri)
+  const res = await request(uri)
     .post('/')
     .send({
       query: `mutation Mutation($username: String!, $password: String!) {
@@ -53,12 +53,16 @@ beforeAll(async () => {
       quantity: 2000,
       priority: 1,
       status: 'Created',
+      created_by: res.body.data.createUser.id,
+      created_on: Date.now(),
     },
     {
       name: 'EP2 Flow Card',
       quantity: 3000,
       priority: 1,
       status: 'Created',
+      created_by: res.body.data.createUser.id,
+      created_on: Date.now(),
     },
   ])
 }, 10000)

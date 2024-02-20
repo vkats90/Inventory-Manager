@@ -5,21 +5,31 @@ import { GraphQLError } from 'graphql'
 const orderResolver = {
   Query: {
     allOrders: async () => {
-      return await OrderModel.find({})
+      const orders = await OrderModel.find({}).populate('created_by').populate('updated_by')
+
+      return orders.map((o) => ({
+        ...o.toObject(),
+        created_on: o.created_on?.toDateString(),
+        updated_on: o.updated_on?.toDateString(),
+      }))
     },
   },
   Mutation: {
     addOrder: async (_root: Order, args: Order, { currentUser }: { currentUser: User }) => {
-      console.log(currentUser)
       if (!currentUser) {
         throw new GraphQLError('wrong credentials', {
           extensions: { code: 'BAD_USER_INPUT' },
         })
       }
+
       const order = new OrderModel({
         ...args,
         priority: args.priority ? args.priority : 1,
         status: 'Created',
+        created_by: currentUser.id,
+        created_on: Date.now(),
+        updated_by: currentUser.id,
+        updated_on: Date.now(),
       })
       if (args.quantity < 0)
         throw new GraphQLError('quantity must be greater than 0', {
@@ -64,6 +74,7 @@ const orderResolver = {
           })
       }
       const order = await OrderModel.findOne({ name: args.name })
+
       if (!order)
         throw new GraphQLError("order doesn't exist", {
           extensions: {
@@ -72,7 +83,17 @@ const orderResolver = {
           },
         })
       try {
-        return await OrderModel.findOneAndUpdate({ name: args.name }, args, { new: true })
+        return await OrderModel.findOneAndUpdate(
+          { name: args.name },
+          {
+            ...args,
+            updated_by: currentUser.id,
+            updated_on: Date.now(),
+          },
+          { new: true }
+        )
+          .populate('created_by')
+          .populate('updated_by')
       } catch (error) {
         throw new GraphQLError('failed to add order', {
           extensions: {

@@ -20,6 +20,10 @@ export interface Order {
   quantity: number
   priority: 1 | 2 | 3
   status: 'Created' | 'Ordered' | 'Shipped' | 'Finished'
+  created_on: Date
+  created_by: string
+  updated_on: Date
+  updated_by: string
   id: string
 }
 

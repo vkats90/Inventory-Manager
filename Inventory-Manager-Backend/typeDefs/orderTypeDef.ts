@@ -6,6 +6,10 @@ const orderTypeDef = gql`
     quantity: Int!
     priority: Int
     status: String
+    created_on: String!
+    created_by: User!
+    updated_on: String!
+    updated_by: User
   }
 
   extend type Query {
