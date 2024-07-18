@@ -5,6 +5,8 @@ import "./index.css";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import Home from "./pages/Home.tsx";
 import ProductPage from "./pages/Products.tsx";
+import ComponentPage from "./pages/Components.tsx";
+import OrderPage from "./pages/Orders.tsx";
 
 const router = createBrowserRouter([
   {
@@ -22,11 +24,11 @@ const router = createBrowserRouter([
       },
       {
         path: "/parts",
-        element: <Home />,
+        element: <ComponentPage />,
       },
       {
         path: "/orders",
-        element: <Home />,
+        element: <OrderPage />,
       },
     ],
   },
