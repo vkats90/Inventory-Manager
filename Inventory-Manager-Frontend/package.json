@@ -10,8 +10,10 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@apollo/client": "^3.10.8",
     "@types/react": "npm:types-react@alpha",
     "@types/react-dom": "npm:types-react-dom@alpha",
+    "graphql": "^16.9.0",
     "react": "^19.0.0-beta-26f2496093-20240514",
     "react-dom": "^19.0.0-beta-26f2496093-20240514",
     "react-router-dom": "^6.24.1"

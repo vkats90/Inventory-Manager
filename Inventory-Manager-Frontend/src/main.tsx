@@ -7,6 +7,15 @@ import Home from "./pages/Home.tsx";
 import ProductPage from "./pages/Products.tsx";
 import ComponentPage from "./pages/Components.tsx";
 import OrderPage from "./pages/Orders.tsx";
+import Product from "./pages/Product.tsx";
+import Component from "./pages/Component.tsx";
+import Order from "./pages/Order.tsx";
+import { ApolloClient, InMemoryCache, ApolloProvider } from "@apollo/client";
+
+const client = new ApolloClient({
+  uri: "http://localhost:4000",
+  cache: new InMemoryCache(),
+});
 
 const router = createBrowserRouter([
   {
@@ -30,12 +39,26 @@ const router = createBrowserRouter([
         path: "/orders",
         element: <OrderPage />,
       },
+      {
+        path: "products/:productID",
+        element: <Product />,
+      },
+      {
+        path: "parts/:partID",
+        element: <Component />,
+      },
+      {
+        path: "orders/:orderID",
+        element: <Order />,
+      },
     ],
   },
 ]);
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
-    <RouterProvider router={router} />
+    <ApolloProvider client={client}>
+      <RouterProvider router={router} />
+    </ApolloProvider>
   </React.StrictMode>
 );
