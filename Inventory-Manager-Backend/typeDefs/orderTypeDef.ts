@@ -1,7 +1,8 @@
-import { gql } from 'apollo-server-express'
+import { gql } from "apollo-server-express";
 
 const orderTypeDef = gql`
   type Order {
+    id: ID!
     name: String!
     quantity: Int!
     priority: Int
@@ -21,6 +22,6 @@ const orderTypeDef = gql`
     editOrder(name: String, quantity: Int, priority: Int, status: String): Order
     deleteOrder(name: String): String
   }
-`
+`;
 
-export default orderTypeDef
+export default orderTypeDef;

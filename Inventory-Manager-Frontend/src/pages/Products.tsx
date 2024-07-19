@@ -1,5 +1,6 @@
 import React from "react";
 import Card from "../components/card";
+import { useNavigate } from "react-router-dom";
 
 type Component = {
   name: string;
@@ -19,6 +20,13 @@ type Product = {
 };
 
 const ProductList: React.FC<{ products: Product[] }> = ({ products }) => {
+  const navigate = useNavigate();
+
+  const _handleClick = ({ currentTarget }: React.MouseEvent) => {
+    console.log(currentTarget);
+    navigate(`/products/${currentTarget.id}`);
+  };
+
   return (
     <Card>
       <h2 className="text-2xl font-bold mb-4">Product List</h2>
@@ -38,7 +46,9 @@ const ProductList: React.FC<{ products: Product[] }> = ({ products }) => {
             {products.map((product) => (
               <tr
                 key={product.id}
+                id={product.id}
                 className="border-b hover:bg-slate-200 cursor-pointer"
+                onClick={_handleClick}
               >
                 <td className="px-4 py-2">{product.name}</td>
                 <td className="px-4 py-2">{product.SKU}</td>

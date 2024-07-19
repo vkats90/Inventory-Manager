@@ -1,5 +1,6 @@
 import React from "react";
 import Card from "../components/card";
+import { useNavigate } from "react-router-dom";
 
 // User type (assuming a basic structure, adjust as needed)
 type User = {
@@ -9,6 +10,7 @@ type User = {
 
 // Order type
 type Order = {
+  id: string;
   name: string;
   quantity: number;
   priority: number | null;
@@ -21,6 +23,13 @@ type Order = {
 
 // OrderList component
 const OrderList: React.FC<{ orders: Order[] }> = ({ orders }) => {
+  const navigate = useNavigate();
+
+  const _handleClick = ({ currentTarget }: React.MouseEvent) => {
+    console.log(currentTarget);
+    navigate(`/orders/${currentTarget.id}`);
+  };
+
   return (
     <Card>
       <h2 className="text-2xl font-bold mb-4">Order List</h2>
@@ -39,10 +48,12 @@ const OrderList: React.FC<{ orders: Order[] }> = ({ orders }) => {
             </tr>
           </thead>
           <tbody>
-            {orders.map((order, index) => (
+            {orders.map((order) => (
               <tr
-                key={index}
+                key={order.id}
                 className="border-b hover:bg-slate-200 cursor-pointer"
+                id={order.id}
+                onClick={_handleClick}
               >
                 <td className="px-4 py-2">{order.name}</td>
                 <td className="px-4 py-2">{order.quantity}</td>
@@ -76,6 +87,7 @@ const exampleOrders: Order[] = [
     created_by: { id: "1", name: "John Doe" },
     updated_on: "2023-07-18T10:00:00Z",
     updated_by: null,
+    id: "1",
   },
   {
     name: "Order 2",
@@ -86,6 +98,7 @@ const exampleOrders: Order[] = [
     created_by: { id: "2", name: "Jane Smith" },
     updated_on: "2023-07-18T11:00:00Z",
     updated_by: { id: "1", name: "John Doe" },
+    id: "2",
   },
   // Add more orders as needed
 ];
