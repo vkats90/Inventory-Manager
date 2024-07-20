@@ -1,14 +1,8 @@
 import React from "react";
 import Card from "../components/card";
 import { useNavigate } from "react-router-dom";
-
-// Component type
-type Component = {
-  name: string;
-  stock: number;
-  cost: number | null;
-  id: string;
-};
+import { Component } from "../types";
+import { exampleComponents } from "../assets/data/data";
 
 // ComponentList component
 const ComponentList: React.FC<{ components: Component[] }> = ({
@@ -55,23 +49,6 @@ const ComponentList: React.FC<{ components: Component[] }> = ({
     </Card>
   );
 };
-
-// Example usage
-const exampleComponents: Component[] = [
-  {
-    id: "1",
-    name: "Component A",
-    stock: 100.5,
-    cost: 5.25,
-  },
-  {
-    id: "2",
-    name: "Component B",
-    stock: 50.0,
-    cost: null,
-  },
-  // Add more components as needed
-];
 
 const ComponentPage: React.FC = () => {
   return (

@@ -1,25 +1,8 @@
 import React from "react";
 import Card from "../components/card";
 import { useNavigate } from "react-router-dom";
-
-// User type (assuming a basic structure, adjust as needed)
-type User = {
-  id: string;
-  name: string;
-};
-
-// Order type
-type Order = {
-  id: string;
-  name: string;
-  quantity: number;
-  priority: number | null;
-  status: string | null;
-  created_on: string;
-  created_by: User;
-  updated_on: string;
-  updated_by: User | null;
-};
+import { Order } from "../types";
+import { exampleOrders } from "../assets/data/data";
 
 // OrderList component
 const OrderList: React.FC<{ orders: Order[] }> = ({ orders }) => {
@@ -51,7 +34,9 @@ const OrderList: React.FC<{ orders: Order[] }> = ({ orders }) => {
             {orders.map((order) => (
               <tr
                 key={order.id}
-                className="border-b hover:bg-slate-200 cursor-pointer"
+                className={`border-b hover:bg-slate-200 cursor-pointer ${
+                  order.status == "Finished" ? "disabled" : ""
+                }`}
                 id={order.id}
                 onClick={_handleClick}
               >
@@ -75,33 +60,6 @@ const OrderList: React.FC<{ orders: Order[] }> = ({ orders }) => {
     </Card>
   );
 };
-
-// Example usage
-const exampleOrders: Order[] = [
-  {
-    name: "Order 1",
-    quantity: 5,
-    priority: 1,
-    status: "Pending",
-    created_on: "2023-07-18T10:00:00Z",
-    created_by: { id: "1", name: "John Doe" },
-    updated_on: "2023-07-18T10:00:00Z",
-    updated_by: null,
-    id: "1",
-  },
-  {
-    name: "Order 2",
-    quantity: 10,
-    priority: null,
-    status: "Completed",
-    created_on: "2023-07-17T09:00:00Z",
-    created_by: { id: "2", name: "Jane Smith" },
-    updated_on: "2023-07-18T11:00:00Z",
-    updated_by: { id: "1", name: "John Doe" },
-    id: "2",
-  },
-  // Add more orders as needed
-];
 
 const OrderPage: React.FC = () => {
   return (

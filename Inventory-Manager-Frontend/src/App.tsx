@@ -1,6 +1,6 @@
 import { createContext, useState } from "react";
 import { Outlet } from "react-router-dom";
-import TopBar from "./components/topbar";
+import Sidebar from "./components/sidebar";
 
 function App() {
   const [inView, setInView] = useState(false);
@@ -9,8 +9,8 @@ function App() {
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     //@ts-expect-error
     <AppContext value={{ inView, setInView }}>
-      <div className="bg-slate-200 min-h-[100vh]">
-        <TopBar />
+      <div className="bg-slate-200 min-h-[100vh] flex">
+        <Sidebar />
         <Outlet />
       </div>
     </AppContext>

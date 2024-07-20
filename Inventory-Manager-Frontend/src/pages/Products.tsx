@@ -1,23 +1,8 @@
 import React from "react";
 import Card from "../components/card";
 import { useNavigate } from "react-router-dom";
-
-type Component = {
-  name: string;
-  stock?: number | null;
-  cost?: number | null;
-  id?: string | null;
-};
-
-type Product = {
-  name: string;
-  stock: number;
-  cost: number | null;
-  price: number | null;
-  SKU: string;
-  components: Component[] | null;
-  id: string;
-};
+import { Product } from "../types";
+import { exampleProducts } from "../assets/data/data";
 
 const ProductList: React.FC<{ products: Product[] }> = ({ products }) => {
   const navigate = useNavigate();
@@ -76,29 +61,6 @@ const ProductList: React.FC<{ products: Product[] }> = ({ products }) => {
     </Card>
   );
 };
-
-// Example usage
-const exampleProducts: Product[] = [
-  {
-    id: "1",
-    name: "Example Product 1",
-    stock: 100,
-    cost: 10.5,
-    price: 19.99,
-    SKU: "EP001",
-    components: [{ name: "Component A" }, { name: "Component B" }],
-  },
-  {
-    id: "2",
-    name: "Example Product 2",
-    stock: 50,
-    cost: null,
-    price: 29.99,
-    SKU: "EP002",
-    components: null,
-  },
-  // Add more products as needed
-];
 
 const ProductPage: React.FC = () => {
   return (
