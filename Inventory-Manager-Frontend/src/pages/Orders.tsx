@@ -1,11 +1,37 @@
-import React from "react";
+import React, { useState } from "react";
 import Card from "../components/card";
 import { useNavigate } from "react-router-dom";
 import { Order } from "../types";
 import { exampleOrders } from "../assets/data/data";
 
+function getOrderCellContent(field: string, order: Order): React.ReactNode {
+  switch (field) {
+    case "Name":
+      return order.name;
+    case "Quantity":
+      return order.quantity;
+    case "Priority":
+      return order.priority ?? "N/A";
+    case "Status":
+      return order.status ?? "N/A";
+    case "Created On":
+      return new Date(order.created_on).toLocaleString();
+    case "Created By":
+      return order.created_by.name;
+    case "Updated On":
+      return new Date(order.updated_on).toLocaleString();
+    case "Updated By":
+      return order.updated_by?.name ?? "N/A";
+    default:
+      return "Invalid field";
+  }
+}
+
 // OrderList component
-const OrderList: React.FC<{ orders: Order[] }> = ({ orders }) => {
+export const OrderList: React.FC<{ orders: Order[]; columns: string[] }> = ({
+  orders,
+  columns,
+}) => {
   const navigate = useNavigate();
 
   const _handleClick = ({ currentTarget }: React.MouseEvent) => {
@@ -20,14 +46,9 @@ const OrderList: React.FC<{ orders: Order[] }> = ({ orders }) => {
         <table className="min-w-full table-auto">
           <thead>
             <tr className="bg-gray-200 text-left">
-              <th className="px-4 py-2">Name</th>
-              <th className="px-4 py-2">Quantity</th>
-              <th className="px-4 py-2">Priority</th>
-              <th className="px-4 py-2">Status</th>
-              <th className="px-4 py-2">Created On</th>
-              <th className="px-4 py-2">Created By</th>
-              <th className="px-4 py-2">Updated On</th>
-              <th className="px-4 py-2">Updated By</th>
+              {columns.map((c) => (
+                <th className="px-4 py-2">{c}</th>
+              ))}
             </tr>
           </thead>
           <tbody>
@@ -40,7 +61,10 @@ const OrderList: React.FC<{ orders: Order[] }> = ({ orders }) => {
                 id={order.id}
                 onClick={_handleClick}
               >
-                <td className="px-4 py-2">{order.name}</td>
+                {columns.map((c) => (
+                  <td className="px-4 py-2">{getOrderCellContent(c, order)}</td>
+                ))}
+                {/*<td className="px-4 py-2">{order.name}</td>
                 <td className="px-4 py-2">{order.quantity}</td>
                 <td className="px-4 py-2">{order.priority ?? "N/A"}</td>
                 <td className="px-4 py-2">{order.status ?? "N/A"}</td>
@@ -51,7 +75,7 @@ const OrderList: React.FC<{ orders: Order[] }> = ({ orders }) => {
                 <td className="px-4 py-2">
                   {new Date(order.updated_on).toLocaleString()}
                 </td>
-                <td className="px-4 py-2">{order.updated_by?.name ?? "N/A"}</td>
+                <td className="px-4 py-2">{order.updated_by?.name ?? "N/A"}</td>*/}
               </tr>
             ))}
           </tbody>
@@ -62,9 +86,20 @@ const OrderList: React.FC<{ orders: Order[] }> = ({ orders }) => {
 };
 
 const OrderPage: React.FC = () => {
+  const initialTableHeaders = [
+    "Name",
+    "Quantity",
+    "Priority",
+    "Status",
+    "Created On",
+    "Created By",
+    "Updated On",
+    "Updated By",
+  ];
+  const [columns, setColumns] = useState(initialTableHeaders);
   return (
     <div className="container mx-auto px-4 py-8">
-      <OrderList orders={exampleOrders} />
+      <OrderList orders={exampleOrders} columns={initialTableHeaders} />
     </div>
   );
 };

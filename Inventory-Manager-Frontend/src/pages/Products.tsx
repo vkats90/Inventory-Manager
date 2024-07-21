@@ -4,7 +4,9 @@ import { useNavigate } from "react-router-dom";
 import { Product } from "../types";
 import { exampleProducts } from "../assets/data/data";
 
-const ProductList: React.FC<{ products: Product[] }> = ({ products }) => {
+export const ProductList: React.FC<{ products: Product[] }> = ({
+  products,
+}) => {
   const navigate = useNavigate();
 
   const _handleClick = ({ currentTarget }: React.MouseEvent) => {

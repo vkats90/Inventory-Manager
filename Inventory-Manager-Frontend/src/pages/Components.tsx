@@ -5,7 +5,7 @@ import { Component } from "../types";
 import { exampleComponents } from "../assets/data/data";
 
 // ComponentList component
-const ComponentList: React.FC<{ components: Component[] }> = ({
+export const ComponentList: React.FC<{ components: Component[] }> = ({
   components,
 }) => {
   const navigate = useNavigate();
