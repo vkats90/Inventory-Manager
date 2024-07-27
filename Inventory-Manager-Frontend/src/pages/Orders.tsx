@@ -51,6 +51,10 @@ export const OrderList: React.FC<{ orders: Order[]; InitColumns?: string[] }> = 
     navigate(`/orders/${currentTarget.id}`)
   }
 
+  interface Status {
+    status: 'Created' | 'Ordered' | 'Shipped' | 'Finished'
+  }
+
   return (
     <Card>
       <div className="flex justify-between">
@@ -71,20 +75,38 @@ export const OrderList: React.FC<{ orders: Order[]; InitColumns?: string[] }> = 
             </tr>
           </thead>
           <tbody>
-            {orders.map((order) => (
-              <tr
-                key={order.id}
-                className={`border-b hover:bg-slate-200 cursor-pointer ${
-                  order.status == 'Finished' ? 'disabled' : ''
-                }`}
-                id={order.id}
-                onClick={_handleClick}
-              >
-                {columns.map((c) => (
-                  <td className="px-4 py-2">{getOrderCellContent(c, order)}</td>
-                ))}
-              </tr>
-            ))}
+            {orders
+              .sort((a, b) => {
+                // First, sort by status
+                const statusOrder = { Created: 0, Ordered: 1, Shipped: 2, Finished: 3 }
+                //@ts-ignore
+                if (statusOrder[a.status] !== statusOrder[b.status]) {
+                  //@ts-ignore
+                  return statusOrder[a.status] - statusOrder[b.status]
+                }
+                // If status is the same, sort by updated_on (most recent first)
+                return new Date(b.updated_on).getTime() - new Date(a.updated_on).getTime()
+              })
+              .map((order) => (
+                <tr
+                  key={order.id}
+                  className={`border-b hover:bg-slate-200 cursor-pointer ${
+                    order.status == 'Finished'
+                      ? 'bg-green-100'
+                      : order.status == 'Shipped'
+                      ? 'bg-yellow-100'
+                      : order.status == 'Ordered'
+                      ? 'bg-blue-100'
+                      : ''
+                  }`}
+                  id={order.id}
+                  onClick={_handleClick}
+                >
+                  {columns.map((c) => (
+                    <td className="px-4 py-2">{getOrderCellContent(c, order)}</td>
+                  ))}
+                </tr>
+              ))}
           </tbody>
         </table>
       </div>
