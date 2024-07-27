@@ -2,7 +2,9 @@
 
 ## To DO:
 
-- Add OAuth with Google
+- Implements fetching from backend
+- Implement sorting to tables
+- Implement filter to componenets and products
 
 ## Hours spent:
 
@@ -21,3 +23,4 @@
     6:18: 1.5
     6:19: 1.5
     6:20: 1.5
+    6:26: 1
