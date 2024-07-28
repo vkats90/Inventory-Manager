@@ -4,109 +4,135 @@ import { useNavigate } from 'react-router-dom'
 import { Order } from '../types'
 import { exampleOrders } from '../assets/data/data'
 import CheckboxDropdown from '../components/filter'
+import {
+  useReactTable,
+  getCoreRowModel,
+  flexRender,
+  createColumnHelper,
+  VisibilityState,
+} from '@tanstack/react-table'
 
-function getOrderCellContent(field: string, order: Order): React.ReactNode {
-  switch (field) {
-    case 'Name':
-      return order.name
-    case 'Quantity':
-      return order.quantity
-    case 'Priority':
-      return order.priority ?? 'N/A'
-    case 'Status':
-      return order.status ?? 'N/A'
-    case 'Created On':
-      return new Date(order.created_on).toLocaleString()
-    case 'Created By':
-      return order.created_by.name
-    case 'Updated On':
-      return new Date(order.updated_on).toLocaleString()
-    case 'Updated By':
-      return order.updated_by?.name ?? 'N/A'
-    default:
-      return 'Invalid field'
-  }
-}
+const columnHelper = createColumnHelper<Order>()
+
+const defaultColumns = [
+  columnHelper.accessor('id', {
+    id: 'id',
+    header: 'ID',
+    cell: (info) => info.getValue(),
+    enableHiding: false,
+  }),
+  columnHelper.accessor('name', {
+    header: 'Name',
+    cell: (info) => info.getValue(),
+  }),
+  columnHelper.accessor('quantity', {
+    header: 'Quantity',
+    cell: (info) => info.getValue(),
+  }),
+  columnHelper.accessor('priority', {
+    header: 'Priority',
+    cell: (info) => info.getValue(),
+  }),
+  columnHelper.accessor('status', {
+    header: 'Status',
+    cell: (info) => info.getValue(),
+  }),
+  columnHelper.accessor('created_on', {
+    header: 'Created on',
+    cell: (info) => new Date(info.getValue()).toLocaleString(),
+  }),
+  columnHelper.accessor('created_by.name', {
+    header: 'Created by',
+    cell: (info) => info.getValue(),
+  }),
+  columnHelper.accessor('updated_on', {
+    header: 'Updated on',
+    cell: (info) => new Date(info.getValue()).toLocaleString(),
+  }),
+  columnHelper.accessor('updated_by.name', {
+    header: 'Updated by',
+    cell: (info) => info.getValue(),
+  }),
+]
 
 export const OrderList: React.FC<{ orders: Order[]; InitColumns?: string[] }> = ({
   orders,
   InitColumns,
 }) => {
-  const initialTableHeaders = [
-    'Name',
-    'Quantity',
-    'Priority',
-    'Status',
-    'Created On',
-    'Created By',
-    'Updated On',
-    'Updated By',
-  ]
-  console.log()
-  const [columns, setColumns] = useState(InitColumns || initialTableHeaders)
+  const initialTableHeaders = {
+    id: false,
+    name: true,
+    quantity: true,
+    priority: true,
+    status: true,
+    created_on: true,
+    created_by: true,
+    updated_on: true,
+    updated_by: true,
+  }
+  const [data, _setData] = useState(() => [...orders])
+  const [columns] = useState<typeof defaultColumns>(() => [...defaultColumns])
+  const [columnVisibility, setColumnVisibility] = useState<VisibilityState>(initialTableHeaders)
   const navigate = useNavigate()
 
-  const _handleClick = ({ currentTarget }: React.MouseEvent) => {
-    console.log(currentTarget)
-    navigate(`/orders/${currentTarget.id}`)
-  }
+  const table = useReactTable({
+    data,
+    columns: defaultColumns,
+    getCoreRowModel: getCoreRowModel(),
+    state: {
+      columnVisibility,
+    },
+    onColumnVisibilityChange: setColumnVisibility,
+  })
 
-  interface Status {
-    status: 'Created' | 'Ordered' | 'Shipped' | 'Finished'
+  const _handleClick = ({ currentTarget }: React.MouseEvent) => {
+    console.log(currentTarget.id)
+    navigate(`/orders/${currentTarget.id}`)
   }
 
   return (
     <Card>
       <div className="flex justify-between">
         <h2 className="text-2xl font-bold mb-4">Order List</h2>
-        <CheckboxDropdown
-          options={initialTableHeaders}
-          onFilterChange={setColumns}
-          selected={columns}
-        />
       </div>
       <div className="overflow-x-auto">
         <table className="min-w-full table-auto">
           <thead>
-            <tr className="bg-gray-200 text-left">
-              {columns.map((c) => (
-                <th className="px-4 py-2">{c}</th>
-              ))}
-            </tr>
+            {table.getHeaderGroups().map((headerGroup) => (
+              <tr key={headerGroup.id} className="bg-gray-200 text-left">
+                {headerGroup.headers.map((header) => (
+                  <th key={header.id} className="px-4 py-2">
+                    {header.isPlaceholder
+                      ? null
+                      : flexRender(header.column.columnDef.header, header.getContext())}
+                  </th>
+                ))}
+              </tr>
+            ))}
           </thead>
           <tbody>
-            {orders
-              .sort((a, b) => {
-                // First, sort by status
-                const statusOrder = { Created: 0, Ordered: 1, Shipped: 2, Finished: 3 }
-                //@ts-ignore
-                if (statusOrder[a.status] !== statusOrder[b.status]) {
-                  //@ts-ignore
-                  return statusOrder[a.status] - statusOrder[b.status]
-                }
-                // If status is the same, sort by updated_on (most recent first)
-                return new Date(b.updated_on).getTime() - new Date(a.updated_on).getTime()
-              })
-              .map((order) => (
-                <tr
-                  key={order.id}
-                  className={`border-b hover:bg-slate-200 cursor-pointer ${
-                    order.status == 'Finished'
-                      ? 'bg-green-100'
-                      : order.status == 'Shipped'
-                      ? 'bg-yellow-100'
-                      : order.status == 'Ordered'
-                      ? 'bg-blue-100'
-                      : ''
-                  }`}
-                  id={order.id}
-                  onClick={_handleClick}
-                >
-                  {columns.map((c) => (
-                    <td className="px-4 py-2">{getOrderCellContent(c, order)}</td>
-                  ))}
-                </tr>
-              ))}
+            {table.getRowModel().rows.map((row) => (
+              <tr
+                id={row.getValue('id')}
+                key={row.id}
+                onClick={_handleClick}
+                className={`border-b hover:bg-slate-200 cursor-pointer ${
+                  row.getValue('status') == 'Finished'
+                    ? 'bg-green-100'
+                    : row.getValue('status') == 'Shipped'
+                    ? 'bg-yellow-100'
+                    : row.getValue('status') == 'Ordered'
+                    ? 'bg-blue-100'
+                    : ''
+                }`}
+              >
+                {row.getVisibleCells().map((cell) => (
+                  <td key={cell.id} className="px-4 py-2">
+                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                  </td>
+                ))}
+              </tr>
+            ))}
           </tbody>
         </table>
       </div>
