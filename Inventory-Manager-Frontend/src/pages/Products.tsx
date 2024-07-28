@@ -3,35 +3,85 @@ import Card from '../components/card'
 import { useNavigate } from 'react-router-dom'
 import { Product } from '../types'
 import { exampleProducts } from '../assets/data/data'
+import {
+  useReactTable,
+  getCoreRowModel,
+  flexRender,
+  createColumnHelper,
+  VisibilityState,
+} from '@tanstack/react-table'
 import CheckboxDropdown from '../components/filter'
 
-const initialTableHeaders: string[] = ['Name', 'Stock', 'Cost', 'Price', 'SKU', 'Parts']
-
-function getProductCellContent(field: string, product: Product): React.ReactNode {
-  switch (field) {
-    case 'Name':
-      return product.name
-    case 'Stock':
-      return product.stock
-    case 'Cost':
-      return product.cost !== null ? `$${product.cost.toFixed(2)}` : 'N/A'
-    case 'Price':
-      return product.price !== null ? `$${product.price.toFixed(2)}` : 'N/A'
-    case 'SKU':
-      return product.SKU
-    case 'Components':
-      return product.components ? product.components.map((c) => c.name).join(', ') : 'None'
-    default:
-      return 'Invalid field'
-  }
+const initialTableHeaders = {
+  id: false,
+  name: true,
+  stock: true,
+  cost: true,
+  price: true,
+  SKU: true,
+  parts: true,
 }
+
+const columnHelper = createColumnHelper<Product>()
+
+const defaultColumns = [
+  columnHelper.accessor('id', {
+    id: 'id',
+    header: 'ID',
+    cell: (info) => info.getValue(),
+    enableHiding: false,
+  }),
+  columnHelper.accessor('name', {
+    header: 'Name',
+    cell: (info) => info.getValue(),
+  }),
+  columnHelper.accessor('stock', {
+    header: 'Stock',
+    cell: (info) => info.getValue(),
+  }),
+  columnHelper.accessor('cost', {
+    header: 'Cost',
+    cell: (info) => info.getValue(),
+  }),
+  columnHelper.accessor('price', {
+    header: 'Price',
+    cell: (info) => info.getValue(),
+  }),
+  columnHelper.accessor('SKU', {
+    cell: (info) => info.getValue(),
+  }),
+  columnHelper.accessor('components', {
+    header: 'Components',
+
+    cell: (info) =>
+      info.getValue()
+        ? //@ts-ignore
+          info
+            .getValue()
+            .map((c) => c.name)
+            .join(', ')
+        : 'None',
+  }),
+]
 
 export const ProductList: React.FC<{ products: Product[]; InitColumns?: string[] }> = ({
   products,
   InitColumns,
 }) => {
-  const [columns, setColumns] = useState(InitColumns || initialTableHeaders)
+  const [data, _setData] = useState(() => [...products])
+  const [columns] = useState<typeof defaultColumns>(() => [...defaultColumns])
+  const [columnVisibility, setColumnVisibility] = useState<VisibilityState>(initialTableHeaders)
   const navigate = useNavigate()
+
+  const table = useReactTable({
+    data,
+    columns: defaultColumns,
+    getCoreRowModel: getCoreRowModel(),
+    state: {
+      columnVisibility,
+    },
+    onColumnVisibilityChange: setColumnVisibility,
+  })
 
   const _handleClick = ({ currentTarget }: React.MouseEvent) => {
     console.log(currentTarget)
@@ -42,32 +92,33 @@ export const ProductList: React.FC<{ products: Product[]; InitColumns?: string[]
     <Card>
       <div className="flex justify-between">
         <h2 className="text-2xl font-bold mb-4">Product List</h2>
-        <CheckboxDropdown
-          options={initialTableHeaders}
-          onFilterChange={setColumns}
-          selected={columns}
-        />
       </div>
       <div className="overflow-x-auto">
         <table className="min-w-full table-auto">
           <thead>
-            <tr className="bg-gray-200 text-left">
-              {columns.map((c) => (
-                <th className="px-4 py-2">{c}</th>
-              ))}
-            </tr>
+            {table.getHeaderGroups().map((headerGroup) => (
+              <tr key={headerGroup.id} className="bg-gray-200 text-left">
+                {headerGroup.headers.map((header) => (
+                  <th key={header.id} className="px-4 py-2">
+                    {header.isPlaceholder
+                      ? null
+                      : flexRender(header.column.columnDef.header, header.getContext())}
+                  </th>
+                ))}
+              </tr>
+            ))}
           </thead>
           <tbody>
-            {products.map((product) => (
+            {table.getRowModel().rows.map((row) => (
               <tr
-                key={product.id}
-                id={product.id}
-                className="border-b hover:bg-slate-200 cursor-pointer"
+                id={row.getValue('id')}
+                key={row.id}
                 onClick={_handleClick}
+                className={`border-b hover:bg-slate-200 cursor-pointer`}
               >
-                {columns.map((column) => (
-                  <td key={column} className="px-4 py-2">
-                    {getProductCellContent(column, product)}
+                {row.getVisibleCells().map((cell) => (
+                  <td key={cell.id} className="px-4 py-2">
+                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
                   </td>
                 ))}
               </tr>
