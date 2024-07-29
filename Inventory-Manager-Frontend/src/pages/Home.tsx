@@ -3,9 +3,28 @@ import { exampleProducts } from '../assets/data/data'
 import { OrderList } from './Orders'
 import { exampleOrders } from '../assets/data/data'
 
-const initialOrderHeaders = ['Name', 'Quantity', 'Status']
+const initialOrderHeaders = {
+  id: false,
+  name: true,
+  quantity: true,
+  priority: false,
+  status: true,
+  created_on: false,
+  created_by: false,
+  updated_on: false,
+  updated_by: false,
+}
 
-const initialProductHeaders = ['Name', 'Stock', 'Price', 'SKU']
+const initialProductHeaders = {
+  id: false,
+  name: true,
+  stock: true,
+  cost: false,
+  price: true,
+  SKU: false,
+  parts: false,
+  componenets: false,
+}
 
 const Home = () => {
   return (

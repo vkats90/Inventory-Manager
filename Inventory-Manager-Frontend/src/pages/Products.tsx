@@ -20,6 +20,7 @@ const initialTableHeaders = {
   price: true,
   SKU: true,
   parts: true,
+  componenets: true,
 }
 
 const columnHelper = createColumnHelper<Product>()
@@ -48,6 +49,7 @@ const defaultColumns = [
     cell: (info) => info.getValue(),
   }),
   columnHelper.accessor('SKU', {
+    header: 'SKU',
     cell: (info) => info.getValue(),
   }),
   columnHelper.accessor('components', {
@@ -64,13 +66,14 @@ const defaultColumns = [
   }),
 ]
 
-export const ProductList: React.FC<{ products: Product[]; InitColumns?: string[] }> = ({
-  products,
-  InitColumns,
-}) => {
+export const ProductList: React.FC<{
+  products: Product[]
+  InitColumns?: typeof initialTableHeaders
+}> = ({ products, InitColumns }) => {
   const [data, _setData] = useState(() => [...products])
-  const [columns] = useState<typeof defaultColumns>(() => [...defaultColumns])
-  const [columnVisibility, setColumnVisibility] = useState<VisibilityState>(initialTableHeaders)
+  const [columnVisibility, setColumnVisibility] = useState<VisibilityState>(
+    InitColumns || initialTableHeaders
+  )
   const navigate = useNavigate()
 
   const table = useReactTable({
@@ -92,6 +95,7 @@ export const ProductList: React.FC<{ products: Product[]; InitColumns?: string[]
     <Card>
       <div className="flex justify-between">
         <h2 className="text-2xl font-bold mb-4">Product List</h2>
+        <CheckboxDropdown options={table.getAllColumns()} />
       </div>
       <div className="overflow-x-auto">
         <table className="min-w-full table-auto">

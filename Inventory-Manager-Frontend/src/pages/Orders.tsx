@@ -55,24 +55,26 @@ const defaultColumns = [
   }),
 ]
 
-export const OrderList: React.FC<{ orders: Order[]; InitColumns?: string[] }> = ({
+const initialTableHeaders = {
+  id: false,
+  name: true,
+  quantity: true,
+  priority: true,
+  status: true,
+  created_on: true,
+  created_by: true,
+  updated_on: true,
+  updated_by: true,
+}
+
+export const OrderList: React.FC<{ orders: Order[]; InitColumns?: typeof initialTableHeaders }> = ({
   orders,
   InitColumns,
 }) => {
-  const initialTableHeaders = {
-    id: false,
-    name: true,
-    quantity: true,
-    priority: true,
-    status: true,
-    created_on: true,
-    created_by: true,
-    updated_on: true,
-    updated_by: true,
-  }
   const [data, _setData] = useState(() => [...orders])
-  const [columns] = useState<typeof defaultColumns>(() => [...defaultColumns])
-  const [columnVisibility, setColumnVisibility] = useState<VisibilityState>(initialTableHeaders)
+  const [columnVisibility, setColumnVisibility] = useState<VisibilityState>(
+    InitColumns || initialTableHeaders
+  )
   const navigate = useNavigate()
 
   const table = useReactTable({
@@ -94,6 +96,7 @@ export const OrderList: React.FC<{ orders: Order[]; InitColumns?: string[] }> = 
     <Card>
       <div className="flex justify-between">
         <h2 className="text-2xl font-bold mb-4">Order List</h2>
+        <CheckboxDropdown options={table.getAllColumns()} />
       </div>
       <div className="overflow-x-auto">
         <table className="min-w-full table-auto">

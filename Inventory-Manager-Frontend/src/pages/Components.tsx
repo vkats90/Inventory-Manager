@@ -37,13 +37,15 @@ const defaultColumns = [
   }),
 ]
 
-export const ComponentList: React.FC<{ components: Component[]; InitColumns?: string[] }> = ({
-  components,
-  InitColumns,
-}) => {
+export const ComponentList: React.FC<{
+  components: Component[]
+  InitColumns?: typeof initialPartHeaders
+}> = ({ components, InitColumns }) => {
   const [data, _setData] = useState(() => [...components])
-  const [columns] = useState<typeof defaultColumns>(() => [...defaultColumns])
-  const [columnVisibility, setColumnVisibility] = useState<VisibilityState>(initialPartHeaders)
+
+  const [columnVisibility, setColumnVisibility] = useState<VisibilityState>(
+    InitColumns || initialPartHeaders
+  )
   const navigate = useNavigate()
 
   const table = useReactTable({
@@ -64,6 +66,7 @@ export const ComponentList: React.FC<{ components: Component[]; InitColumns?: st
     <Card>
       <div className="flex justify-between">
         <h2 className="text-2xl font-bold mb-4">Part List</h2>
+        <CheckboxDropdown options={table.getAllColumns()} />
       </div>
       <div className="overflow-x-auto">
         <table className="min-w-full table-auto">

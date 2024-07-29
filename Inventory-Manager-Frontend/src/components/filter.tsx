@@ -1,25 +1,15 @@
 import React, { useState } from 'react'
+import { Column } from '@tanstack/react-table'
+import { Component, Product, Order } from '../types'
 
 interface FilterProps {
-  options: string[]
-  onFilterChange: (selectedOptions: string[]) => void
-  selected: string[]
+  options: Column<Component>[] | Column<Product>[] | Column<Order>[]
 }
 
-const CheckboxDropdown: React.FC<FilterProps> = ({ options, onFilterChange, selected }) => {
+const CheckboxDropdown: React.FC<FilterProps> = ({ options }) => {
   const [isOpen, setIsOpen] = useState(false)
-  const [selectedOptions, setSelectedOptions] = useState<string[]>(selected)
 
   const toggleDropdown = () => setIsOpen(!isOpen)
-
-  const handleOptionChange = (option: string) => {
-    const updatedOptions = selectedOptions.includes(option)
-      ? selectedOptions.filter((item) => item !== option)
-      : [...selectedOptions, option]
-
-    setSelectedOptions(updatedOptions)
-    onFilterChange(updatedOptions)
-  }
 
   return (
     <div className="inline-block text-left relative">
@@ -56,17 +46,17 @@ const CheckboxDropdown: React.FC<FilterProps> = ({ options, onFilterChange, sele
           >
             {options.map((option) => (
               <label
-                key={option}
+                key={option.id}
                 className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900"
                 role="menuitem"
               >
                 <input
                   type="checkbox"
                   className="form-checkbox h-5 w-5 text-indigo-600"
-                  checked={selectedOptions.includes(option)}
-                  onChange={() => handleOptionChange(option)}
+                  checked={option.getIsVisible()}
+                  onChange={option.getToggleVisibilityHandler()}
                 />
-                <span className="ml-2">{option}</span>
+                <span className="ml-2">{option.columnDef.header as string}</span>
               </label>
             ))}
           </div>
