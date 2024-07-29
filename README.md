@@ -4,7 +4,8 @@
 
 - Implements fetching from backend
 - Implement sorting to tables
-- Implement filter to componenets and products
+- Implement search
+- Implement input for some columns
 
 ## Hours spent:
 
@@ -24,3 +25,4 @@
     6:19: 1.5
     6:20: 1.5
     6:26: 1
+    6:28: 3
