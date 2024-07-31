@@ -1,8 +1,8 @@
 import React, { useState } from 'react'
 import Card from '../components/card'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useLoaderData } from 'react-router-dom'
 import { Component } from '../types'
-import { exampleComponents } from '../assets/data/data'
+//import { exampleComponents } from '../assets/data/data'
 import {
   useReactTable,
   getCoreRowModel,
@@ -10,6 +10,7 @@ import {
   createColumnHelper,
   VisibilityState,
 } from '@tanstack/react-table'
+
 import CheckboxDropdown from '../components/filter'
 
 const initialPartHeaders = { name: true, stock: true, cost: true, id: false }
@@ -46,6 +47,7 @@ export const ComponentList: React.FC<{
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>(
     InitColumns || initialPartHeaders
   )
+
   const navigate = useNavigate()
 
   const table = useReactTable({
@@ -105,10 +107,15 @@ export const ComponentList: React.FC<{
   )
 }
 
+interface loaderData {
+  data: Component[]
+}
+
 const ComponentPage: React.FC = () => {
+  const { data: loaderData } = useLoaderData() as loaderData
   return (
     <div className="container mx-auto px-4 py-8">
-      <ComponentList components={exampleComponents} />
+      <ComponentList components={loaderData} />
     </div>
   )
 }

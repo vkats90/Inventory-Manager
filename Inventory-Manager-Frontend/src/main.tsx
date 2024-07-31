@@ -11,6 +11,7 @@ import Product from './pages/Product.tsx'
 import Component from './pages/Component.tsx'
 import Order from './pages/Order.tsx'
 import { ApolloClient, InMemoryCache, ApolloProvider } from '@apollo/client'
+import { allComponentsLoader, allOrdersLoader, allProductsLoader } from './loaderFunctions.ts'
 
 const client = new ApolloClient({
   uri: 'http://localhost:4000',
@@ -30,14 +31,17 @@ const router = createBrowserRouter([
       {
         path: '/products',
         element: <ProductPage />,
+        loader: allProductsLoader,
       },
       {
         path: '/parts',
         element: <ComponentPage />,
+        loader: allComponentsLoader,
       },
       {
         path: '/orders',
         element: <OrderPage />,
+        loader: allOrdersLoader,
       },
       {
         path: 'products/:productID',

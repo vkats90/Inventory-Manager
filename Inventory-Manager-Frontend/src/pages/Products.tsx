@@ -1,8 +1,8 @@
 import React, { useState } from 'react'
 import Card from '../components/card'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useLoaderData } from 'react-router-dom'
 import { Product } from '../types'
-import { exampleProducts } from '../assets/data/data'
+//import { exampleProducts } from '../assets/data/data'
 import {
   useReactTable,
   getCoreRowModel,
@@ -133,11 +133,15 @@ export const ProductList: React.FC<{
     </Card>
   )
 }
+interface loaderData {
+  data: Product[]
+}
 
 const ProductPage: React.FC = () => {
+  const { data: loaderData } = useLoaderData() as loaderData
   return (
     <div className="container mx-auto px-4 py-8">
-      <ProductList products={exampleProducts} />
+      <ProductList products={loaderData} />
     </div>
   )
 }

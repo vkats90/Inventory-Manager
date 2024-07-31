@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import Card from '../components/card'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useLoaderData } from 'react-router-dom'
 import { Order } from '../types'
 import { exampleOrders } from '../assets/data/data'
 import CheckboxDropdown from '../components/filter'
@@ -143,10 +143,15 @@ export const OrderList: React.FC<{ orders: Order[]; InitColumns?: typeof initial
   )
 }
 
+interface loaderData {
+  data: Order[]
+}
+
 const OrderPage: React.FC = () => {
+  const { data: loaderData } = useLoaderData() as loaderData
   return (
     <div className="container mx-auto px-4 py-8">
-      <OrderList orders={exampleOrders} />
+      <OrderList orders={loaderData} />
     </div>
   )
 }
