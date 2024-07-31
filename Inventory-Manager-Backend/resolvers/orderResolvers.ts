@@ -5,13 +5,13 @@ import { GraphQLError } from 'graphql'
 const orderResolver = {
   Query: {
     allOrders: async () => {
-      const orders = await OrderModel.find({}).populate('created_by').populate('updated_by')
+      return await OrderModel.find({}).populate('created_by').populate('updated_by')
 
-      return orders.map((o) => ({
+      /*return orders.map((o) => ({
         ...o.toObject(),
         created_on: o.created_on?.toDateString(),
         updated_on: o.updated_on?.toDateString(),
-      }))
+      }))*/
     },
   },
   Mutation: {
