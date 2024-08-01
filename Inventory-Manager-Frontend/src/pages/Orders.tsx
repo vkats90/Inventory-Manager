@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import Card from '../components/card'
 import { useNavigate, useLoaderData } from 'react-router-dom'
 import { Order } from '../types'
-import { exampleOrders } from '../assets/data/data'
+//import { exampleOrders } from '../assets/data/data'
 import CheckboxDropdown from '../components/filter'
 import {
   useReactTable,
@@ -41,7 +41,7 @@ const defaultColumns = [
     header: 'Created on',
     cell: (info) => new Date(info.getValue()).toLocaleString(),
   }),
-  columnHelper.accessor('created_by.name', {
+  columnHelper.accessor('created_by.username', {
     header: 'Created by',
     cell: (info) => info.getValue(),
   }),
@@ -49,7 +49,7 @@ const defaultColumns = [
     header: 'Updated on',
     cell: (info) => new Date(info.getValue()).toLocaleString(),
   }),
-  columnHelper.accessor('updated_by.name', {
+  columnHelper.accessor('updated_by.username', {
     header: 'Updated by',
     cell: (info) => info.getValue(),
   }),

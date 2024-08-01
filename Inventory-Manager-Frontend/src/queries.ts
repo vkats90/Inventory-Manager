@@ -157,12 +157,12 @@ export const ALL_ORDERS = gql`
       created_on
       created_by {
         id
-        name
+        username
       }
       updated_on
       updated_by {
         id
-        name
+        username
       }
     }
   }
