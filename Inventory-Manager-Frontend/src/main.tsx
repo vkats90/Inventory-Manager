@@ -7,6 +7,7 @@ import Home from './pages/Home.tsx'
 import ProductPage from './pages/Products.tsx'
 import ComponentPage from './pages/Components.tsx'
 import OrderPage from './pages/Orders.tsx'
+import Login from './pages/login.tsx'
 import Product from './pages/Product.tsx'
 import Component from './pages/Component.tsx'
 import Order from './pages/Order.tsx'
@@ -32,6 +33,10 @@ const router = createBrowserRouter([
         path: '/products',
         element: <ProductPage />,
         loader: allProductsLoader,
+      },
+      {
+        path: '/login',
+        element: <Login />,
       },
       {
         path: '/parts',
