@@ -8,7 +8,8 @@ export const login = async (username: string, password: string) => {
       variables: { username, password },
     })
 
-    window.localStorage.setItem('token', 'Bearer ' + data.login)
+    console.log(data.login.value)
+    window.localStorage.setItem('token', 'Bearer ' + data.login.value)
 
     return data.login
   } catch (error: unknown) {
