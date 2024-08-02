@@ -4,21 +4,20 @@ import { GraphQLError } from 'graphql'
 
 const orderResolver = {
   Query: {
-    allOrders: async () => {
+    allOrders: async (_root: User, _args: User, { currentUser }: { currentUser: User }) => {
+      if (!currentUser) {
+        throw new GraphQLError('wrong credentials', {
+          extensions: { code: 'UNAUTHORIZED' },
+        })
+      }
       return await OrderModel.find({}).populate('created_by').populate('updated_by')
-
-      /*return orders.map((o) => ({
-        ...o.toObject(),
-        created_on: o.created_on?.toDateString(),
-        updated_on: o.updated_on?.toDateString(),
-      }))*/
     },
   },
   Mutation: {
     addOrder: async (_root: Order, args: Order, { currentUser }: { currentUser: User }) => {
       if (!currentUser) {
         throw new GraphQLError('wrong credentials', {
-          extensions: { code: 'BAD_USER_INPUT' },
+          extensions: { code: 'UNAUTHORIZED' },
         })
       }
 
@@ -49,12 +48,12 @@ const orderResolver = {
           },
         })
       }
-      return order
+      return (await order.populate('created_by')).populate('updated_by')
     },
     editOrder: async (_root: Order, args: Order, { currentUser }: { currentUser: User }) => {
       if (!currentUser) {
         throw new GraphQLError('wrong credentials', {
-          extensions: { code: 'BAD_USER_INPUT' },
+          extensions: { code: 'UNAUTHORIZED' },
         })
       }
       if (args.quantity < 0)
@@ -106,7 +105,7 @@ const orderResolver = {
     deleteOrder: async (_root: Order, args: Order, { currentUser }: { currentUser: User }) => {
       if (!currentUser) {
         throw new GraphQLError('wrong credentials', {
-          extensions: { code: 'BAD_USER_INPUT' },
+          extensions: { code: 'UNAUTHORIZED' },
         })
       }
       const order = await OrderModel.findOne({ name: args.name })

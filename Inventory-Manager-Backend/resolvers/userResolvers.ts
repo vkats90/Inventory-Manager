@@ -14,7 +14,9 @@ const userResolver = {
     createUser: async (_root: User, args: User) => {
       const passwordHash = await bcrypt.hash(args.password, 10)
       const user = new UserModel({
-        username: args.username,
+        email: args.email,
+        name: args.name,
+        stores: args.stores,
         passwordHash: passwordHash,
       })
       try {
@@ -23,14 +25,14 @@ const userResolver = {
         throw new GraphQLError('Saving user failed', {
           extensions: {
             code: 'BAD_USER_INPUT',
-            invalidArgs: args.username,
+            invalidArgs: args.email,
             error,
           },
         })
       }
     },
     login: async (_root: User, args: User) => {
-      const user = await UserModel.findOne({ username: args.username })
+      const user = await UserModel.findOne({ email: args.email })
       const passwordCheck =
         user == null ? false : await bcrypt.compare(args.password, user.passwordHash)
       if (!(user && passwordCheck)) {
@@ -42,7 +44,7 @@ const userResolver = {
         })
       }
       const tokenUser = {
-        username: user.username,
+        email: user.email,
         id: user._id,
       }
       return { value: jwt.sign(tokenUser, process.env.JWT_SECRET, { expiresIn: 60 * 60 }) }

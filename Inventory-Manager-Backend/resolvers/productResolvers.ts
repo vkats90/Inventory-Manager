@@ -4,7 +4,12 @@ import { GraphQLError } from 'graphql'
 
 const productResolver = {
   Query: {
-    allProducts: async () => {
+    allProducts: async (_root: User, _args: User, { currentUser }: { currentUser: User }) => {
+      if (!currentUser) {
+        throw new GraphQLError('wrong credentials', {
+          extensions: { code: 'UNAUTHORIZED' },
+        })
+      }
       return ProductModel.find({}).populate('components')
     },
 
@@ -24,7 +29,7 @@ const productResolver = {
     addProduct: async (_root: Product, args: Product, { currentUser }: { currentUser: User }) => {
       if (!currentUser) {
         throw new GraphQLError('wrong credentials', {
-          extensions: { code: 'BAD_USER_INPUT' },
+          extensions: { code: 'UNAUTHORIZED' },
         })
       }
       if (args.stock < 0)
@@ -53,13 +58,13 @@ const productResolver = {
           },
         })
       }
-      return product
+      return product.populate('components')
     },
 
     editProduct: async (_root: Product, args: Product, { currentUser }: { currentUser: User }) => {
       if (!currentUser) {
         throw new GraphQLError('wrong credentials', {
-          extensions: { code: 'BAD_USER_INPUT' },
+          extensions: { code: 'UNAUTHORIZED' },
         })
       }
       if (args.stock < 0)
@@ -96,7 +101,7 @@ const productResolver = {
     ) => {
       if (!currentUser) {
         throw new GraphQLError('wrong credentials', {
-          extensions: { code: 'BAD_USER_INPUT' },
+          extensions: { code: 'UNAUTHORIZEDT' },
         })
       }
       const product = await ProductModel.findOne({ name: args.name })

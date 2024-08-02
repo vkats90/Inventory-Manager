@@ -28,7 +28,9 @@ export interface Order {
 }
 
 export interface User {
-  username: string
+  email: string
   password: string
   id: string
+  name: string
+  stores: string[]
 }

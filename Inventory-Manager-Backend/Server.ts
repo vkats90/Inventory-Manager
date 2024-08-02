@@ -6,6 +6,7 @@ import http from 'http'
 import cors from 'cors'
 import { buildSubgraphSchema } from '@apollo/federation'
 import dotenv from 'dotenv'
+import { GraphQLError } from 'graphql'
 
 dotenv.config()
 import { User } from './types'
@@ -56,9 +57,17 @@ const StartServer = async () => {
         const auth = req ? req.headers.authorization : null
 
         if (auth && auth.startsWith('Bearer ')) {
-          const decodedToken = jwt.verify(auth.substring(7), process.env.JWT_SECRET)
-          const currentUser: User | null = await userModel.findById(decodedToken.id)
-          return { currentUser }
+          try {
+            const decodedToken = jwt.verify(auth.substring(7), process.env.JWT_SECRET)
+            const currentUser: User | null = await userModel.findById(decodedToken.id)
+            return { currentUser }
+          } catch (error) {
+            throw new GraphQLError('wrong credentials', {
+              extensions: { code: 'UNAUTHORIZED' },
+            })
+          }
+        } else {
+          return { currentUser: null }
         }
       },
     })

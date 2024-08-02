@@ -4,7 +4,12 @@ import { GraphQLError } from 'graphql'
 
 const componentResolver = {
   Query: {
-    allComponents: async () => {
+    allComponents: async (_root: User, _args: User, { currentUser }: { currentUser: User }) => {
+      if (!currentUser) {
+        throw new GraphQLError('wrong credentials', {
+          extensions: { code: 'UNAUTHORIZED' },
+        })
+      }
       return ComponentModel.find({})
     },
   },
@@ -16,7 +21,7 @@ const componentResolver = {
     ) => {
       if (!currentUser) {
         throw new GraphQLError('wrong credentials', {
-          extensions: { code: 'BAD_USER_INPUT' },
+          extensions: { code: 'UNAUTHORIZED' },
         })
       }
       const component = new ComponentModel(args)
@@ -47,7 +52,7 @@ const componentResolver = {
     ) => {
       if (!currentUser) {
         throw new GraphQLError('wrong credentials', {
-          extensions: { code: 'BAD_USER_INPUT' },
+          extensions: { code: 'UNAUTHORIZED' },
         })
       }
       if (args.stock < 0)
@@ -86,7 +91,7 @@ const componentResolver = {
     ) => {
       if (!currentUser) {
         throw new GraphQLError('wrong credentials', {
-          extensions: { code: 'BAD_USER_INPUT' },
+          extensions: { code: 'UNAUTHORIZEDT' },
         })
       }
       const component = await ComponentModel.findOne({ name: args.name })
