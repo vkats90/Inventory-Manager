@@ -156,13 +156,11 @@ export const ALL_ORDERS = gql`
       status
       created_on
       created_by {
-        id
-        username
+        name
       }
       updated_on
       updated_by {
-        id
-        username
+        name
       }
     }
   }
@@ -220,8 +218,8 @@ export const DELETE_ORDER = gql`
 `
 
 export const LOGIN = gql`
-  mutation Login($username: String!, $password: String!) {
-    login(username: $username, password: $password) {
+  mutation Login($email: String!, $password: String!) {
+    login(email: $email, password: $password) {
       value
     }
   }
@@ -230,7 +228,9 @@ export const LOGIN = gql`
 export const ME = gql`
   query Me {
     me {
-      username
+      name
+      email
+      stores
       id
     }
   }

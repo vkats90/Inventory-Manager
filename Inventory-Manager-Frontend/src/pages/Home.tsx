@@ -2,6 +2,8 @@ import { ProductList } from './Products'
 import { exampleProducts } from '../assets/data/data'
 import { OrderList } from './Orders'
 import { exampleOrders } from '../assets/data/data'
+import { useLoaderData } from 'react-router-dom'
+import { User, Product, Order } from '../types'
 
 const initialOrderHeaders = {
   id: false,
@@ -26,11 +28,24 @@ const initialProductHeaders = {
   componenets: false,
 }
 
+interface loaderData {
+  data: {
+    order: Order[]
+    product: Product[]
+    user: User
+  }
+}
+
 const Home = () => {
+  const { data: loaderData } = useLoaderData() as loaderData
+
   return (
-    <div className="container flex mx-auto px-4 py-8 gap-4">
-      <ProductList products={exampleProducts} InitColumns={initialProductHeaders} />
-      <OrderList orders={exampleOrders} InitColumns={initialOrderHeaders} />
+    <div className="container ">
+      <h1 className="text-2xl my-6 font-bold text-center">{'Hello ' + loaderData.user.name}</h1>
+      <div className="container flex mx-auto px-4 py-8 gap-4">
+        <ProductList products={loaderData.product} InitColumns={initialProductHeaders} />
+        <OrderList orders={loaderData.order} InitColumns={initialOrderHeaders} />
+      </div>
     </div>
   )
 }

@@ -7,10 +7,10 @@ export default function Login() {
   const navigate = useNavigate()
 
   const handleLogin = async (formData: FormData) => {
-    const username = formData.get('username') as string
+    const email = formData.get('email') as string
     const password = formData.get('password') as string
-    const { value, message } = await login(username, password)
-    notify({ error: message, success: value ? 'Welcome back ' + username : undefined })
+    const { value, message } = await login(email, password)
+    notify({ error: message, success: value ? 'Welcome back ' + email : undefined })
     if (value) {
       navigate('/')
     }
@@ -23,9 +23,9 @@ export default function Login() {
         <h1 className="text-2xl font-bold text-center">Login</h1>
 
         <input
-          type="text"
-          name="username"
-          placeholder="Username"
+          type="email"
+          name="email"
+          placeholder="Email"
           className="w-full border rounded mt-4 px-3 py-2"
         />
 

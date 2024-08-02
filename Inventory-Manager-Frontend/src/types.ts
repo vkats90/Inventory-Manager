@@ -14,7 +14,9 @@ export type Order = {
 // User type (assuming a basic structure, adjust as needed)
 export type User = {
   id: string
-  username: string
+  email: string
+  name: string
+  stores: string[]
 }
 
 // Component type

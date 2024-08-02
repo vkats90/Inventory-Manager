@@ -5,12 +5,14 @@ import { ToastContainer } from 'react-toastify'
 
 function App() {
   const [inView, setInView] = useState(false)
-  const AppContext = createContext({ inView, setInView })
+  const [user, setUser] = useState('')
+
+  const AppContext = createContext({ inView, setInView, user, setUser })
 
   return (
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     //@ts-expect-error
-    <AppContext value={{ inView, setInView }}>
+    <AppContext value={{ inView, setInView, user, setUser }}>
       <div className="bg-slate-200 min-h-[100vh] flex">
         <Sidebar />
         <ToastContainer />

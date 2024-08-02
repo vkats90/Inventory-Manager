@@ -1,49 +1,48 @@
 import { ALL_COMPONENTS, ALL_PRODUCTS, ALL_ORDERS, ME } from './queries'
 import { client } from './client'
 import { redirect } from 'react-router-dom'
+import { notify } from './utils/notify'
 
 export const allComponentsLoader = async () => {
-  const user = await meLoader()
-  // @ts-ignore
-  if (!user.data) {
+  try {
+    const { data } = await client.query({
+      query: ALL_COMPONENTS,
+      variables: {},
+    })
+
+    return { data: data.allComponents }
+  } catch (errors: unknown) {
+    notify({ error: 'You must be logged in to view this page' })
     return redirect('/login')
   }
-
-  const { data } = await client.query({
-    query: ALL_COMPONENTS,
-    variables: {},
-  })
-
-  return { data: data.allComponents }
 }
 
 export const allProductsLoader = async () => {
-  const user = await meLoader()
-  // @ts-ignore
-  if (!user.data) {
+  try {
+    const { data } = await client.query({
+      query: ALL_PRODUCTS,
+      variables: {},
+    })
+
+    return { data: data.allProducts }
+  } catch (errors: unknown) {
+    notify({ error: 'You must be logged in to view this page' })
     return redirect('/login')
   }
-
-  const { data } = await client.query({
-    query: ALL_PRODUCTS,
-    variables: {},
-  })
-
-  return { data: data.allProducts }
 }
 
 export const allOrdersLoader = async () => {
-  const user = await meLoader()
-  // @ts-ignore
-  if (!user.data) {
+  try {
+    const { data } = await client.query({
+      query: ALL_ORDERS,
+      variables: {},
+    })
+
+    return { data: data.allOrders }
+  } catch (errors: unknown) {
+    notify({ error: 'You must be logged in to view this page' })
     return redirect('/login')
   }
-  const { data } = await client.query({
-    query: ALL_ORDERS,
-    variables: {},
-  })
-
-  return { data: data.allOrders }
 }
 
 export const meLoader = async () => {
@@ -66,4 +65,12 @@ export const meLoader = async () => {
   }
 
   return { data: data.me }
+}
+
+export const homeLoader = async () => {
+  const order = await allOrdersLoader()
+  const product = await allProductsLoader()
+  const user = await meLoader()
+
+  return { data: { order: order.data, product: product.data, user: user.data } }
 }

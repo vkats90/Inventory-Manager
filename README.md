@@ -2,7 +2,6 @@
 
 ## To DO:
 
-- fix AllOrders not working
 - Implements fetching from backend
 - Implement sorting to tables
 - Implement search
@@ -29,3 +28,4 @@
     7:28: 3
     7.30: 1.5
     8.1: 3.5
+    8.2: 4

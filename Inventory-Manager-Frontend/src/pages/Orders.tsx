@@ -41,7 +41,7 @@ const defaultColumns = [
     header: 'Created on',
     cell: (info) => new Date(info.getValue()).toLocaleString(),
   }),
-  columnHelper.accessor('created_by.username', {
+  columnHelper.accessor('created_by.name', {
     header: 'Created by',
     cell: (info) => info.getValue(),
   }),
@@ -49,7 +49,7 @@ const defaultColumns = [
     header: 'Updated on',
     cell: (info) => new Date(info.getValue()).toLocaleString(),
   }),
-  columnHelper.accessor('updated_by.username', {
+  columnHelper.accessor('updated_by.name', {
     header: 'Updated by',
     cell: (info) => info.getValue(),
   }),

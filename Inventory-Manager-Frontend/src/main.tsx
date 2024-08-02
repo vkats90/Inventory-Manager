@@ -17,6 +17,7 @@ import {
   allOrdersLoader,
   allProductsLoader,
   meLoader,
+  homeLoader,
 } from './loaderFunctions.ts'
 
 const client = new ApolloClient({
@@ -33,7 +34,7 @@ const router = createBrowserRouter([
       {
         path: '/',
         element: <Home />,
-        loader: meLoader,
+        loader: homeLoader,
       },
       {
         path: '/products',
