@@ -1,4 +1,4 @@
-import { gql } from "apollo-server-express";
+import { gql } from 'apollo-server-express'
 
 const orderTypeDef = gql`
   type Order {
@@ -15,6 +15,7 @@ const orderTypeDef = gql`
 
   extend type Query {
     allOrders: [Order]
+    findOrder(id: ID!): Order
   }
 
   extend type Mutation {
@@ -22,6 +23,6 @@ const orderTypeDef = gql`
     editOrder(name: String, quantity: Int, priority: Int, status: String): Order
     deleteOrder(name: String): String
   }
-`;
+`
 
-export default orderTypeDef;
+export default orderTypeDef

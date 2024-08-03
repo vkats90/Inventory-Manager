@@ -13,7 +13,7 @@ const productTypeDefs = gql`
 
   extend type Query {
     allProducts: [Product!]!
-    findProduct(name: String!): Product
+    findProduct(id: ID!): Product
   }
 
   extend type Mutation {

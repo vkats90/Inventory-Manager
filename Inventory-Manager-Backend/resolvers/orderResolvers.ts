@@ -12,6 +12,30 @@ const orderResolver = {
       }
       return await OrderModel.find({}).populate('created_by').populate('updated_by')
     },
+    findOrder: async (
+      _root: Order,
+      { id }: { id: string },
+      { currentUser }: { currentUser: User }
+    ) => {
+      if (!currentUser) {
+        throw new GraphQLError('wrong credentials', {
+          extensions: { code: 'UNAUTHORIZED' },
+        })
+      }
+      const order: Order | null = await OrderModel.findById(id)
+        .populate('created_by')
+        .populate('updated_by')
+
+      if (!order)
+        throw new GraphQLError("order doesn't exist", {
+          extensions: {
+            code: 'NOT_FOUND',
+            invalidArgs: id,
+          },
+        })
+
+      return order
+    },
   },
   Mutation: {
     addOrder: async (_root: Order, args: Order, { currentUser }: { currentUser: User }) => {

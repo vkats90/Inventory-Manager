@@ -10,6 +10,7 @@ const componentTypeDefs = gql`
 
   extend type Query {
     allComponents: [Component]
+    findComponent(id: ID!): Component
   }
 
   extend type Mutation {

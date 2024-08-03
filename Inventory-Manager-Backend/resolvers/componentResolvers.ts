@@ -12,6 +12,28 @@ const componentResolver = {
       }
       return ComponentModel.find({})
     },
+    findComponent: async (
+      _root: Component,
+      { id }: { id: string },
+      { currentUser }: { currentUser: User }
+    ) => {
+      if (!currentUser) {
+        throw new GraphQLError('wrong credentials', {
+          extensions: { code: 'UNAUTHORIZED' },
+        })
+      }
+      const part: Component | null = await ComponentModel.findById(id)
+
+      if (!part)
+        throw new GraphQLError("component doesn't exist", {
+          extensions: {
+            code: 'NOT_FOUND',
+            invalidArgs: id,
+          },
+        })
+
+      return part
+    },
   },
   Mutation: {
     addComponent: async (

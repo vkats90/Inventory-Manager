@@ -13,16 +13,26 @@ const productResolver = {
       return ProductModel.find({}).populate('components')
     },
 
-    findProduct: async (_root: Product, { name }: { name: string }) => {
-      const product = await ProductModel.find({ name }).populate('components')
+    findProduct: async (
+      _root: Product,
+      { id }: { id: string },
+      { currentUser }: { currentUser: User }
+    ) => {
+      if (!currentUser) {
+        throw new GraphQLError('wrong credentials', {
+          extensions: { code: 'UNAUTHORIZED' },
+        })
+      }
+      const product: Product | null = await ProductModel.findById(id).populate('components')
 
-      if (product.length === 0)
+      if (!product)
         throw new GraphQLError("product doesn't exist", {
           extensions: {
-            code: 'BAD_USER_INPUT',
-            invalidArgs: name,
+            code: 'NOT_FOUND',
+            invalidArgs: id,
           },
         })
+      return product
     },
   },
   Mutation: {
