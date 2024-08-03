@@ -1,15 +1,22 @@
-import React from "react";
-import { Link, useLocation } from "react-router-dom";
+import React from 'react'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
+import { AppContext } from '../App'
+//@ts-ignore
+import { use } from 'react'
 
 const Sidebar: React.FC = () => {
-  const location = useLocation();
+  const location = useLocation()
+  const navigate = useNavigate()
+  const { setUser, user } = use(AppContext)
 
   const links = [
-    { name: "Home", path: "/" },
-    { name: "Products", path: "/products" },
-    { name: "Parts", path: "/parts" },
-    { name: "Orders", path: "/orders" },
-  ];
+    { name: 'Home', path: '/' },
+    { name: 'Products', path: '/products' },
+    { name: 'Parts', path: '/parts' },
+    { name: 'Orders', path: '/orders' },
+  ]
+
+  if (location.pathname == '/login') return
 
   return (
     <div className="bg-gray-800 text-white w-64 min-h-screen p-4">
@@ -21,7 +28,7 @@ const Sidebar: React.FC = () => {
               <Link
                 to={link.path}
                 className={`block p-2 rounded hover:bg-gray-700 transition-colors ${
-                  location.pathname === link.path ? "bg-gray-700" : ""
+                  location.pathname === link.path ? 'bg-gray-700' : ''
                 }`}
               >
                 {link.name}
@@ -29,9 +36,20 @@ const Sidebar: React.FC = () => {
             </li>
           ))}
         </ul>
+        <a
+          onClick={() => {
+            localStorage.clear()
+            setUser('')
+            navigate('/login')
+          }}
+          className="absolute bottom-3 left-8 block p-2 rounded hover:bg-gray-700 transition-colors cursor-pointer"
+        >
+          {' '}
+          Logout
+        </a>
       </nav>
     </div>
-  );
-};
+  )
+}
 
-export default Sidebar;
+export default Sidebar

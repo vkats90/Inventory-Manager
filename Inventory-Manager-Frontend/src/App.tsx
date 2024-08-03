@@ -3,11 +3,11 @@ import { Outlet } from 'react-router-dom'
 import Sidebar from './components/sidebar'
 import { ToastContainer } from 'react-toastify'
 
+export const AppContext = createContext({})
+
 function App() {
   const [inView, setInView] = useState(false)
   const [user, setUser] = useState('')
-
-  const AppContext = createContext({ inView, setInView, user, setUser })
 
   return (
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment

@@ -1,6 +1,5 @@
 import { login } from '../actionFunctions.ts'
 import { notify } from '../utils/notify.ts'
-
 import { useNavigate } from 'react-router-dom'
 
 export default function Login() {

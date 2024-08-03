@@ -2,6 +2,7 @@ import { ALL_COMPONENTS, ALL_PRODUCTS, ALL_ORDERS, ME } from './queries'
 import { client } from './client'
 import { redirect } from 'react-router-dom'
 import { notify } from './utils/notify'
+import { Order, Product, User } from './types'
 
 export const allComponentsLoader = async () => {
   try {
@@ -67,10 +68,36 @@ export const meLoader = async () => {
   return { data: data.me }
 }
 
-export const homeLoader = async () => {
-  const order = await allOrdersLoader()
-  const product = await allProductsLoader()
-  const user = await meLoader()
+interface HomeLoaderReturn {
+  data: {
+    order: Order[]
+    product: Product[]
+    user: User
+  }
+}
 
-  return { data: { order: order.data, product: product.data, user: user.data } }
+export const homeLoader = async () => {
+  try {
+    const order = await allOrdersLoader()
+    const product = await allProductsLoader()
+    const user = await meLoader()
+
+    if (
+      (order as Response).status == 302 ||
+      (order as Response).status == 302 ||
+      (order as Response).status == 302
+    )
+      return redirect('/login')
+
+    return {
+      data: {
+        order: (order as HomeLoaderReturn).data,
+        product: (product as HomeLoaderReturn).data,
+        user: (user as HomeLoaderReturn).data,
+      },
+    }
+  } catch {
+    notify({ error: 'You must be logged in to view this page' })
+    return redirect('/login')
+  }
 }

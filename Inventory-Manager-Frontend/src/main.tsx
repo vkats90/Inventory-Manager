@@ -44,6 +44,10 @@ const router = createBrowserRouter([
       {
         path: '/login',
         element: <Login />,
+        loader: () => {
+          window.localStorage.clear()
+          return ''
+        },
       },
       {
         path: '/parts',

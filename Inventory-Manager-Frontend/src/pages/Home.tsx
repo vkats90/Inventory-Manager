@@ -1,9 +1,18 @@
 import { ProductList } from './Products'
-import { exampleProducts } from '../assets/data/data'
 import { OrderList } from './Orders'
-import { exampleOrders } from '../assets/data/data'
 import { useLoaderData } from 'react-router-dom'
 import { User, Product, Order } from '../types'
+import { AppContext } from '../App'
+//@ts-ignore
+import { use } from 'react'
+
+interface loaderData {
+  data: {
+    order: Order[]
+    product: Product[]
+    user: User
+  }
+}
 
 const initialOrderHeaders = {
   id: false,
@@ -28,20 +37,15 @@ const initialProductHeaders = {
   componenets: false,
 }
 
-interface loaderData {
-  data: {
-    order: Order[]
-    product: Product[]
-    user: User
-  }
-}
-
 const Home = () => {
   const { data: loaderData } = useLoaderData() as loaderData
+  const { setUser, user } = use(AppContext)
+
+  if (loaderData.user.name) setUser(loaderData.user.name)
 
   return (
     <div className="container ">
-      <h1 className="text-2xl my-6 font-bold text-center">{'Hello ' + loaderData.user.name}</h1>
+      <h1 className="text-2xl my-6 font-bold text-center">{'Hello ' + user}</h1>
       <div className="container flex mx-auto px-4 py-8 gap-4">
         <ProductList products={loaderData.product} InitColumns={initialProductHeaders} />
         <OrderList orders={loaderData.order} InitColumns={initialOrderHeaders} />
