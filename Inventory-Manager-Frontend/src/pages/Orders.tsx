@@ -88,7 +88,6 @@ export const OrderList: React.FC<{ orders: Order[]; InitColumns?: typeof initial
   })
 
   const _handleClick = ({ currentTarget }: React.MouseEvent) => {
-    console.log(currentTarget)
     navigate(`/orders/${currentTarget.id}`)
   }
 

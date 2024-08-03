@@ -1,51 +1,20 @@
-import React, { useState } from "react";
-// import { useParams } from 'react-router-dom';
-import Card from "../components/card";
-
-// User type (simplified for this example)
-type User = {
-  id: string;
-  name: string;
-};
-
-// Order type
-type Order = {
-  name: string;
-  quantity: number;
-  priority: number | null;
-  status: string | null;
-  created_on: string;
-  created_by: User;
-  updated_on: string;
-  updated_by: User | null;
-};
-
-// Static order data
-const initialOrderData: Order = {
-  name: "Example Order",
-  quantity: 10,
-  priority: 2,
-  status: "Pending",
-  created_on: "2023-07-19T10:00:00Z",
-  created_by: { id: "1", name: "John Doe" },
-  updated_on: "2023-07-19T10:00:00Z",
-  updated_by: null,
-};
+import React, { useState } from 'react'
+import { useLoaderData } from 'react-router-dom'
+import Card from '../components/card'
+import { Order } from '../types'
 
 const SingleOrderPage: React.FC = () => {
-  //   const { name } = useParams<{ name: string }>();
-  const [order, setOrder] = useState<Order>(initialOrderData);
+  const { data: loaderOrder } = useLoaderData() as { data: Order }
+  const [order, setOrder] = useState<Order>(loaderOrder)
+  console.log(new Date(Number(loaderOrder.created_on)).toLocaleDateString())
 
-  const handleInputChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
-  ) => {
-    const { name, value } = e.target;
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+    const { name, value } = e.target
     setOrder((prev) => ({
       ...prev,
-      [name]:
-        name === "quantity" || name === "priority" ? parseInt(value) : value,
-    }));
-  };
+      [name]: name === 'quantity' || name === 'priority' ? parseInt(value) : value,
+    }))
+  }
 
   return (
     <div className="container mx-auto px-4 py-8">
@@ -72,7 +41,7 @@ const SingleOrderPage: React.FC = () => {
             <input
               className="w-full mt-1 p-2 border rounded"
               type="number"
-              value={order.priority ?? ""}
+              value={order.priority ?? ''}
               onChange={handleInputChange}
               name="priority"
             />
@@ -81,7 +50,7 @@ const SingleOrderPage: React.FC = () => {
             <label className="font-semibold">Status:</label>
             <select
               className="w-full mt-1 p-2 border rounded"
-              value={order.status ?? ""}
+              value={order.status ?? ''}
               onChange={handleInputChange}
               name="status"
             >
@@ -96,7 +65,7 @@ const SingleOrderPage: React.FC = () => {
             <label className="font-semibold">Created On:</label>
             <input
               className="w-full mt-1 p-2 border rounded bg-gray-100"
-              value={new Date(order.created_on).toLocaleString()}
+              value={new Date(Number(order.created_on)).toLocaleString()}
               readOnly
             />
           </div>
@@ -112,7 +81,7 @@ const SingleOrderPage: React.FC = () => {
             <label className="font-semibold">Updated On:</label>
             <input
               className="w-full mt-1 p-2 border rounded bg-gray-100"
-              value={new Date(order.updated_on).toLocaleString()}
+              value={new Date(Number(order.updated_on)).toLocaleString()}
               readOnly
             />
           </div>
@@ -120,14 +89,14 @@ const SingleOrderPage: React.FC = () => {
             <label className="font-semibold">Updated By:</label>
             <input
               className="w-full mt-1 p-2 border rounded bg-gray-100"
-              value={order.updated_by?.name ?? "N/A"}
+              value={order.updated_by?.name ?? 'N/A'}
               readOnly
             />
           </div>
         </div>
       </Card>
     </div>
-  );
-};
+  )
+}
 
-export default SingleOrderPage;
+export default SingleOrderPage

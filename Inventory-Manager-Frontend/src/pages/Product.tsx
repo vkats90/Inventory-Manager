@@ -1,37 +1,16 @@
-import React, { useState } from "react";
-// import { useParams } from 'react-router-dom';
-import Card from "../components/card";
-
-// Product type
-type Product = {
-  name: string;
-  stock: number;
-  cost: number | null;
-  price: number | null;
-  SKU: string;
-  components: { name: string }[] | null;
-  id: string;
-};
-
-// Static product data
-const initialProductData: Product = {
-  id: "1",
-  name: "Example Product",
-  stock: 100,
-  cost: 10.5,
-  price: 19.99,
-  SKU: "EP001",
-  components: [{ name: "Component A" }, { name: "Component B" }],
-};
+import React, { useState } from 'react'
+import { useLoaderData } from 'react-router-dom'
+import Card from '../components/card'
+import { Product } from '../types'
 
 const SingleProductPage: React.FC = () => {
-  //   const { name } = useParams<{ name: string }>();
-  const [product, setProduct] = useState<Product>(initialProductData);
+  const { data: loaderProduct } = useLoaderData() as { data: Product }
+  const [product, setProduct] = useState<Product>(loaderProduct)
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setProduct((prev) => ({ ...prev, [name]: value }));
-  };
+    const { name, value } = e.target
+    setProduct((prev) => ({ ...prev, [name]: value }))
+  }
 
   return (
     <div className="container mx-auto px-4 py-8">
@@ -68,7 +47,7 @@ const SingleProductPage: React.FC = () => {
               className="w-full mt-1 p-2 border rounded"
               type="number"
               step="0.01"
-              value={product.cost ?? ""}
+              value={product.cost ?? ''}
               onChange={handleInputChange}
               name="cost"
             />
@@ -79,7 +58,7 @@ const SingleProductPage: React.FC = () => {
               className="w-full mt-1 p-2 border rounded"
               type="number"
               step="0.01"
-              value={product.price ?? ""}
+              value={product.price ?? ''}
               onChange={handleInputChange}
               name="price"
             />
@@ -97,7 +76,7 @@ const SingleProductPage: React.FC = () => {
         )}
       </Card>
     </div>
-  );
-};
+  )
+}
 
-export default SingleProductPage;
+export default SingleProductPage

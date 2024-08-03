@@ -17,6 +17,9 @@ import {
   allOrdersLoader,
   allProductsLoader,
   homeLoader,
+  findComponentLoader,
+  findProductLoader,
+  findOrderLoader,
 } from './loaderFunctions.ts'
 
 const client = new ApolloClient({
@@ -61,14 +64,17 @@ const router = createBrowserRouter([
       {
         path: 'products/:productID',
         element: <Product />,
+        loader: findProductLoader,
       },
       {
         path: 'parts/:partID',
         element: <Component />,
+        loader: findComponentLoader,
       },
       {
         path: 'orders/:orderID',
         element: <Order />,
+        loader: findOrderLoader,
       },
     ],
   },

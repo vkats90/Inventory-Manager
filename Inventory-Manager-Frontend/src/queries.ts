@@ -19,8 +19,8 @@ export const ALL_PRODUCTS = gql`
 
 // Query to find a specific product by name
 export const FIND_PRODUCT = gql`
-  query FindProduct($name: String!) {
-    findProduct(name: $name) {
+  query FindProduct($id: ID!) {
+    findProduct(id: $id) {
       name
       stock
       cost
@@ -115,6 +115,17 @@ export const ALL_COMPONENTS = gql`
   }
 `
 
+export const FIND_COMPONENT = gql`
+  query FindComponent($id: ID!) {
+    findComponent(id: $id) {
+      name
+      stock
+      cost
+      id
+    }
+  }
+`
+
 // Mutation to add a new component
 export const ADD_COMPONENT = gql`
   mutation AddComponent($name: String!, $stock: Float, $cost: Float) {
@@ -151,6 +162,25 @@ export const ALL_ORDERS = gql`
   query AllOrders {
     allOrders {
       id
+      name
+      quantity
+      priority
+      status
+      created_on
+      created_by {
+        name
+      }
+      updated_on
+      updated_by {
+        name
+      }
+    }
+  }
+`
+
+export const FIND_ORDER = gql`
+  query FindOrder($id: ID!) {
+    findOrder(id: $id) {
       name
       quantity
       priority

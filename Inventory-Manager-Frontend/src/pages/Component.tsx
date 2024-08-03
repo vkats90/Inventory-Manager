@@ -1,39 +1,23 @@
-import React, { useState } from "react";
-// import { useParams } from 'react-router-dom';
-import Card from "../components/card";
+import React, { useState } from 'react'
+import { useLoaderData } from 'react-router-dom'
+import Card from '../components/card'
+import { Component } from '../types'
 
-// Component type
-type Component = {
-  name: string;
-  stock: number;
-  cost: number | null;
-  id: string;
-};
-
-// Static component data
-const initialComponentData: Component = {
-  id: "1",
-  name: "Example Component",
-  stock: 500,
-  cost: 5.25,
-};
+interface loaderData {
+  data: Component
+}
 
 const SingleComponentPage: React.FC = () => {
-  //   const { name } = useParams<{ name: string }>();
-  const [component, setComponent] = useState<Component>(initialComponentData);
+  const { data: loaderComponent } = useLoaderData() as loaderData
+  const [component, setComponent] = useState<Component>(loaderComponent)
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
+    const { name, value } = e.target
     setComponent((prev) => ({
       ...prev,
-      [name]:
-        name === "stock"
-          ? parseInt(value)
-          : name === "cost"
-          ? parseFloat(value)
-          : value,
-    }));
-  };
+      [name]: name === 'stock' ? parseInt(value) : name === 'cost' ? parseFloat(value) : value,
+    }))
+  }
 
   return (
     <div className="container mx-auto px-4 py-8">
@@ -70,7 +54,7 @@ const SingleComponentPage: React.FC = () => {
               className="w-full mt-1 p-2 border rounded"
               type="number"
               step="0.01"
-              value={component.cost ?? ""}
+              value={component.cost ?? ''}
               onChange={handleInputChange}
               name="cost"
             />
@@ -78,7 +62,7 @@ const SingleComponentPage: React.FC = () => {
         </div>
       </Card>
     </div>
-  );
-};
+  )
+}
 
-export default SingleComponentPage;
+export default SingleComponentPage

@@ -1,6 +1,14 @@
-import { ALL_COMPONENTS, ALL_PRODUCTS, ALL_ORDERS, ME } from './queries'
+import {
+  ALL_COMPONENTS,
+  ALL_PRODUCTS,
+  ALL_ORDERS,
+  ME,
+  FIND_COMPONENT,
+  FIND_PRODUCT,
+  FIND_ORDER,
+} from './queries'
 import { client } from './client'
-import { redirect } from 'react-router-dom'
+import { redirect, LoaderFunctionArgs } from 'react-router-dom'
 import { notify } from './utils/notify'
 import { Order, Product, User } from './types'
 
@@ -12,6 +20,20 @@ export const allComponentsLoader = async () => {
     })
 
     return { data: data.allComponents }
+  } catch (errors: unknown) {
+    notify({ error: 'You must be logged in to view this page' })
+    return redirect('/login')
+  }
+}
+
+export const findComponentLoader = async ({ params }: LoaderFunctionArgs) => {
+  try {
+    const { data } = await client.query({
+      query: FIND_COMPONENT,
+      variables: { id: params.partID },
+    })
+
+    return { data: data.findComponent }
   } catch (errors: unknown) {
     notify({ error: 'You must be logged in to view this page' })
     return redirect('/login')
@@ -32,6 +54,20 @@ export const allProductsLoader = async () => {
   }
 }
 
+export const findProductLoader = async ({ params }: LoaderFunctionArgs) => {
+  try {
+    const { data } = await client.query({
+      query: FIND_PRODUCT,
+      variables: { id: params.productID },
+    })
+
+    return { data: data.findProduct }
+  } catch (errors: unknown) {
+    notify({ error: 'You must be logged in to view this page' })
+    return redirect('/login')
+  }
+}
+
 export const allOrdersLoader = async () => {
   try {
     const { data } = await client.query({
@@ -40,6 +76,20 @@ export const allOrdersLoader = async () => {
     })
 
     return { data: data.allOrders }
+  } catch (errors: unknown) {
+    notify({ error: 'You must be logged in to view this page' })
+    return redirect('/login')
+  }
+}
+
+export const findOrderLoader = async ({ params }: LoaderFunctionArgs) => {
+  try {
+    const { data } = await client.query({
+      query: FIND_ORDER,
+      variables: { id: params.orderID },
+    })
+
+    return { data: data.findOrder }
   } catch (errors: unknown) {
     notify({ error: 'You must be logged in to view this page' })
     return redirect('/login')
