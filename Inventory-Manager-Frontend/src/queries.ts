@@ -150,6 +150,7 @@ export const DELETE_COMPONENT = gql`
 export const ALL_ORDERS = gql`
   query AllOrders {
     allOrders {
+      id
       name
       quantity
       priority

@@ -61,7 +61,6 @@ export const ComponentList: React.FC<{
   })
 
   const _handleClick = ({ currentTarget }: React.MouseEvent) => {
-    console.log(currentTarget)
     navigate(`/parts/${currentTarget.id}`)
   }
   return (

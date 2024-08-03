@@ -16,7 +16,6 @@ import {
   allComponentsLoader,
   allOrdersLoader,
   allProductsLoader,
-  meLoader,
   homeLoader,
 } from './loaderFunctions.ts'
 

@@ -7,7 +7,7 @@ import { use } from 'react'
 const Sidebar: React.FC = () => {
   const location = useLocation()
   const navigate = useNavigate()
-  const { setUser, user } = use(AppContext)
+  const { setUser } = use(AppContext)
 
   const links = [
     { name: 'Home', path: '/' },
