@@ -84,23 +84,23 @@ const componentResolver = {
             invalidArgs: args.stock,
           },
         })
-      const component = await ComponentModel.findOne({ name: args.name })
+      const component = await ComponentModel.findOne({ _id: args.id })
       if (!component)
         throw new GraphQLError("component doesn't exist", {
           extensions: {
             code: 'BAD_USER_INPUT',
-            invalidArgs: args.name,
+            invalidArgs: args.id,
           },
         })
       try {
-        return await ComponentModel.findOneAndUpdate({ name: args.name }, args, {
+        return await ComponentModel.findOneAndUpdate({ _id: args.id }, args, {
           new: true,
         })
       } catch (error) {
         throw new GraphQLError('failed to edit component', {
           extensions: {
             code: 'BAD_USER_INPUT',
-            invalidArgs: args.name,
+            invalidArgs: args.id,
             error,
           },
         })

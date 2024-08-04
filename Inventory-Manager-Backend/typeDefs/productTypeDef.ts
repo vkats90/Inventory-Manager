@@ -26,6 +26,7 @@ const productTypeDefs = gql`
       components: [String]
     ): Product
     editProduct(
+      id: ID!
       name: String!
       stock: Int
       cost: Float

@@ -84,7 +84,7 @@ const productResolver = {
             invalidArgs: args.stock,
           },
         })
-      const product = await ProductModel.findOne({ name: args.name })
+      const product = await ProductModel.findById(args.id)
       if (!product)
         throw new GraphQLError("product doesn't exist", {
           extensions: {
@@ -93,12 +93,12 @@ const productResolver = {
           },
         })
       try {
-        return await ProductModel.findOneAndUpdate({ name: args.name }, args, { new: true })
+        return await ProductModel.findOneAndUpdate({ _id: args.id }, args, { new: true })
       } catch (error) {
         throw new GraphQLError('failed to update product', {
           extensions: {
             code: 'BAD_USER_INPUT',
-            invalidArgs: args.name,
+            invalidArgs: args.id,
             error,
           },
         })

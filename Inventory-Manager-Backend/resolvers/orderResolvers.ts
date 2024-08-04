@@ -96,18 +96,18 @@ const orderResolver = {
             },
           })
       }
-      const order = await OrderModel.findOne({ name: args.name })
+      const order = await OrderModel.findById(args.id)
 
       if (!order)
         throw new GraphQLError("order doesn't exist", {
           extensions: {
             code: 'BAD_USER_INPUT',
-            invalidArgs: args.name,
+            invalidArgs: args.id,
           },
         })
       try {
         return await OrderModel.findOneAndUpdate(
-          { name: args.name },
+          { _id: args.id },
           {
             ...args,
             updated_by: currentUser.id,
