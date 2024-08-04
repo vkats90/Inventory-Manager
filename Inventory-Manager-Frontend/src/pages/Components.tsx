@@ -2,7 +2,6 @@ import React, { useState } from 'react'
 import Card from '../components/card'
 import { useNavigate, useLoaderData } from 'react-router-dom'
 import { Component } from '../types'
-//import { exampleComponents } from '../assets/data/data'
 import {
   useReactTable,
   getCoreRowModel,

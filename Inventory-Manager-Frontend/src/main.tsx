@@ -21,6 +21,7 @@ import {
   findProductLoader,
   findOrderLoader,
 } from './loaderFunctions.ts'
+import { login } from './actionFunctions.ts'
 
 const client = new ApolloClient({
   uri: 'http://localhost:4000',

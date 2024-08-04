@@ -140,8 +140,8 @@ export const ADD_COMPONENT = gql`
 
 // Mutation to edit an existing component
 export const EDIT_COMPONENT = gql`
-  mutation EditComponent($name: String!, $stock: Float, $cost: Float) {
-    editComponent(name: $name, stock: $stock, cost: $cost) {
+  mutation EditComponent($id: ID!, $name: String!, $stock: Float, $cost: Float) {
+    editComponent(name: $name, stock: $stock, cost: $cost, id: $id) {
       name
       stock
       cost
