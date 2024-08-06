@@ -56,6 +56,10 @@ const router = createBrowserRouter([
         path: '/parts',
         element: <ComponentPage />,
         loader: allComponentsLoader,
+        shouldRevalidate: ({ currentUrl, nextUrl }) => {
+          // Always revalidate if coming from a different route
+          return currentUrl.pathname !== nextUrl.pathname
+        },
       },
       {
         path: '/orders',

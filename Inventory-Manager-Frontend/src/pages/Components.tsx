@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import Card from '../components/card'
 import { useNavigate, useLoaderData } from 'react-router-dom'
 import { Component } from '../types'
+
 import {
   useReactTable,
   getCoreRowModel,
@@ -42,7 +43,6 @@ export const ComponentList: React.FC<{
   InitColumns?: typeof initialPartHeaders
 }> = ({ components, InitColumns }) => {
   const [data, _setData] = useState(() => [...components])
-
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>(
     InitColumns || initialPartHeaders
   )
@@ -111,6 +111,7 @@ interface loaderData {
 
 const ComponentPage: React.FC = () => {
   const { data: loaderData } = useLoaderData() as loaderData
+
   return (
     <div className="container mx-auto px-4 py-8">
       <ComponentList components={loaderData} />

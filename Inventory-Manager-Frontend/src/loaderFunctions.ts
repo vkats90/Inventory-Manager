@@ -17,8 +17,9 @@ export const allComponentsLoader = async () => {
     const { data } = await client.query({
       query: ALL_COMPONENTS,
       variables: {},
+      fetchPolicy: 'network-only',
     })
-
+    console.log(data.allComponents)
     return { data: data.allComponents }
   } catch (errors: unknown) {
     notify({ error: 'You must be logged in to view this page' })
@@ -32,7 +33,6 @@ export const findComponentLoader = async ({ params }: LoaderFunctionArgs) => {
       query: FIND_COMPONENT,
       variables: { id: params.partID },
     })
-
     return { data: data.findComponent }
   } catch (errors: unknown) {
     notify({ error: 'You must be logged in to view this page' })

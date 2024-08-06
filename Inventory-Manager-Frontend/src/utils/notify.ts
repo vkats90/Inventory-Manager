@@ -1,15 +1,8 @@
 import { toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
+import Msg from '../components/verifyDelete'
 
-export const notify = ({
-  error,
-  success,
-  info,
-}: {
-  error?: string
-  success?: string
-  info?: string
-}) => {
+export const notify = ({ error, success }: { error?: string; success?: string }) => {
   toast.success(success, {
     position: 'bottom-center',
   })
@@ -17,8 +10,14 @@ export const notify = ({
   toast.error(error, {
     position: 'bottom-center',
   })
+}
 
-  toast.info(info, {
-    position: 'bottom-center',
-  })
+export const verifyDelete = (callBack: () => void) => {
+  const toastId = toast(
+    Msg({ closeToast: () => toast.dismiss(toastId), toastProps: { callBackFunction: callBack } }),
+    {
+      position: 'bottom-center',
+      autoClose: false,
+    }
+  )
 }

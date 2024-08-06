@@ -4,7 +4,7 @@ import Card from '../components/card'
 import { Component } from '../types'
 import { editComponent, deleteComponent } from '../actionFunctions'
 import isEqual from 'react-fast-compare'
-import { notify } from '../utils/notify'
+import { notify, verifyDelete } from '../utils/notify'
 
 interface loaderData {
   data: Component
@@ -21,7 +21,7 @@ const SingleComponentPage: React.FC = () => {
       const res = await deleteComponent(component.name)
       if (res) {
         notify({ success: 'Component deleted successfully' })
-        navigate('/parts', { replace: true })
+        navigate('/parts', { state: { refresh: true } })
       }
     } catch (error) {
       notify({ error: 'Error while deleting component' })
@@ -108,8 +108,7 @@ const SingleComponentPage: React.FC = () => {
         </form>
         <button
           className=" absolute top-2 right-4 w-fit bg-red-600 hover:bg-red-700 mt-4 text-white rounded px-2 py-1"
-          onClick={() => notify({ info: 'Double click to delete' })}
-          onDoubleClick={handleDelete}
+          onClick={() => verifyDelete(handleDelete)}
         >
           Delete
         </button>

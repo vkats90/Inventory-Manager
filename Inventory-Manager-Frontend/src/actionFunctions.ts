@@ -1,5 +1,5 @@
 import { client } from './client'
-import { LOGIN, EDIT_COMPONENT, DELETE_COMPONENT } from './queries'
+import { LOGIN, EDIT_COMPONENT, DELETE_COMPONENT, ALL_COMPONENTS } from './queries'
 
 export const login = async (email: string, password: string) => {
   try {
