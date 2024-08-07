@@ -74,8 +74,10 @@ export const EDIT_PRODUCT = gql`
     $price: Float
     $SKU: String
     $components: [String]
+    $id: ID!
   ) {
     editProduct(
+      id: $id
       name: $name
       stock: $stock
       cost: $cost
