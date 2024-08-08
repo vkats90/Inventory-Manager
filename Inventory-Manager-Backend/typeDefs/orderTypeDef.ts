@@ -21,7 +21,7 @@ const orderTypeDef = gql`
   extend type Mutation {
     addOrder(name: String, quantity: Int, priority: Int): Order
     editOrder(id: ID!, name: String, quantity: Int, priority: Int, status: String): Order
-    deleteOrder(name: String): String
+    deleteOrder(id: String): String
   }
 `
 

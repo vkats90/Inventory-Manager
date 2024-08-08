@@ -132,7 +132,7 @@ const orderResolver = {
           extensions: { code: 'UNAUTHORIZED' },
         })
       }
-      const order = await OrderModel.findOne({ name: args.name })
+      const order = await OrderModel.findOne({ _id: args.id })
       if (!order)
         throw new GraphQLError("order doesn't exist", {
           extensions: {
@@ -141,7 +141,7 @@ const orderResolver = {
           },
         })
       try {
-        await OrderModel.findOneAndDelete({ name: args.name })
+        await OrderModel.findOneAndDelete({ _id: args.id })
       } catch (error) {
         throw new GraphQLError('failed to delete order', {
           extensions: {

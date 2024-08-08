@@ -45,6 +45,7 @@ export const allProductsLoader = async () => {
     const { data } = await client.query({
       query: ALL_PRODUCTS,
       variables: {},
+      fetchPolicy: 'network-only',
     })
 
     return { data: data.allProducts }
@@ -73,6 +74,7 @@ export const allOrdersLoader = async () => {
     const { data } = await client.query({
       query: ALL_ORDERS,
       variables: {},
+      fetchPolicy: 'network-only',
     })
 
     return { data: data.allOrders }

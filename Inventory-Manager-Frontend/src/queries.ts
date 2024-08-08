@@ -186,16 +186,19 @@ export const ALL_ORDERS = gql`
 export const FIND_ORDER = gql`
   query FindOrder($id: ID!) {
     findOrder(id: $id) {
+      id
       name
       quantity
       priority
       status
       created_on
       created_by {
+        id
         name
       }
       updated_on
       updated_by {
+        id
         name
       }
     }
@@ -226,8 +229,9 @@ export const ADD_ORDER = gql`
 
 // Mutation to edit an existing order
 export const EDIT_ORDER = gql`
-  mutation EditOrder($name: String, $quantity: Int, $priority: Int, $status: String) {
-    editOrder(name: $name, quantity: $quantity, priority: $priority, status: $status) {
+  mutation EditOrder($name: String, $quantity: Int, $priority: Int, $status: String, $id: ID!) {
+    editOrder(name: $name, quantity: $quantity, priority: $priority, status: $status, id: $id) {
+      id
       name
       quantity
       priority
@@ -248,8 +252,8 @@ export const EDIT_ORDER = gql`
 
 // Mutation to delete an order
 export const DELETE_ORDER = gql`
-  mutation DeleteOrder($name: String!) {
-    deleteOrder(name: $name)
+  mutation DeleteOrder($id: String!) {
+    deleteOrder(id: $id)
   }
 `
 

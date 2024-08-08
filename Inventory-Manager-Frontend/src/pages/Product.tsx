@@ -46,7 +46,6 @@ const SingleProductPage: React.FC = () => {
         product.SKU,
         product.components
       )
-      console.log(res, product)
       if (isEqual(res, product)) {
         setVisible(false)
         notify({ success: 'Product edited successfully' })
