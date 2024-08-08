@@ -33,6 +33,6 @@ export type Product = {
   cost: number | null
   price: number | null
   SKU: string
-  components: Pick<Component, 'name'>[] | null
+  components: Component[] | []
   id: string
 }

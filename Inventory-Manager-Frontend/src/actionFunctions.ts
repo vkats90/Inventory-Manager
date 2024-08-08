@@ -57,9 +57,12 @@ export const editProduct = async (
   stock: number,
   price: number,
   SKU: string,
-  components: string[] | null
+  components: Component[] | [] | string[]
 ) => {
   try {
+    if (components.length != 0) {
+      components = components.map((component) => (component as Component).id)
+    }
     const { data } = await client.mutate({
       mutation: EDIT_PRODUCT,
       variables: { id, name, cost, stock, price, SKU, components },

@@ -9,10 +9,7 @@ import { deleteProduct, editProduct } from '../actionFunctions'
 
 const SingleProductPage: React.FC = () => {
   const { data: loaderProduct } = useLoaderData() as { data: Product }
-  const [product, setProduct] = useState<Product>({
-    ...loaderProduct,
-    components: loaderProduct.components?.map((component) => component.name),
-  })
+  const [product, setProduct] = useState<Product>(loaderProduct)
   const [visible, setVisible] = useState(false)
 
   const navigate = useNavigate()
@@ -39,7 +36,6 @@ const SingleProductPage: React.FC = () => {
   }
 
   const handleSubmit = async () => {
-    console.log(product.components)
     try {
       const res = await editProduct(
         product.id,
@@ -50,6 +46,7 @@ const SingleProductPage: React.FC = () => {
         product.SKU,
         product.components
       )
+      console.log(res, product)
       if (isEqual(res, product)) {
         setVisible(false)
         notify({ success: 'Product edited successfully' })
@@ -119,21 +116,13 @@ const SingleProductPage: React.FC = () => {
               <p className="font-semibold">Components:</p>
               <ul className="list-disc list-inside">
                 {product.components.map((component, index) => (
-                  <li key={index}>{component}</li>
+                  <li key={index}>{component.name}</li>
                 ))}
               </ul>
             </div>
           )}
           <form
-            /* @ts-ignore this is a react 19 feature*/
-            action={(formData: { component: string }) => {
-              setProduct((prev) => {
-                setVisible(true)
-                if (prev.components && prev.components.length > 0)
-                  return { ...prev, components: prev.components.concat(formData.component) }
-                else return { ...prev, components: [formData.component] }
-              })
-            }}
+          //add component logic here using action={}
           >
             <input name="component" className="mr-4 mt-1 p-2 border rounded" />
             <button className=" bg-gray-800 mt-4 text-white rounded px-3 py-2 hover:bg-slate-600 trnsition">

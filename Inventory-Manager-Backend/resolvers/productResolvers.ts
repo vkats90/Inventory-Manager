@@ -93,7 +93,9 @@ const productResolver = {
           },
         })
       try {
-        return await ProductModel.findOneAndUpdate({ _id: args.id }, args, { new: true })
+        return await ProductModel.findOneAndUpdate({ _id: args.id }, args, { new: true }).populate(
+          'components'
+        )
       } catch (error) {
         throw new GraphQLError('failed to update product', {
           extensions: {

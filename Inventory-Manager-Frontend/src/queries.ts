@@ -28,6 +28,7 @@ export const FIND_PRODUCT = gql`
       SKU
       components {
         name
+        id
       }
       id
     }
@@ -59,6 +60,7 @@ export const ADD_PRODUCT = gql`
       SKU
       components {
         name
+        id
       }
       id
     }
@@ -92,6 +94,7 @@ export const EDIT_PRODUCT = gql`
       SKU
       components {
         name
+        id
       }
       id
     }
