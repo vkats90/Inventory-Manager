@@ -19,7 +19,6 @@ export const allComponentsLoader = async () => {
       variables: {},
       fetchPolicy: 'network-only',
     })
-    console.log(data.allComponents)
     return { data: data.allComponents }
   } catch (errors: unknown) {
     notify({ error: 'You must be logged in to view this page' })

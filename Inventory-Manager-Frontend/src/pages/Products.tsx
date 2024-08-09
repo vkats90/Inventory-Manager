@@ -11,6 +11,8 @@ import {
   VisibilityState,
 } from '@tanstack/react-table'
 import CheckboxDropdown from '../components/filter'
+import Modal from '../components/modal'
+import { Outlet } from 'react-router-dom'
 
 const initialTableHeaders = {
   id: false,
@@ -70,6 +72,7 @@ export const ProductList: React.FC<{
   products: Product[]
   InitColumns?: typeof initialTableHeaders
 }> = ({ products, InitColumns }) => {
+  const [showModal, setShowModal] = useState(false)
   const [data, _setData] = useState(() => [...products])
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>(
     InitColumns || initialTableHeaders
@@ -87,11 +90,17 @@ export const ProductList: React.FC<{
   })
 
   const _handleClick = ({ currentTarget }: React.MouseEvent) => {
+    setShowModal(true)
     navigate(`/products/${currentTarget.id}`)
   }
 
   return (
     <Card>
+      {showModal && (
+        <Modal onClose={() => setShowModal(false)}>
+          <Outlet />
+        </Modal>
+      )}
       <div className="flex justify-between">
         <h2 className="text-2xl font-bold mb-4">Product List</h2>
         <CheckboxDropdown options={table.getAllColumns()} />

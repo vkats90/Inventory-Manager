@@ -11,6 +11,8 @@ import {
   createColumnHelper,
   VisibilityState,
 } from '@tanstack/react-table'
+import Modal from '../components/modal'
+import { Outlet } from 'react-router-dom'
 
 const columnHelper = createColumnHelper<Order>()
 
@@ -71,6 +73,7 @@ export const OrderList: React.FC<{ orders: Order[]; InitColumns?: typeof initial
   orders,
   InitColumns,
 }) => {
+  const [showModal, setShowModal] = useState(false)
   const [data, _setData] = useState(() => [...orders])
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>(
     InitColumns || initialTableHeaders
@@ -88,11 +91,17 @@ export const OrderList: React.FC<{ orders: Order[]; InitColumns?: typeof initial
   })
 
   const _handleClick = ({ currentTarget }: React.MouseEvent) => {
+    setShowModal(true)
     navigate(`/orders/${currentTarget.id}`)
   }
 
   return (
     <Card>
+      {showModal && (
+        <Modal onClose={() => setShowModal(false)}>
+          <Outlet />
+        </Modal>
+      )}
       <div className="flex justify-between">
         <h2 className="text-2xl font-bold mb-4">Order List</h2>
         <CheckboxDropdown options={table.getAllColumns()} />

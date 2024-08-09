@@ -11,6 +11,7 @@ import Login from './pages/login.tsx'
 import Product from './pages/Product.tsx'
 import Component from './pages/Component.tsx'
 import Order from './pages/Order.tsx'
+import AddComponent from './pages/AddComponent.tsx'
 import { ApolloClient, InMemoryCache, ApolloProvider } from '@apollo/client'
 import {
   allComponentsLoader,
@@ -21,7 +22,6 @@ import {
   findProductLoader,
   findOrderLoader,
 } from './loaderFunctions.ts'
-import { login } from './actionFunctions.ts'
 
 const client = new ApolloClient({
   uri: 'http://localhost:4000',
@@ -43,6 +43,13 @@ const router = createBrowserRouter([
         path: '/products',
         element: <ProductPage />,
         loader: allProductsLoader,
+        children: [
+          {
+            path: '/products/:productID',
+            element: <Product />,
+            loader: findProductLoader,
+          },
+        ],
       },
       {
         path: '/login',
@@ -56,30 +63,29 @@ const router = createBrowserRouter([
         path: '/parts',
         element: <ComponentPage />,
         loader: allComponentsLoader,
-        shouldRevalidate: ({ currentUrl, nextUrl }) => {
-          // Always revalidate if coming from a different route
-          return currentUrl.pathname !== nextUrl.pathname
-        },
+        children: [
+          {
+            path: '/parts/:partID',
+            element: <Component />,
+            loader: findComponentLoader,
+          },
+          {
+            path: '/parts/add-part',
+            element: <AddComponent />,
+          },
+        ],
       },
       {
         path: '/orders',
         element: <OrderPage />,
         loader: allOrdersLoader,
-      },
-      {
-        path: 'products/:productID',
-        element: <Product />,
-        loader: findProductLoader,
-      },
-      {
-        path: 'parts/:partID',
-        element: <Component />,
-        loader: findComponentLoader,
-      },
-      {
-        path: 'orders/:orderID',
-        element: <Order />,
-        loader: findOrderLoader,
+        children: [
+          {
+            path: '/orders/:orderID',
+            element: <Order />,
+            loader: findOrderLoader,
+          },
+        ],
       },
     ],
   },

@@ -2,7 +2,11 @@
 
 ## To DO:
 
-- Implements fetching from backend
+- add, AddOrder, and AddProduct
+- Make Orders, Products and Parts, update after adding/editing/deleting
+- Make Modals close after Editing/ deleting/ adding
+- Add components to product
+- Add loading state to Modals
 - Implement sorting to tables
 - Implement search
 - Implement input for some columns
@@ -32,3 +36,4 @@
     8.3: 5
     8.6: 3
     8.7: 2
+    8.8: 1.5

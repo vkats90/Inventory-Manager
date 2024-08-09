@@ -2,6 +2,8 @@ import React, { useState } from 'react'
 import Card from '../components/card'
 import { useNavigate, useLoaderData } from 'react-router-dom'
 import { Component } from '../types'
+import Modal from '../components/modal'
+import { Outlet } from 'react-router-dom'
 
 import {
   useReactTable,
@@ -42,6 +44,7 @@ export const ComponentList: React.FC<{
   components: Component[]
   InitColumns?: typeof initialPartHeaders
 }> = ({ components, InitColumns }) => {
+  const [showModal, setShowModal] = useState(false)
   const [data, _setData] = useState(() => [...components])
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>(
     InitColumns || initialPartHeaders
@@ -60,10 +63,16 @@ export const ComponentList: React.FC<{
   })
 
   const _handleClick = ({ currentTarget }: React.MouseEvent) => {
+    setShowModal(true)
     navigate(`/parts/${currentTarget.id}`)
   }
   return (
     <Card>
+      {showModal && (
+        <Modal onClose={() => setShowModal(false)}>
+          <Outlet />
+        </Modal>
+      )}
       <div className="flex justify-between">
         <h2 className="text-2xl font-bold mb-4">Part List</h2>
         <CheckboxDropdown options={table.getAllColumns()} />
@@ -100,6 +109,17 @@ export const ComponentList: React.FC<{
             ))}
           </tbody>
         </table>
+      </div>
+      <div className="flex justify-end">
+        <button
+          className="bg-slate-800 hover:bg-slate-700 text-white font-regular my-4 py-1 px-4 rounded focus:outline-none focus:shadow-outline"
+          onClick={() => {
+            setShowModal(true)
+            navigate('/parts/add-part')
+          }}
+        >
+          Add Part
+        </button>
       </div>
     </Card>
   )

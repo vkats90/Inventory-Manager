@@ -7,6 +7,7 @@ import {
   EDIT_ORDER,
   DELETE_PRODUCT,
   DELETE_ORDER,
+  ADD_COMPONENT,
 } from './queries'
 import { Component } from './types'
 
@@ -19,6 +20,19 @@ export const login = async (email: string, password: string) => {
     window.localStorage.setItem('token', 'Bearer ' + data.login.value)
 
     return data.login
+  } catch (error: unknown) {
+    return error as Error
+  }
+}
+
+export const addComponent = async (name: string, cost: number, stock: number) => {
+  try {
+    const { data } = await client.mutate({
+      mutation: ADD_COMPONENT,
+      variables: { name, cost, stock },
+    })
+
+    return data.addComponent
   } catch (error: unknown) {
     return error as Error
   }
