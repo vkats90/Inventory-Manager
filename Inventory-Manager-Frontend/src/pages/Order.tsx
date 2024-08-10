@@ -91,7 +91,6 @@ const SingleOrderPage: React.FC = () => {
               onChange={handleInputChange}
               name="status"
             >
-              <option value="">Select Status</option>
               <option value="Created">Created</option>
               <option value="Ordered">Ordered</option>
               <option value="Shipped">Shipped</option>

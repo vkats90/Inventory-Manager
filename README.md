@@ -2,10 +2,8 @@
 
 ## To DO:
 
-- add, AddOrder, and AddProduct
 - Make Orders, Products and Parts, update after adding/editing/deleting
-- Make Modals close after Editing/ deleting/ adding
-- Add components to product
+- Add components to addProduct and editproduct
 - Add loading state to Modals
 - Implement sorting to tables
 - Implement search
@@ -37,3 +35,4 @@
     8.6: 3
     8.7: 2
     8.8: 1.5
+    8.10: 2

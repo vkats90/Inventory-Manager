@@ -9,6 +9,7 @@ import {
   DELETE_ORDER,
   ADD_COMPONENT,
   ADD_PRODUCT,
+  ADD_ORDER,
 } from './queries'
 import { Component } from './types'
 
@@ -139,6 +140,24 @@ export const editOrder = async (
     })
 
     return data.editOrder
+  } catch (error: unknown) {
+    return error as Error
+  }
+}
+
+export const addOrder = async (
+  name: string,
+  quantity: number,
+  priority: number | null,
+  status: string
+) => {
+  try {
+    const { data } = await client.mutate({
+      mutation: ADD_ORDER,
+      variables: { name, quantity, priority, status },
+    })
+
+    return data.addOrder
   } catch (error: unknown) {
     return error as Error
   }

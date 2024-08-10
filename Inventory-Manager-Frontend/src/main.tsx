@@ -12,6 +12,7 @@ import Login from './pages/login.tsx'
 import Product from './pages/Product.tsx'
 import Component from './pages/Component.tsx'
 import Order from './pages/Order.tsx'
+import AddOrder from './pages/AddOrder.tsx'
 import AddComponent from './pages/AddComponent.tsx'
 import { ApolloClient, InMemoryCache, ApolloProvider } from '@apollo/client'
 import {
@@ -89,6 +90,10 @@ const router = createBrowserRouter([
             path: '/orders/:orderID',
             element: <Order />,
             loader: findOrderLoader,
+          },
+          {
+            path: '/orders/add-order',
+            element: <AddOrder />,
           },
         ],
       },

@@ -73,7 +73,6 @@ export const OrderList: React.FC<{ orders: Order[]; InitColumns?: typeof initial
   orders,
   InitColumns,
 }) => {
-  const [showModal, setShowModal] = useState(false)
   const [data, _setData] = useState(() => [...orders])
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>(
     InitColumns || initialTableHeaders
@@ -91,14 +90,13 @@ export const OrderList: React.FC<{ orders: Order[]; InitColumns?: typeof initial
   })
 
   const _handleClick = ({ currentTarget }: React.MouseEvent) => {
-    setShowModal(true)
     navigate(`/orders/${currentTarget.id}`)
   }
 
   return (
     <Card>
-      {showModal && (
-        <Modal onClose={() => setShowModal(false)}>
+      {location.pathname != '/orders' && location.pathname != '/' && (
+        <Modal onClose={() => navigate('/orders')}>
           <Outlet />
         </Modal>
       )}
@@ -146,6 +144,16 @@ export const OrderList: React.FC<{ orders: Order[]; InitColumns?: typeof initial
             ))}
           </tbody>
         </table>
+      </div>
+      <div className="flex justify-end">
+        <button
+          className="bg-primary hover:bg-primary/80 text-white font-regular my-4 py-1 px-4 rounded shadow-md focus:outline-none focus:shadow-outline"
+          onClick={() => {
+            navigate('/orders/add-order')
+          }}
+        >
+          Add Order
+        </button>
       </div>
     </Card>
   )
