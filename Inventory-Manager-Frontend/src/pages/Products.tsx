@@ -109,7 +109,7 @@ export const ProductList: React.FC<{
         <table className="min-w-full table-auto">
           <thead>
             {table.getHeaderGroups().map((headerGroup) => (
-              <tr key={headerGroup.id} className="bg-gray-200 text-left">
+              <tr key={headerGroup.id} className="bg-primary/80 text-white text-left">
                 {headerGroup.headers.map((header) => (
                   <th key={header.id} className="px-4 py-2">
                     {header.isPlaceholder
@@ -126,7 +126,7 @@ export const ProductList: React.FC<{
                 id={row.getValue('id')}
                 key={row.id}
                 onClick={_handleClick}
-                className={`border-b hover:bg-slate-200 cursor-pointer`}
+                className={`border-b hover:bg-primary/30 cursor-pointer`}
               >
                 {row.getVisibleCells().map((cell) => (
                   <td key={cell.id} className="px-4 py-2">

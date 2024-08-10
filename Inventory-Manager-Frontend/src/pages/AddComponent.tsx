@@ -45,7 +45,7 @@ const AddComponent: React.FC = () => {
             type="text"
             name="cost"
             id="cost"
-            className="shadow appearance-none border rounded  py-2 px-3 w-60 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+            className="shadow appearance-none border rounded  py-2 px-3 w-60 text-gray-700 leading-tight focus:outline-primary focus:shadow-outline"
             required
           />
         </div>
@@ -57,14 +57,14 @@ const AddComponent: React.FC = () => {
             type="text"
             name="stock"
             id="stock"
-            className="shadow appearance-none border rounded w-60 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+            className="shadow appearance-none border rounded w-60 py-2 px-3 text-gray-700 leading-tight focus:outline-primary focus:shadow-outline"
           />
         </div>
 
         <div className="flex justify-center">
           <button
             type="submit"
-            className="bg-slate-800 hover:bg-slate-600 text-white font-bold py-2 px-4 my-2 rounded focus:outline-none focus:shadow-outline"
+            className="bg-primary shadow-md hover:bg-primary/80 text-white font-bold py-2 px-4 my-2 rounded focus:outline-primary focus:shadow-outline"
           >
             Add Component
           </button>

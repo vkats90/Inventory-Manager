@@ -67,7 +67,7 @@ const SingleComponentPage: React.FC = () => {
           <div>
             <label className="font-semibold">ID:</label>
             <input
-              className="w-full mt-1 p-2 border rounded bg-gray-100"
+              className="w-full mt-1 p-2 border rounded bg-gray-100 focus:outline-primary"
               readOnly
               value={component.id}
             />
@@ -75,7 +75,7 @@ const SingleComponentPage: React.FC = () => {
           <div>
             <label className="font-semibold">Stock:</label>
             <input
-              className="w-full mt-1 p-2 border rounded"
+              className="w-full mt-1 p-2 border rounded focus:outline-primary"
               type="number"
               step="1"
               value={component.stock}
@@ -86,7 +86,7 @@ const SingleComponentPage: React.FC = () => {
           <div>
             <label className="font-semibold">Cost:</label>
             <input
-              className="w-full mt-1 p-2 border rounded"
+              className="w-full mt-1 p-2 border rounded focus:outline-primary"
               type="number"
               step="0.01"
               value={component.cost ?? ''}

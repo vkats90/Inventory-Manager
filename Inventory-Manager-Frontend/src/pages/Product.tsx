@@ -60,7 +60,7 @@ const SingleProductPage: React.FC = () => {
       {/* @ts-ignore this is a react 19 feature*/}
       <form action={handleSubmit}>
         <input
-          className="text-3xl font-bold mb-4 w-full"
+          className="text-3xl font-bold mb-4 w-full focus:outline-primary"
           value={product.name}
           onChange={handleInputChange}
           name="name"
@@ -69,7 +69,7 @@ const SingleProductPage: React.FC = () => {
           <div>
             <label className="font-semibold">SKU:</label>
             <input
-              className="w-full mt-1 p-2 border rounded"
+              className="w-full mt-1 p-2 border rounded focus:outline-primary"
               value={product.SKU}
               onChange={handleInputChange}
               name="SKU"
@@ -78,7 +78,7 @@ const SingleProductPage: React.FC = () => {
           <div>
             <label className="font-semibold">Stock:</label>
             <input
-              className="w-full mt-1 p-2 border rounded"
+              className="w-full mt-1 p-2 border rounded focus:outline-primary"
               type="number"
               value={product.stock}
               onChange={handleInputChange}
@@ -88,7 +88,7 @@ const SingleProductPage: React.FC = () => {
           <div>
             <label className="font-semibold">Cost:</label>
             <input
-              className="w-full mt-1 p-2 border rounded"
+              className="w-full mt-1 p-2 border rounded focus:outline-primary"
               type="number"
               step="0.01"
               value={product.cost ?? ''}
@@ -99,7 +99,7 @@ const SingleProductPage: React.FC = () => {
           <div>
             <label className="font-semibold">Price:</label>
             <input
-              className="w-full mt-1 p-2 border rounded"
+              className="w-full mt-1 p-2 border rounded focus:outline-primary"
               type="number"
               step="0.01"
               value={product.price ?? ''}
@@ -122,8 +122,8 @@ const SingleProductPage: React.FC = () => {
         <form
         //add component logic here using action={}
         >
-          <input name="component" className="mr-4 mt-1 p-2 border rounded" />
-          <button className=" bg-gray-800 mt-4 text-white rounded px-3 py-2 hover:bg-slate-600 trnsition">
+          <input name="component" className="mr-4 mt-1 p-2 border rounded focus:outline-primary" />
+          <button className=" bg-primary mt-4 text-white rounded px-3 py-2 hover:bg-primary/80 trnsition">
             {' '}
             Add Component{' '}
           </button>

@@ -57,7 +57,7 @@ const SingleOrderPage: React.FC = () => {
       {/* @ts-ignore this is a react 19 feature*/}
       <form action={handleSubmit}>
         <input
-          className="text-3xl font-bold mb-4 w-full"
+          className="text-3xl font-bold mb-4 w-full focus:outline-primary"
           value={order.name}
           onChange={handleInputChange}
           name="name"
@@ -66,7 +66,7 @@ const SingleOrderPage: React.FC = () => {
           <div>
             <label className="font-semibold">Quantity:</label>
             <input
-              className="w-full mt-1 p-2 border rounded"
+              className="w-full mt-1 p-2 border rounded focus:outline-primary"
               type="number"
               value={order.quantity}
               onChange={handleInputChange}
@@ -74,9 +74,9 @@ const SingleOrderPage: React.FC = () => {
             />
           </div>
           <div>
-            <label className="font-semibold">Priority:</label>
+            <label className="font-semibold ">Priority:</label>
             <input
-              className="w-full mt-1 p-2 border rounded"
+              className="w-full mt-1 p-2 border rounded focus:outline-primary"
               type="number"
               value={order.priority ?? ''}
               onChange={handleInputChange}
@@ -86,7 +86,7 @@ const SingleOrderPage: React.FC = () => {
           <div>
             <label className="font-semibold">Status:</label>
             <select
-              className="w-full mt-1 p-2 border rounded"
+              className="w-full mt-1 p-2 border rounded focus:outline-primary"
               value={order.status ?? ''}
               onChange={handleInputChange}
               name="status"
@@ -101,7 +101,7 @@ const SingleOrderPage: React.FC = () => {
           <div>
             <label className="font-semibold">Created On:</label>
             <input
-              className="w-full mt-1 p-2 border rounded bg-gray-100"
+              className="w-full mt-1 p-2 border rounded bg-gray-100 focus:outline-primary"
               value={new Date(Number(order.created_on)).toLocaleString()}
               readOnly
             />
@@ -109,7 +109,7 @@ const SingleOrderPage: React.FC = () => {
           <div>
             <label className="font-semibold">Created By:</label>
             <input
-              className="w-full mt-1 p-2 border rounded bg-gray-100"
+              className="w-full mt-1 p-2 border rounded bg-gray-100 focus:outline-primary"
               value={order.created_by.name}
               readOnly
             />
@@ -117,7 +117,7 @@ const SingleOrderPage: React.FC = () => {
           <div>
             <label className="font-semibold">Updated On:</label>
             <input
-              className="w-full mt-1 p-2 border rounded bg-gray-100"
+              className="w-full mt-1 p-2 border rounded bg-gray-100 focus:outline-primary"
               value={new Date(Number(order.updated_on)).toLocaleString()}
               readOnly
             />
@@ -125,7 +125,7 @@ const SingleOrderPage: React.FC = () => {
           <div>
             <label className="font-semibold">Updated By:</label>
             <input
-              className="w-full mt-1 p-2 border rounded bg-gray-100"
+              className="w-full mt-1 p-2 border rounded bg-gray-100 focus:outline-primary"
               value={order.updated_by?.name ?? 'N/A'}
               readOnly
             />

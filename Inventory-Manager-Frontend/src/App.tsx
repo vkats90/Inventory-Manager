@@ -13,7 +13,7 @@ function App() {
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     //@ts-expect-error
     <AppContext value={{ inView, setInView, user, setUser }}>
-      <div className="bg-slate-200 min-h-[100vh] flex">
+      <div className="bg-slate-200 min-h-[100vh] flex font-Ubuntu">
         <Sidebar />
         <ToastContainer />
         <Outlet />
