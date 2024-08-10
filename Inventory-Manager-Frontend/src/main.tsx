@@ -5,6 +5,7 @@ import './index.css'
 import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 import Home from './pages/Home.tsx'
 import ProductPage from './pages/Products.tsx'
+import AddProduct from './pages/AddProduct.tsx'
 import ComponentPage from './pages/Components.tsx'
 import OrderPage from './pages/Orders.tsx'
 import Login from './pages/login.tsx'
@@ -48,6 +49,10 @@ const router = createBrowserRouter([
             path: '/products/:productID',
             element: <Product />,
             loader: findProductLoader,
+          },
+          {
+            path: '/products/add-product',
+            element: <AddProduct />,
           },
         ],
       },

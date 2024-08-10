@@ -1,6 +1,5 @@
 import React, { useState } from 'react'
 import { useLoaderData, useNavigate } from 'react-router-dom'
-import Card from '../components/card'
 import { Product } from '../types'
 import isEqual from 'react-fast-compare'
 import { notify } from '../utils/notify'

@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import Card from '../components/card'
-import { useNavigate, useLoaderData } from 'react-router-dom'
+import { useNavigate, useLoaderData, useLocation } from 'react-router-dom'
 import { Product } from '../types'
 //import { exampleProducts } from '../assets/data/data'
 import {
@@ -72,12 +72,12 @@ export const ProductList: React.FC<{
   products: Product[]
   InitColumns?: typeof initialTableHeaders
 }> = ({ products, InitColumns }) => {
-  const [showModal, setShowModal] = useState(false)
   const [data, _setData] = useState(() => [...products])
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>(
     InitColumns || initialTableHeaders
   )
   const navigate = useNavigate()
+  const location = useLocation()
 
   const table = useReactTable({
     data,
@@ -90,14 +90,13 @@ export const ProductList: React.FC<{
   })
 
   const _handleClick = ({ currentTarget }: React.MouseEvent) => {
-    setShowModal(true)
     navigate(`/products/${currentTarget.id}`)
   }
 
   return (
     <Card>
-      {showModal && (
-        <Modal onClose={() => setShowModal(false)}>
+      {location.pathname != '/products' && location.pathname != '/' && (
+        <Modal onClose={() => navigate('/products')}>
           <Outlet />
         </Modal>
       )}
@@ -109,7 +108,7 @@ export const ProductList: React.FC<{
         <table className="min-w-full table-auto">
           <thead>
             {table.getHeaderGroups().map((headerGroup) => (
-              <tr key={headerGroup.id} className="bg-primary/80 text-white text-left">
+              <tr key={headerGroup.id} className="bg-primary/70 text-white text-left">
                 {headerGroup.headers.map((header) => (
                   <th key={header.id} className="px-4 py-2">
                     {header.isPlaceholder
@@ -137,6 +136,16 @@ export const ProductList: React.FC<{
             ))}
           </tbody>
         </table>
+      </div>
+      <div className="flex justify-end">
+        <button
+          className="bg-primary hover:bg-primary/80 text-white font-regular my-4 py-1 px-4 rounded shadow-md focus:outline-none focus:shadow-outline"
+          onClick={() => {
+            navigate('/products/add-product')
+          }}
+        >
+          Add Product
+        </button>
       </div>
     </Card>
   )

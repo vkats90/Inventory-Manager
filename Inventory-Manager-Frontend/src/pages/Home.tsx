@@ -45,7 +45,7 @@ const Home = () => {
 
   return (
     <div className="container ">
-      <h1 className="text-2xl my-6 font-bold text-center">{'Hello ' + user}</h1>
+      <h1 className="text-4xl my-6 font-bold text-center">{'Hello ' + user}</h1>
       <div className="container flex mx-auto px-4 py-8 gap-4">
         <ProductList products={loaderData.product} InitColumns={initialProductHeaders} />
         <OrderList orders={loaderData.order} InitColumns={initialOrderHeaders} />

@@ -8,6 +8,7 @@ import {
   DELETE_PRODUCT,
   DELETE_ORDER,
   ADD_COMPONENT,
+  ADD_PRODUCT,
 } from './queries'
 import { Component } from './types'
 
@@ -83,6 +84,29 @@ export const editProduct = async (
     })
 
     return data.editProduct
+  } catch (error: unknown) {
+    return error as Error
+  }
+}
+
+export const addProduct = async (
+  name: string,
+  cost: number,
+  stock: number,
+  price: number,
+  SKU: string,
+  components: Component[] | [] | string[]
+) => {
+  try {
+    if (components.length != 0) {
+      components = components.map((component) => (component as Component).id)
+    }
+    const { data } = await client.mutate({
+      mutation: ADD_PRODUCT,
+      variables: { name, cost, stock, price, SKU, components },
+    })
+
+    return data.addProduct
   } catch (error: unknown) {
     return error as Error
   }

@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import Card from '../components/card'
-import { useNavigate, useLoaderData } from 'react-router-dom'
+import { useNavigate, useLoaderData, useLocation } from 'react-router-dom'
 import { Component } from '../types'
 import Modal from '../components/modal'
 import { Outlet } from 'react-router-dom'
@@ -44,13 +44,13 @@ export const ComponentList: React.FC<{
   components: Component[]
   InitColumns?: typeof initialPartHeaders
 }> = ({ components, InitColumns }) => {
-  const [showModal, setShowModal] = useState(false)
   const [data, _setData] = useState(() => [...components])
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>(
     InitColumns || initialPartHeaders
   )
 
   const navigate = useNavigate()
+  const location = useLocation()
 
   const table = useReactTable({
     data,
@@ -63,13 +63,12 @@ export const ComponentList: React.FC<{
   })
 
   const _handleClick = ({ currentTarget }: React.MouseEvent) => {
-    setShowModal(true)
     navigate(`/parts/${currentTarget.id}`)
   }
   return (
     <Card>
-      {showModal && (
-        <Modal onClose={() => setShowModal(false)}>
+      {location.pathname != '/parts' && location.pathname != '/' && (
+        <Modal onClose={() => navigate('/parts')}>
           <Outlet />
         </Modal>
       )}
@@ -114,7 +113,6 @@ export const ComponentList: React.FC<{
         <button
           className="bg-primary hover:bg-primary/80 text-white font-regular my-4 py-1 px-4 rounded shadow-md focus:outline-none focus:shadow-outline"
           onClick={() => {
-            setShowModal(true)
             navigate('/parts/add-part')
           }}
         >
