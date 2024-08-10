@@ -16,7 +16,7 @@ const CheckboxDropdown: React.FC<FilterProps> = ({ options }) => {
       <div>
         <button
           type="button"
-          className="inline-flex justify-center w-full rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+          className="inline-flex justify-center w-full rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2  focus:ring-primary"
           onClick={toggleDropdown}
         >
           Filter
@@ -44,21 +44,27 @@ const CheckboxDropdown: React.FC<FilterProps> = ({ options }) => {
             aria-orientation="vertical"
             aria-labelledby="options-menu"
           >
-            {options.map((option) => (
-              <label
-                key={option.id}
-                className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900"
-                role="menuitem"
-              >
-                <input
-                  type="checkbox"
-                  className="form-checkbox h-5 w-5 text-indigo-600"
-                  checked={option.getIsVisible()}
-                  onChange={option.getToggleVisibilityHandler()}
-                />
-                <span className="ml-2">{option.columnDef.header as string}</span>
-              </label>
-            ))}
+            {options.map((option) => {
+              return (
+                <div>
+                  {option.id != 'id' && (
+                    <label
+                      key={option.id}
+                      className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-primary/20 hover:text-gray-900 accent-primary"
+                      role="menuitem"
+                    >
+                      <input
+                        type="checkbox"
+                        className="form-checkbox h-5 w-5"
+                        checked={option.getIsVisible()}
+                        onChange={option.getToggleVisibilityHandler()}
+                      />
+                      <span className="ml-2">{option.columnDef.header as string}</span>
+                    </label>
+                  )}
+                </div>
+              )
+            })}
           </div>
         </div>
       )}
