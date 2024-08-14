@@ -36,12 +36,8 @@ const componentResolver = {
     },
   },
   Mutation: {
-    addComponent: async (
-      _root: Component,
-      args: Component,
-      { currentUser }: { currentUser: User }
-    ) => {
-      if (!currentUser) {
+    addComponent: async (_root: Component, args: Component, context: MyContext) => {
+      if (!context.isAuthenticated()) {
         throw new GraphQLError('wrong credentials', {
           extensions: { code: 'UNAUTHORIZED' },
         })
@@ -67,12 +63,8 @@ const componentResolver = {
         })
       }
     },
-    editComponent: async (
-      _root: Component,
-      args: Component,
-      { currentUser }: { currentUser: User }
-    ) => {
-      if (!currentUser) {
+    editComponent: async (_root: Component, args: Component, context: MyContext) => {
+      if (!context.isAuthenticated()) {
         throw new GraphQLError('wrong credentials', {
           extensions: { code: 'UNAUTHORIZED' },
         })
@@ -106,12 +98,8 @@ const componentResolver = {
         })
       }
     },
-    deleteComponent: async (
-      _root: Component,
-      args: Component,
-      { currentUser }: { currentUser: User }
-    ) => {
-      if (!currentUser) {
+    deleteComponent: async (_root: Component, args: Component, context: MyContext) => {
+      if (!context.isAuthenticated()) {
         throw new GraphQLError('wrong credentials', {
           extensions: { code: 'UNAUTHORIZEDT' },
         })

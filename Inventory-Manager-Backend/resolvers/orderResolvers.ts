@@ -12,12 +12,8 @@ const orderResolver = {
       }
       return await OrderModel.find({}).populate('created_by').populate('updated_by')
     },
-    findOrder: async (
-      _root: Order,
-      { id }: { id: string },
-      { currentUser }: { currentUser: User }
-    ) => {
-      if (!currentUser) {
+    findOrder: async (_root: Order, { id }: { id: string }, context: MyContext) => {
+      if (!context.isAuthenticated()) {
         throw new GraphQLError('wrong credentials', {
           extensions: { code: 'UNAUTHORIZED' },
         })
@@ -38,7 +34,9 @@ const orderResolver = {
     },
   },
   Mutation: {
-    addOrder: async (_root: Order, args: Order, { currentUser }: { currentUser: User }) => {
+    addOrder: async (_root: Order, args: Order, context: MyContext) => {
+      const currentUser = context.getUser()
+
       if (!currentUser) {
         throw new GraphQLError('wrong credentials', {
           extensions: { code: 'UNAUTHORIZED' },
@@ -74,7 +72,8 @@ const orderResolver = {
       }
       return (await order.populate('created_by')).populate('updated_by')
     },
-    editOrder: async (_root: Order, args: Order, { currentUser }: { currentUser: User }) => {
+    editOrder: async (_root: Order, args: Order, context: MyContext) => {
+      const currentUser = context.getUser()
       if (!currentUser) {
         throw new GraphQLError('wrong credentials', {
           extensions: { code: 'UNAUTHORIZED' },
@@ -126,8 +125,8 @@ const orderResolver = {
         })
       }
     },
-    deleteOrder: async (_root: Order, args: Order, { currentUser }: { currentUser: User }) => {
-      if (!currentUser) {
+    deleteOrder: async (_root: Order, args: Order, context: MyContext) => {
+      if (!context.isAuthenticated()) {
         throw new GraphQLError('wrong credentials', {
           extensions: { code: 'UNAUTHORIZED' },
         })

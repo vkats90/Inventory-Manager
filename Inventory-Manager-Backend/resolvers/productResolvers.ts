@@ -13,12 +13,8 @@ const productResolver = {
       return ProductModel.find({}).populate('components')
     },
 
-    findProduct: async (
-      _root: Product,
-      { id }: { id: string },
-      { currentUser }: { currentUser: User }
-    ) => {
-      if (!currentUser) {
+    findProduct: async (_root: Product, { id }: { id: string }, context: MyContext) => {
+      if (!context.isAuthenticated()) {
         throw new GraphQLError('wrong credentials', {
           extensions: { code: 'UNAUTHORIZED' },
         })
@@ -36,8 +32,8 @@ const productResolver = {
     },
   },
   Mutation: {
-    addProduct: async (_root: Product, args: Product, { currentUser }: { currentUser: User }) => {
-      if (!currentUser) {
+    addProduct: async (_root: Product, args: Product, context: MyContext) => {
+      if (!context.isAuthenticated()) {
         throw new GraphQLError('wrong credentials', {
           extensions: { code: 'UNAUTHORIZED' },
         })
@@ -71,8 +67,8 @@ const productResolver = {
       return product.populate('components')
     },
 
-    editProduct: async (_root: Product, args: Product, { currentUser }: { currentUser: User }) => {
-      if (!currentUser) {
+    editProduct: async (_root: Product, args: Product, context: MyContext) => {
+      if (!context.isAuthenticated()) {
         throw new GraphQLError('wrong credentials', {
           extensions: { code: 'UNAUTHORIZED' },
         })
@@ -106,12 +102,8 @@ const productResolver = {
         })
       }
     },
-    deleteProduct: async (
-      _root: Product,
-      args: Product,
-      { currentUser }: { currentUser: User }
-    ) => {
-      if (!currentUser) {
+    deleteProduct: async (_root: Product, args: Product, context: MyContext) => {
+      if (!context.isAuthenticated()) {
         throw new GraphQLError('wrong credentials', {
           extensions: { code: 'UNAUTHORIZEDT' },
         })

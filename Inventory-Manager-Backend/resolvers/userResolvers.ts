@@ -39,7 +39,7 @@ const userResolver = {
       //@ts-ignore
       const { user } = await context.authenticate('graphql-local', { email, password })
       await context.login(user as HashedUser)
-      return { user }
+      return user
 
       /*const user = await UserModel.findOne({ email: args.email })
       const passwordCheck =
