@@ -1,11 +1,11 @@
-import { Component, User } from '../types'
+import { Component, User, MyContext } from '../types'
 import ComponentModel from '../models/component'
 import { GraphQLError } from 'graphql'
 
 const componentResolver = {
   Query: {
-    allComponents: async (_root: User, _args: User, { currentUser }: { currentUser: User }) => {
-      if (!currentUser) {
+    allComponents: async (_root: User, _args: User, context: MyContext) => {
+      if (!context.isAuthenticated()) {
         throw new GraphQLError('wrong credentials', {
           extensions: { code: 'UNAUTHORIZED' },
         })

@@ -1,11 +1,11 @@
-import { Order, User } from '../types'
+import { Order, User, MyContext } from '../types'
 import OrderModel from '../models/order'
 import { GraphQLError } from 'graphql'
 
 const orderResolver = {
   Query: {
-    allOrders: async (_root: User, _args: User, { currentUser }: { currentUser: User }) => {
-      if (!currentUser) {
+    allOrders: async (_root: User, _args: User, context: MyContext) => {
+      if (!context.isAuthenticated()) {
         throw new GraphQLError('wrong credentials', {
           extensions: { code: 'UNAUTHORIZED' },
         })

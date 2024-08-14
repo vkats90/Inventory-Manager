@@ -1,3 +1,6 @@
+import { PassportContext } from 'graphql-passport'
+import { Request as ExpressRequest } from 'express'
+
 export interface Product {
   name: string
   stock: number
@@ -34,3 +37,9 @@ export interface User {
   name: string
   stores: string[]
 }
+
+export interface HashedUser extends Omit<User, 'password'> {
+  passwordHash: string
+}
+
+export interface MyContext extends PassportContext<HashedUser, ExpressRequest> {}

@@ -1,11 +1,11 @@
-import { Product, User } from '../types'
+import { Product, User, MyContext } from '../types'
 import ProductModel from '../models/product'
 import { GraphQLError } from 'graphql'
 
 const productResolver = {
   Query: {
-    allProducts: async (_root: User, _args: User, { currentUser }: { currentUser: User }) => {
-      if (!currentUser) {
+    allProducts: async (_root: User, _args: User, context: MyContext) => {
+      if (!context.isAuthenticated()) {
         throw new GraphQLError('wrong credentials', {
           extensions: { code: 'UNAUTHORIZED' },
         })

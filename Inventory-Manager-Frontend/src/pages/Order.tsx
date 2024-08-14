@@ -75,13 +75,19 @@ const SingleOrderPage: React.FC = () => {
           </div>
           <div>
             <label className="font-semibold ">Priority:</label>
-            <input
+
+            <select
+              name="Priority"
+              id="priority"
               className="w-full mt-1 p-2 border rounded focus:outline-primary"
-              type="number"
               value={order.priority ?? ''}
               onChange={handleInputChange}
-              name="priority"
-            />
+              required
+            >
+              <option value="1">1</option>
+              <option value="2">2</option>
+              <option value="3">3</option>
+            </select>
           </div>
           <div>
             <label className="font-semibold">Status:</label>
@@ -140,10 +146,18 @@ const SingleOrderPage: React.FC = () => {
         )}
       </form>
       <button
-        className=" absolute bottom-4 right-4 w-fit bg-red-600 hover:bg-red-700 mt-4 text-white rounded px-2 py-1"
+        className=" absolute bottom-4 right-4 w-fit bg-red-600 hover:bg-red-700 mt-4 text-white rounded px-1 py-1"
         onClick={() => verifyDelete(handleDelete)}
       >
-        Delete
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          id="Layer_1"
+          data-name="Layer 1"
+          viewBox="0 0 24 24"
+          className="w-6 h-6 fill-white"
+        >
+          <path d="m17,4v-2c0-1.103-.897-2-2-2h-6c-1.103,0-2,.897-2,2v2H1v2h1.644l1.703,15.331c.169,1.521,1.451,2.669,2.982,2.669h9.304c1.531,0,2.813-1.147,2.981-2.669l1.703-15.331h1.682v-2h-6Zm-8-2h6v2h-6v-2Zm6.957,14.543l-1.414,1.414-2.543-2.543-2.543,2.543-1.414-1.414,2.543-2.543-2.543-2.543,1.414-1.414,2.543,2.543,2.543-2.543,1.414,1.414-2.543,2.543,2.543,2.543Z" />
+        </svg>
       </button>
     </div>
   )
