@@ -98,25 +98,17 @@ export const findOrderLoader = async ({ params }: LoaderFunctionArgs) => {
 }
 
 export const meLoader = async () => {
-  const token = window.localStorage.getItem('token')
-
-  if (!token) {
-    return redirect('/login')
-  }
-
   const { data } = await client.query({
     query: ME,
     variables: {},
   })
 
   const user = data.me
-  if (!user && token) {
-    console.log('Token is invalid')
-    window.localStorage.removeItem('token')
+  if (!user) {
     return redirect('/login')
   }
 
-  return { data: data.me }
+  return user
 }
 
 interface HomeLoaderReturn {
@@ -144,7 +136,7 @@ export const homeLoader = async () => {
       data: {
         order: (order as HomeLoaderReturn).data,
         product: (product as HomeLoaderReturn).data,
-        user: (user as HomeLoaderReturn).data,
+        user: user as HomeLoaderReturn,
       },
     }
   } catch {

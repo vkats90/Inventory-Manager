@@ -8,7 +8,6 @@ const bcrypt = require('bcrypt')
 const userResolver = {
   Query: {
     me: (_root: User, _args: User, context: MyContext) => {
-      console.log(context.isAuthenticated())
       return context.getUser()
     },
   },

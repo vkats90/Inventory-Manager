@@ -41,7 +41,7 @@ const Home = () => {
   const { data: loaderData } = useLoaderData() as loaderData
   const { setUser, user } = use(AppContext)
 
-  if (loaderData.user.name) () => setUser(loaderData.user.name)
+  if (loaderData.user.name) setUser(loaderData.user.name)
 
   return (
     <div className="container ">

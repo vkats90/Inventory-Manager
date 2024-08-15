@@ -19,7 +19,6 @@ export const login = async (email: string, password: string) => {
       mutation: LOGIN,
       variables: { email, password },
     })
-    window.localStorage.setItem('token', 'Bearer ' + data.login.value)
 
     return data.login
   } catch (error: unknown) {

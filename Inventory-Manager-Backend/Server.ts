@@ -91,12 +91,18 @@ const StartServer = async () => {
   app.use(passport.initialize())
   app.use(passport.session())
 
+  const corsOptions = {
+    origin: 'http://localhost:5173',
+    credentials: true,
+  }
+
   app.use(
     '/',
-    cors<cors.CorsRequest>(),
+    cors(corsOptions),
     express.json(),
     // @ts-ignore comment
     expressMiddleware(server, {
+      cors: false,
       context: ({ req, res }) => buildContext({ req, res }),
       // @ts-ignore comment
       /*context: async ({ req }) => {

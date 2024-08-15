@@ -9,9 +9,12 @@ export default function Login() {
   const handleLogin = async (formData: FormData) => {
     const email = formData.get('email') as string
     const password = formData.get('password') as string
-    const { value, message } = await login(email, password)
-    notify({ error: message, success: value ? 'Welcome back ' + email : undefined })
-    if (value) {
+    const user = await login(email, password)
+    notify({
+      error: user.message,
+      success: !user.message ? 'Welcome back ' + user.name : undefined,
+    })
+    if (!user.message) {
       navigate('/')
     }
   }
