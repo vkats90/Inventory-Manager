@@ -146,7 +146,7 @@ const SingleOrderPage: React.FC = () => {
         )}
       </form>
       <button
-        className=" absolute bottom-4 right-4 w-fit bg-red-600 hover:bg-red-700 mt-4 text-white rounded px-1 py-1"
+        className=" absolute bottom-4 right-4 w-fit bg-red-600 hover:bg-red-700 mt-4 text-white rounded px-1 py-1 shadow-sm shadow-gray-600"
         onClick={() => verifyDelete(handleDelete)}
       >
         <svg
