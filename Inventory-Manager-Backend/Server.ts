@@ -25,7 +25,6 @@ import orderResolver from './resolvers/orderResolvers'
 import userResolver from './resolvers/userResolvers'
 import userTypeDefs from './typeDefs/userTypeDef'
 import userModel from './models/user'
-//const jwt = require('jsonwebtoken')
 
 export const schema = buildSubgraphSchema([
   { typeDefs: componentTypeDefs, resolvers: componentResolver },

@@ -12,12 +12,8 @@ const componentResolver = {
       }
       return ComponentModel.find({})
     },
-    findComponent: async (
-      _root: Component,
-      { id }: { id: string },
-      { currentUser }: { currentUser: User }
-    ) => {
-      if (!currentUser) {
+    findComponent: async (_root: Component, { id }: { id: string }, context: MyContext) => {
+      if (!context.isAuthenticated()) {
         throw new GraphQLError('wrong credentials', {
           extensions: { code: 'UNAUTHORIZED' },
         })
