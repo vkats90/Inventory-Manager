@@ -4,6 +4,7 @@ import { AppContext } from '../App'
 import Logo from '../assets/Inventory Manager copy.png'
 //@ts-ignore
 import { use } from 'react'
+import { logout } from '../actionFunctions'
 
 const Sidebar: React.FC = () => {
   const location = useLocation()
@@ -40,9 +41,9 @@ const Sidebar: React.FC = () => {
           </ul>
           <a
             onClick={() => {
-              localStorage.clear()
               setUser('')
               navigate('/login')
+              logout()
             }}
             className="absolute bottom-3 left-2 block p-2 rounded hover:ring-2 hover:ring-primary transition-colors cursor-pointer"
           >

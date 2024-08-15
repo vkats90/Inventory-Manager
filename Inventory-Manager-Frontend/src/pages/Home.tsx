@@ -4,7 +4,7 @@ import { useLoaderData } from 'react-router-dom'
 import { User, Product, Order } from '../types'
 import { AppContext } from '../App'
 //@ts-ignore
-import { use } from 'react'
+import React, { use } from 'react'
 
 interface loaderData {
   data: {
@@ -41,7 +41,8 @@ const Home = () => {
   const { data: loaderData } = useLoaderData() as loaderData
   const { setUser, user } = use(AppContext)
 
-  if (loaderData.user.name) setUser(loaderData.user.name)
+  if (loaderData.user.name)
+    setUser(loaderData.user.name) as React.Dispatch<React.SetStateAction<string>>
 
   return (
     <div className="container ">

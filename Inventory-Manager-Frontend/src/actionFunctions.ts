@@ -10,8 +10,10 @@ import {
   ADD_COMPONENT,
   ADD_PRODUCT,
   ADD_ORDER,
+  LOGOUT,
 } from './queries'
 import { Component } from './types'
+import { notify } from './utils/notify'
 
 export const login = async (email: string, password: string) => {
   try {
@@ -24,6 +26,13 @@ export const login = async (email: string, password: string) => {
   } catch (error: unknown) {
     return error as Error
   }
+}
+
+export const logout = async () => {
+  const { data } = await client.mutate({
+    mutation: LOGOUT,
+  })
+  notify({ success: data.logout })
 }
 
 export const addComponent = async (name: string, cost: number, stock: number) => {

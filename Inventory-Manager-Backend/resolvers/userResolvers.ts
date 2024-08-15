@@ -57,6 +57,10 @@ const userResolver = {
       }
       return { value: jwt.sign(tokenUser, process.env.JWT_SECRET, { expiresIn: 60 * 60 }) } */
     },
+    logout: (_root: User, _args: User, context: MyContext) => {
+      context.logout()
+      return 'Successfully logged out'
+    },
   },
 }
 
