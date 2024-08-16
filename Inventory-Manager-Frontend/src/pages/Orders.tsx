@@ -2,6 +2,8 @@ import React, { useState } from 'react'
 import Card from '../components/card'
 import { useNavigate, useLoaderData } from 'react-router-dom'
 import { Order } from '../types'
+import { useReadQuery, QueryRef } from '@apollo/client'
+import { notify } from '../utils/notify'
 //import { exampleOrders } from '../assets/data/data'
 import CheckboxDropdown from '../components/filter'
 import {
@@ -160,14 +162,21 @@ export const OrderList: React.FC<{ orders: Order[]; InitColumns?: typeof initial
 }
 
 interface loaderData {
-  data: Order[]
+  allOrders: Order[]
 }
 
 const OrderPage: React.FC = () => {
-  const { data: loaderData } = useLoaderData() as loaderData
+  const queryRef = useLoaderData()
+  const { data: loaderData, error } = useReadQuery(queryRef as QueryRef<loaderData>)
+
+  if (error) {
+    notify({ error: error.message })
+    return <div>Can't display page</div>
+  }
+
   return (
     <div className="container mx-auto px-4 py-8">
-      <OrderList orders={loaderData} />
+      <OrderList orders={loaderData.allOrders} />
     </div>
   )
 }

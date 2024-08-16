@@ -2,6 +2,9 @@ import React, { useState } from 'react'
 import Card from '../components/card'
 import { useNavigate, useLoaderData, useLocation } from 'react-router-dom'
 import { Product } from '../types'
+import { useReadQuery, QueryRef } from '@apollo/client'
+import { notify } from '../utils/notify'
+
 //import { exampleProducts } from '../assets/data/data'
 import {
   useReactTable,
@@ -151,14 +154,21 @@ export const ProductList: React.FC<{
   )
 }
 interface loaderData {
-  data: Product[]
+  allProducts: Product[]
 }
 
 const ProductPage: React.FC = () => {
-  const { data: loaderData } = useLoaderData() as loaderData
+  const queryRef = useLoaderData()
+  const { data: loaderData, error } = useReadQuery(queryRef as QueryRef<loaderData>)
+
+  if (error) {
+    notify({ error: error.message })
+    return <div>Can't display page</div>
+  }
+
   return (
     <div className="container mx-auto px-4 py-8">
-      <ProductList products={loaderData} />
+      <ProductList products={loaderData.allProducts} />
     </div>
   )
 }

@@ -6,95 +6,54 @@ import {
   FIND_COMPONENT,
   FIND_PRODUCT,
   FIND_ORDER,
+  PRODUCTS_ORDERS_ME,
 } from './queries'
 import { client } from './client'
 import { redirect, LoaderFunctionArgs } from 'react-router-dom'
-import { notify } from './utils/notify'
-import { Order, Product, User } from './types'
+import { createQueryPreloader } from '@apollo/client'
+
+const preloadQuery = createQueryPreloader(client)
 
 export const allComponentsLoader = async () => {
-  try {
-    const { data } = await client.query({
-      query: ALL_COMPONENTS,
-      variables: {},
-      fetchPolicy: 'network-only',
-    })
-    return { data: data.allComponents }
-  } catch (errors: unknown) {
-    notify({ error: 'You must be logged in to view this page' })
-    return redirect('/login')
-  }
+  return preloadQuery(ALL_COMPONENTS, {
+    errorPolicy: 'all',
+  })
 }
 
 export const findComponentLoader = async ({ params }: LoaderFunctionArgs) => {
-  try {
-    const { data } = await client.query({
-      query: FIND_COMPONENT,
-      variables: { id: params.partID },
-    })
-    return { data: data.findComponent }
-  } catch (errors: unknown) {
-    notify({ error: 'You must be logged in to view this page' })
-    return redirect('/login')
-  }
+  return preloadQuery(FIND_COMPONENT, {
+    variables: { id: params.partID },
+
+    errorPolicy: 'all',
+  })
 }
 
 export const allProductsLoader = async () => {
-  try {
-    const { data } = await client.query({
-      query: ALL_PRODUCTS,
-      variables: {},
-      fetchPolicy: 'network-only',
-    })
-
-    return { data: data.allProducts }
-  } catch (errors: unknown) {
-    notify({ error: 'You must be logged in to view this page' })
-    return redirect('/login')
-  }
+  return preloadQuery(ALL_PRODUCTS, {
+    errorPolicy: 'all',
+  })
 }
 
 export const findProductLoader = async ({ params }: LoaderFunctionArgs) => {
-  try {
-    const { data } = await client.query({
-      query: FIND_PRODUCT,
-      variables: { id: params.productID },
-    })
+  return preloadQuery(FIND_PRODUCT, {
+    variables: { id: params.productID },
 
-    return { data: data.findProduct }
-  } catch (errors: unknown) {
-    notify({ error: 'You must be logged in to view this page' })
-    return redirect('/login')
-  }
+    errorPolicy: 'all',
+  })
 }
 
 export const allOrdersLoader = async () => {
-  try {
-    const { data } = await client.query({
-      query: ALL_ORDERS,
-      variables: {},
-      fetchPolicy: 'network-only',
-    })
-
-    return { data: data.allOrders }
-  } catch (errors: unknown) {
-    notify({ error: 'You must be logged in to view this page' })
-    return redirect('/login')
-  }
+  return preloadQuery(ALL_ORDERS, {
+    errorPolicy: 'all',
+  })
 }
 
 export const findOrderLoader = async ({ params }: LoaderFunctionArgs) => {
-  try {
-    const { data } = await client.query({
-      query: FIND_ORDER,
-      variables: { id: params.orderID },
-    })
+  return preloadQuery(FIND_ORDER, {
+    variables: { id: params.orderID },
 
-    return { data: data.findOrder }
-  } catch (errors: unknown) {
-    notify({ error: 'You must be logged in to view this page' })
-    return redirect('/login')
-  }
+    errorPolicy: 'all',
+  })
 }
 
 export const meLoader = async () => {
@@ -111,36 +70,8 @@ export const meLoader = async () => {
   return user
 }
 
-interface HomeLoaderReturn {
-  data: {
-    order: Order[]
-    product: Product[]
-    user: User
-  }
-}
-
 export const homeLoader = async () => {
-  try {
-    const order = await allOrdersLoader()
-    const product = await allProductsLoader()
-    const user = await meLoader()
-
-    if (
-      (order as Response).status == 302 ||
-      (order as Response).status == 302 ||
-      (order as Response).status == 302
-    )
-      return redirect('/login')
-
-    return {
-      data: {
-        order: (order as HomeLoaderReturn).data,
-        product: (product as HomeLoaderReturn).data,
-        user: user as HomeLoaderReturn,
-      },
-    }
-  } catch {
-    notify({ error: 'You must be logged in to view this page' })
-    return redirect('/login')
-  }
+  return preloadQuery(PRODUCTS_ORDERS_ME, {
+    errorPolicy: 'all',
+  })
 }

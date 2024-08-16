@@ -4,16 +4,24 @@ import { Component } from '../types'
 import { editComponent, deleteComponent } from '../actionFunctions'
 import isEqual from 'react-fast-compare'
 import { notify, verifyDelete } from '../utils/notify'
+import { useReadQuery, QueryRef } from '@apollo/client'
 
 interface loaderData {
-  data: Component
+  findComponent: Component
 }
 
 const SingleComponentPage: React.FC = () => {
-  const navigate = useNavigate()
-  let { data: loaderComponent } = useLoaderData() as loaderData
-  const [component, setComponent] = useState<Component>(loaderComponent)
+  const queryRef = useLoaderData()
+  const { data: loaderComponent, error } = useReadQuery(queryRef as QueryRef<loaderData>)
+  const [component, setComponent] = useState<Component>(loaderComponent.findComponent)
   const [visible, setVisible] = useState(false)
+
+  if (error) {
+    notify({ error: error.message })
+    return <div>Can't display page</div>
+  }
+
+  const navigate = useNavigate()
 
   const handleDelete = async () => {
     try {

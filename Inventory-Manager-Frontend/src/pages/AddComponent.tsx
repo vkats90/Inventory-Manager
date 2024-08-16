@@ -14,7 +14,7 @@ const AddComponent: React.FC = () => {
     try {
       await addComponent(name, cost, stock)
       notify({ success: 'Component added successfully' })
-      navigate('/parts')
+      navigate('/parts', { replace: true })
     } catch (error) {
       notify({ error: 'Failed to add component' })
     }

@@ -5,11 +5,22 @@ import isEqual from 'react-fast-compare'
 import { notify } from '../utils/notify'
 import { verifyDelete } from '../utils/notify'
 import { deleteOrder, editOrder } from '../actionFunctions'
+import { useReadQuery, QueryRef } from '@apollo/client'
+
+interface loaderData {
+  findOrder: Order
+}
 
 const SingleOrderPage: React.FC = () => {
-  const { data: loaderOrder } = useLoaderData() as { data: Order }
-  const [order, setOrder] = useState<Order>(loaderOrder)
+  const queryRef = useLoaderData()
+  const { data: loaderOrder, error } = useReadQuery(queryRef as QueryRef<loaderData>)
+  const [order, setOrder] = useState<Order>(loaderOrder.findOrder)
   const [visible, setVisible] = useState(false)
+
+  if (error) {
+    notify({ error: error.message })
+    return <div>Can't display page</div>
+  }
 
   const navigate = useNavigate()
 

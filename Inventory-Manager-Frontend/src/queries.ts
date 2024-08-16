@@ -183,6 +183,43 @@ export const ALL_ORDERS = gql`
   }
 `
 
+export const PRODUCTS_ORDERS_ME = gql`
+  query ProductsOrdersMe {
+    allProducts {
+      name
+      stock
+      cost
+      price
+      SKU
+      components {
+        name
+      }
+      id
+    }
+    allOrders {
+      id
+      name
+      quantity
+      priority
+      status
+      created_on
+      created_by {
+        name
+      }
+      updated_on
+      updated_by {
+        name
+      }
+    }
+    me {
+      name
+      email
+      stores
+      id
+    }
+  }
+`
+
 export const FIND_ORDER = gql`
   query FindOrder($id: ID!) {
     findOrder(id: $id) {

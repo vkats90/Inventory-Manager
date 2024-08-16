@@ -4,6 +4,7 @@ import { useNavigate, useLoaderData, useLocation } from 'react-router-dom'
 import { Component } from '../types'
 import Modal from '../components/modal'
 import { Outlet } from 'react-router-dom'
+import { useReadQuery, QueryRef } from '@apollo/client'
 
 import {
   useReactTable,
@@ -14,6 +15,7 @@ import {
 } from '@tanstack/react-table'
 
 import CheckboxDropdown from '../components/filter'
+import { notify } from '../utils/notify'
 
 const initialPartHeaders = { name: true, stock: true, cost: true, id: false }
 
@@ -124,15 +126,23 @@ export const ComponentList: React.FC<{
 }
 
 interface loaderData {
-  data: Component[]
+  allComponents: Component[]
 }
 
 const ComponentPage: React.FC = () => {
-  const { data: loaderData } = useLoaderData() as loaderData
+  //const { data: loaderData } = useLoaderData() as loaderData
+  const queryRef = useLoaderData()
+  const { data: loaderData, error } = useReadQuery(queryRef as QueryRef<loaderData>)
+  const navigate = useNavigate()
 
+  if (error) {
+    notify({ error: error.message })
+    navigate('/login')
+    return <div>Can't display page</div>
+  }
   return (
     <div className="container mx-auto px-4 py-8">
-      <ComponentList components={loaderData} />
+      <ComponentList components={loaderData.allComponents} />
     </div>
   )
 }
