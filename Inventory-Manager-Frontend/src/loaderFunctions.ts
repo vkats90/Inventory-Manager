@@ -7,6 +7,7 @@ import {
   FIND_PRODUCT,
   FIND_ORDER,
   PRODUCTS_ORDERS_ME,
+  FIND_PRODUCT_AND_COMPONENTS,
 } from './queries'
 import { client } from './client'
 import { redirect, LoaderFunctionArgs } from 'react-router-dom'
@@ -17,13 +18,13 @@ const preloadQuery = createQueryPreloader(client)
 export const allComponentsLoader = async () => {
   return preloadQuery(ALL_COMPONENTS, {
     errorPolicy: 'all',
+    fetchPolicy: 'network-only',
   })
 }
 
 export const findComponentLoader = async ({ params }: LoaderFunctionArgs) => {
   return preloadQuery(FIND_COMPONENT, {
     variables: { id: params.partID },
-
     errorPolicy: 'all',
   })
 }
@@ -35,7 +36,7 @@ export const allProductsLoader = async () => {
 }
 
 export const findProductLoader = async ({ params }: LoaderFunctionArgs) => {
-  return preloadQuery(FIND_PRODUCT, {
+  return preloadQuery(FIND_PRODUCT_AND_COMPONENTS, {
     variables: { id: params.productID },
 
     errorPolicy: 'all',
@@ -51,7 +52,6 @@ export const allOrdersLoader = async () => {
 export const findOrderLoader = async ({ params }: LoaderFunctionArgs) => {
   return preloadQuery(FIND_ORDER, {
     variables: { id: params.orderID },
-
     errorPolicy: 'all',
   })
 }

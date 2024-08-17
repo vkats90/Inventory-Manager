@@ -53,6 +53,7 @@ const router = createBrowserRouter([
           },
           {
             path: '/products/add-product',
+            loader: allComponentsLoader,
             element: <AddProduct />,
           },
         ],

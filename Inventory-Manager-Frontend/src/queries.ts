@@ -11,6 +11,9 @@ export const ALL_PRODUCTS = gql`
       SKU
       components {
         name
+        id
+        stock
+        cost
       }
       id
     }
@@ -29,7 +32,34 @@ export const FIND_PRODUCT = gql`
       components {
         name
         id
+        stock
+        cost
       }
+      id
+    }
+  }
+`
+
+export const FIND_PRODUCT_AND_COMPONENTS = gql`
+  query FindProductAndComponents($id: ID!) {
+    findProduct(id: $id) {
+      name
+      stock
+      cost
+      price
+      SKU
+      components {
+        name
+        id
+        stock
+        cost
+      }
+      id
+    }
+    allComponents {
+      name
+      stock
+      cost
       id
     }
   }
@@ -95,6 +125,8 @@ export const EDIT_PRODUCT = gql`
       components {
         name
         id
+        stock
+        cost
       }
       id
     }

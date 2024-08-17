@@ -1,14 +1,16 @@
 import React, { useState } from 'react'
 import { useLoaderData, useNavigate } from 'react-router-dom'
-import { Product } from '../types'
+import { Product, Component } from '../types'
 import isEqual from 'react-fast-compare'
 import { notify } from '../utils/notify'
 import { verifyDelete } from '../utils/notify'
 import { deleteProduct, editProduct } from '../actionFunctions'
 import { useReadQuery, QueryRef } from '@apollo/client'
+import SelectComponent from '../components/selectComponent'
 
 interface loaderData {
   findProduct: Product
+  allComponents: Component[]
 }
 
 const SingleProductPage: React.FC = () => {
@@ -119,25 +121,16 @@ const SingleProductPage: React.FC = () => {
           </div>
         </div>
 
-        {product.components && product.components.length > 0 && (
-          <div className="mt-4">
-            <p className="font-semibold">Components:</p>
-            <ul className="list-disc list-inside">
-              {product.components.map((component, index) => (
-                <li key={index}>{component.name}</li>
-              ))}
-            </ul>
-          </div>
-        )}
-        <form
-        //add component logic here using action={}
-        >
-          <input name="component" className="mr-4 mt-1 p-2 border rounded focus:outline-primary" />
-          <button className=" bg-primary mt-4 text-white rounded px-3 py-2 hover:bg-primary/80 trnsition">
-            {' '}
-            Add Component{' '}
-          </button>
-        </form>
+        <SelectComponent
+          selectedParts={product.components}
+          allParts={loaderProduct.allComponents}
+          callback={(newComponent) => {
+            setVisible(true)
+            setProduct((prev) => {
+              return { ...prev, components: newComponent }
+            })
+          }}
+        />
         {visible && (
           <button
             className="w-full bg-gray-800 mt-4 text-white rounded px-3 py-2 hover:bg-slate-600 trnsition"
