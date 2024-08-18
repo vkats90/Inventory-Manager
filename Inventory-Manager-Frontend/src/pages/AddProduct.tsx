@@ -43,7 +43,7 @@ const AddProduct: React.FC = () => {
       {/* @ts-ignore this is a react 19 feature*/}
       <form action={handleSubmit}>
         <div className="mb-4 gap-4 flex items-center align-middle justify-between">
-          <label className="block text-gray-700 text-lg font-medium mb-2 " htmlFor="name">
+          <label className="block font-semibold mb-2 " htmlFor="name">
             Name:
           </label>
           <input
@@ -55,7 +55,7 @@ const AddProduct: React.FC = () => {
           />
         </div>
         <div className="mb-4 gap-4 flex items-center align-middle justify-between">
-          <label className="block text-gray-700 text-lg font-medium mb-2 " htmlFor="cost">
+          <label className="block font-semibold mb-2 " htmlFor="cost">
             Cost:
           </label>
           <input
@@ -67,7 +67,7 @@ const AddProduct: React.FC = () => {
           />
         </div>
         <div className="mb-4 gap-4 flex items-center align-middle justify-between">
-          <label className="block text-gray-700 text-lg font-medium mb-2 " htmlFor="stock">
+          <label className="block font-semibold mb-2 " htmlFor="stock">
             Stock:
           </label>
           <input
@@ -78,7 +78,7 @@ const AddProduct: React.FC = () => {
           />
         </div>
         <div className="mb-4 gap-4 flex items-center align-middle justify-between">
-          <label className="block text-gray-700 text-lg font-medium mb-2 " htmlFor="price">
+          <label className="block font-semibold mb-2 " htmlFor="price">
             Price:
           </label>
           <input
@@ -89,7 +89,7 @@ const AddProduct: React.FC = () => {
           />
         </div>
         <div className="mb-4 gap-4 flex items-center align-middle justify-between">
-          <label className="block text-gray-700 text-lg font-medium mb-2 " htmlFor="SKU">
+          <label className="block font-semibold mb-2 " htmlFor="SKU">
             SKU:
           </label>
           <input

@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import { Component } from '../types'
 import Modal from './modal' // Assuming you have a Modal component
+import AddComponent from '../pages/AddComponent'
 
 interface SelectComponentProps {
   selectedParts: Component[]
@@ -43,23 +44,25 @@ const SelectComponent: React.FC<SelectComponentProps> = ({ selectedParts, allPar
 
   return (
     <div className="select-component my-4">
-      <label className="block  text-md font-bold mb-2" htmlFor="parts">
-        Parts
+      <label className="block  font-semibold mb-2" htmlFor="parts">
+        Parts:
       </label>
-      <table className="min-w-full bg-white text-left">
-        <thead>
-          <tr>
-            {filteredParts && <th className="py-2">Select</th>}
-            <th className="py-2">Name</th>
-            <th className="py-2">Cost</th>
-            <th className="py-2">Stock</th>
-          </tr>
-        </thead>
-        <tbody>
+      <table className="min-w-full bg-white text-left ">
+        {(!(selectedPartsState.length == 0) || filteredParts) && (
+          <thead>
+            <tr>
+              {filteredParts && <th className="py-2">Select</th>}
+              <th className="py-2">Name</th>
+              <th className="py-2">Cost</th>
+              <th className="py-2">Stock</th>
+            </tr>
+          </thead>
+        )}
+        <tbody className="">
           {allParts
             .filter((x) => filteredParts || selectedPartsState.map((y) => y.name).includes(x.name))
             .map((part, i) => (
-              <tr key={part.id} className={`${filteredParts && i % 2 == 0 ? 'bg-slate-100' : ''}`}>
+              <tr key={part.id} className={`${filteredParts && i % 2 == 0 ? 'bg-slate-100' : ''} `}>
                 {filteredParts && (
                   <td className="">
                     <input
@@ -79,7 +82,7 @@ const SelectComponent: React.FC<SelectComponentProps> = ({ selectedParts, allPar
       <div className="flex justify-between">
         <button
           type="button"
-          className="bg-primary hover:bg-primary/70 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline mt-4"
+          className="bg-primary hover:bg-primary/70 text-white font-bold py-1 px-3 rounded focus:outline-none focus:shadow-outline mt-4"
           onClick={filteredParts ? handleCallback : () => setFilteredParts(!filteredParts)}
         >
           {filteredParts ? 'Confirm Selection' : 'Select More'}
@@ -87,21 +90,16 @@ const SelectComponent: React.FC<SelectComponentProps> = ({ selectedParts, allPar
         {filteredParts && (
           <button
             type="button"
-            className=" text-gray-700 font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline mt-2"
+            className=" text-gray-700 font-bold py-2 px-4 rounded hover:text-primary/70 focus:outline-none focus:shadow-outline mt-2"
             onClick={handleOpenModal}
           >
-            Add New Part
+            New Part
           </button>
         )}
       </div>
       {isModalOpen && (
         <Modal onClose={handleCloseModal}>
-          <h2 className="text-xl font-bold mb-4">Add New Part</h2>
-          <div className="mb-4">
-            <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="newPartName">
-              Name
-            </label>
-          </div>
+          <AddComponent />
         </Modal>
       )}
     </div>
