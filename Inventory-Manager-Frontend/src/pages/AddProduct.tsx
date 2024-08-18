@@ -1,10 +1,10 @@
 import React, { useState } from 'react'
 import { Component } from '../types'
-import { useLoaderData, useNavigate } from 'react-router-dom'
-import { addProduct } from '../actionFunctions'
+import { useLoaderData } from 'react-router-dom'
 import { notify } from '../utils/notify'
 import SelectComponent from '../components/selectComponent'
 import { useReadQuery, QueryRef } from '@apollo/client'
+import { useSubmit, Form } from 'react-router-dom'
 
 interface loaderData {
   allComponents: Component[]
@@ -14,35 +14,33 @@ const AddProduct: React.FC = () => {
   const queryRef = useLoaderData()
   const { data: loaderData, error } = useReadQuery(queryRef as QueryRef<loaderData>)
   const [components, setComponents] = useState<Component[]>([])
-  const navigate = useNavigate()
+  const submit = useSubmit()
 
   if (error) {
     notify({ error: error.message })
     return <div>Can't display page</div>
   }
 
-  const handleSubmit = async () => {
-    const formData = new FormData(document.querySelector('form') as HTMLFormElement)
-    const name = formData.get('name') as string
-    const stock = parseInt(formData.get('stock') as string)
-    const cost = parseFloat(formData.get('cost') as string)
-    const price = parseFloat(formData.get('price') as string)
-    const SKU = formData.get('SKU') as string
-
-    try {
-      await addProduct(name, cost, stock, price, SKU, components)
-      notify({ success: 'Product added successfully' })
-      navigate('/products')
-    } catch (error) {
-      notify({ error: 'Failed to add product' })
-    }
-  }
-
   return (
     <div className="add-product">
       <h2 className="text-xl font-bold mb-4">Add a new product</h2>
-      {/* @ts-ignore this is a react 19 feature*/}
-      <form>
+      <Form
+        method="post"
+        onSubmit={(event) => {
+          event.preventDefault()
+          submit(
+            {
+              name: event.currentTarget.name.value,
+              cost: event.currentTarget.cost.value,
+              stock: event.currentTarget.stock.value,
+              price: event.currentTarget.price.value,
+              SKU: event.currentTarget.SKU.value,
+              components: JSON.stringify(components),
+            },
+            { method: 'post' }
+          )
+        }}
+      >
         <div className="mb-4 gap-4 flex items-center align-middle justify-between">
           <label className="block font-semibold mb-2 " htmlFor="name">
             Name:
@@ -107,14 +105,13 @@ const AddProduct: React.FC = () => {
         />
         <div className="flex justify-center">
           <button
-            type="button"
-            onClick={handleSubmit}
+            type="submit"
             className="bg-primary shadow-md hover:bg-primary/80 text-white font-bold py-2 px-4 my-2 rounded focus:outline-primary focus:shadow-outline"
           >
             Add Product
           </button>
         </div>
-      </form>
+      </Form>
     </div>
   )
 }

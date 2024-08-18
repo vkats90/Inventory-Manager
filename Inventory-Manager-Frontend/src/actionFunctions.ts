@@ -1,3 +1,4 @@
+import { ActionFunctionArgs, redirect } from 'react-router-dom'
 import { client } from './client'
 import {
   LOGIN,
@@ -35,15 +36,23 @@ export const logout = async () => {
   notify({ success: data.logout })
 }
 
-export const addComponent = async (name: string, cost: number, stock: number) => {
+export const addComponent = async ({ request }: ActionFunctionArgs) => {
+  const formData = await request.formData()
+  const name = formData.get('name') as string
+  const stock = parseInt(formData.get('stock') as string)
+  const cost = parseFloat(formData.get('cost') as string)
+
   try {
-    const { data } = await client.mutate({
+    await client.mutate({
       mutation: ADD_COMPONENT,
       variables: { name, cost, stock },
+      refetchQueries: ['allComponents'],
     })
+    notify({ success: 'Component added successfully' })
 
-    return data.addComponent
+    return redirect('/parts')
   } catch (error: unknown) {
+    notify({ error: 'Failed to add component' })
     return error as Error
   }
 }
@@ -98,24 +107,29 @@ export const editProduct = async (
   }
 }
 
-export const addProduct = async (
-  name: string,
-  cost: number,
-  stock: number,
-  price: number,
-  SKU: string,
-  components: Component[] | [] | string[]
-) => {
+export const addProduct = async ({ request }: ActionFunctionArgs) => {
+  const formData = await request.formData()
+  const name = formData.get('name') as string
+  const stock = parseInt(formData.get('stock') as string)
+  const cost = parseFloat(formData.get('cost') as string)
+  const price = parseFloat(formData.get('price') as string)
+  const SKU = formData.get('SKU') as string
+  let components = JSON.parse(formData.get('components') as string) as Component[] | [] | string[]
+
+  console.log(components)
+
   try {
-    if (components.length != 0) {
+    if (components && components.length != 0) {
       components = components.map((component) => (component as Component).id)
     }
-    const { data } = await client.mutate({
+    await client.mutate({
       mutation: ADD_PRODUCT,
       variables: { name, cost, stock, price, SKU, components },
     })
 
-    return data.addProduct
+    notify({ success: 'Product added successfully' })
+
+    return redirect('/products')
   } catch (error: unknown) {
     return error as Error
   }
@@ -153,20 +167,22 @@ export const editOrder = async (
   }
 }
 
-export const addOrder = async (
-  name: string,
-  quantity: number,
-  priority: number | null,
-  status: string
-) => {
+export const addOrder = async ({ request }: ActionFunctionArgs) => {
+  const formData = await request.formData()
+  const name = formData.get('name') as string
+  const quantity = parseInt(formData.get('quantity') as string)
+  const priority = parseInt(formData.get('priority') as string)
   try {
-    const { data } = await client.mutate({
+    await client.mutate({
       mutation: ADD_ORDER,
       variables: { name, quantity, priority, status },
     })
 
-    return data.addOrder
+    notify({ success: 'Order added successfully' })
+
+    return redirect('/orders')
   } catch (error: unknown) {
+    notify({ error: 'Failed to add order' })
     return error as Error
   }
 }
