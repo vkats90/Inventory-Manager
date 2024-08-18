@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { Suspense } from 'react'
 
 interface ModalProps {
   onClose: () => void
@@ -24,7 +24,7 @@ const Modal: React.FC<ModalProps> = ({ onClose, children }) => {
             </svg>
           </button>
         </div>
-        {children}
+        <Suspense fallback={<div>Loading...</div>}>{children}</Suspense>
       </div>
     </div>
   )

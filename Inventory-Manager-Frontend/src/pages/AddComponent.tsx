@@ -6,7 +6,8 @@ import { notify } from '../utils/notify'
 const AddComponent: React.FC = () => {
   const navigate = useNavigate()
 
-  const handleSubmit = async (formData: FormData) => {
+  const handleSubmit = async () => {
+    const formData = new FormData(document.querySelector('form') as HTMLFormElement)
     const name = formData.get('name') as string
     const stock = parseInt(formData.get('stock') as string)
     const cost = parseFloat(formData.get('cost') as string)
@@ -23,8 +24,8 @@ const AddComponent: React.FC = () => {
   return (
     <div className="add-component">
       <h2 className="text-xl font-bold mb-4">Add a new part</h2>
-      {/* @ts-ignore this is a react 19 feature*/}
-      <form action={handleSubmit}>
+
+      <form>
         <div className="mb-4 gap-4 flex items-center align-middle justify-between">
           <label className="block text-gray-700 text-lg font-medium mb-2 " htmlFor="name">
             Name:
@@ -63,7 +64,8 @@ const AddComponent: React.FC = () => {
 
         <div className="flex justify-center">
           <button
-            type="submit"
+            type="button"
+            onClick={handleSubmit}
             className="bg-primary shadow-md hover:bg-primary/80 text-white font-bold py-2 px-4 my-2 rounded focus:outline-primary focus:shadow-outline"
           >
             Add Component

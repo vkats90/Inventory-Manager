@@ -6,7 +6,7 @@ import { useReadQuery, QueryRef } from '@apollo/client'
 import { notify } from '../utils/notify'
 import { AppContext } from '../App'
 //@ts-ignore
-import React, { use } from 'react'
+import React, { useContext } from 'react'
 
 interface loaderData {
   allOrders: Order[]
@@ -40,15 +40,14 @@ const initialProductHeaders = {
 const Home = () => {
   const queryRef = useLoaderData()
   const { data: loaderData, error } = useReadQuery(queryRef as QueryRef<loaderData>)
-  const { setUser, user } = use(AppContext)
+  const { setUser, user } = useContext(AppContext)
 
   if (error) {
     notify({ error: error.message })
     return <div>Can't display page</div>
   }
 
-  if (loaderData.me.name)
-    setUser(loaderData.me.name) as React.Dispatch<React.SetStateAction<string>>
+  if (loaderData.me.name) setUser(loaderData.me.name)
 
   return (
     <div className="container ">

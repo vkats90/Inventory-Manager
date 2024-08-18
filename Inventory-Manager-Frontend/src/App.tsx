@@ -1,24 +1,29 @@
-import { createContext, useState } from 'react'
+import { createContext, useState, Suspense } from 'react'
 import { Outlet } from 'react-router-dom'
 import Sidebar from './components/sidebar'
 import { ToastContainer } from 'react-toastify'
 
-export const AppContext = createContext({})
+export const AppContext = createContext({
+  inView: false,
+  setInView: (_inView: boolean) => {},
+  user: '',
+  setUser: (_user: string) => {},
+})
 
 function App() {
   const [inView, setInView] = useState(false)
   const [user, setUser] = useState('')
 
   return (
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    //@ts-expect-error
-    <AppContext value={{ inView, setInView, user, setUser }}>
+    <AppContext.Provider value={{ inView, setInView, user, setUser }}>
       <div className="bg-slate-200 min-h-[100vh] flex font-Ubuntu">
         <Sidebar />
         <ToastContainer />
-        <Outlet />
+        <Suspense fallback={<div>Loading...</div>}>
+          <Outlet />
+        </Suspense>
       </div>
-    </AppContext>
+    </AppContext.Provider>
   )
 }
 

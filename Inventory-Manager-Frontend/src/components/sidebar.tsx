@@ -1,15 +1,16 @@
 import React from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
-import { AppContext } from '../App'
+
 import Logo from '../assets/Inventory Manager copy.png'
 //@ts-ignore
-import { use } from 'react'
+import { useContext } from 'react'
+import { AppContext } from '../App'
 import { logout } from '../actionFunctions'
 
 const Sidebar: React.FC = () => {
   const location = useLocation()
   const navigate = useNavigate()
-  const { setUser } = use(AppContext)
+  const { setUser } = useContext(AppContext)
 
   const links = [
     { name: 'Home', path: '/' },
