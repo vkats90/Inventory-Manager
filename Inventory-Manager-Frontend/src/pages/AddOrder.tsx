@@ -1,8 +1,24 @@
-import React from 'react'
-import { useSubmit, Form } from 'react-router-dom'
+import React, { useEffect } from 'react'
+import { Order } from '../types'
+import { useSubmit, Form, useOutletContext, useActionData, useNavigate } from 'react-router-dom'
+
+interface actionDataResponse {
+  addOrder: Order & { __typename: string }
+}
 
 const AddOrder: React.FC = () => {
   const submit = useSubmit()
+  const navigate = useNavigate()
+  let actionData = useActionData() as actionDataResponse
+
+  const [setData]: [React.Dispatch<React.SetStateAction<Order[]>>] = useOutletContext()
+
+  useEffect(() => {
+    if (actionData && actionData.addOrder.__typename == 'Order') {
+      setData((prev: Order[]) => [...prev, actionData.addOrder])
+      navigate('/orders')
+    }
+  }, [actionData, submit])
 
   return (
     <div className="add-order">

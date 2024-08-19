@@ -1,5 +1,6 @@
-import React, { Component, useEffect } from 'react'
-import { useSubmit, Form, useOutletContext, useActionData } from 'react-router-dom'
+import React, { useEffect } from 'react'
+import { Component } from '../types'
+import { useSubmit, Form, useOutletContext, useActionData, useNavigate } from 'react-router-dom'
 
 interface actionDataResponse {
   addComponent: Component & { __typename: string }
@@ -7,13 +8,16 @@ interface actionDataResponse {
 
 const AddComponent: React.FC = () => {
   let submit = useSubmit()
+  const navigate = useNavigate()
   let actionData = useActionData() as actionDataResponse
 
   const [setData]: [React.Dispatch<React.SetStateAction<Component[]>>] = useOutletContext()
 
   useEffect(() => {
-    if (actionData && actionData.addComponent.__typename == 'Component')
+    if (actionData && actionData.addComponent.__typename == 'Component') {
       setData((prev: Component[]) => [...prev, actionData.addComponent])
+      navigate('/parts')
+    }
   }, [actionData, submit])
 
   return (

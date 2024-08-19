@@ -45,6 +45,7 @@ export const findProductLoader = async ({ params }: LoaderFunctionArgs) => {
 export const allOrdersLoader = async () => {
   return preloadQuery(ALL_ORDERS, {
     errorPolicy: 'all',
+    fetchPolicy: 'cache-and-network',
   })
 }
 

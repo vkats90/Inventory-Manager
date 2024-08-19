@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { useLoaderData, useNavigate } from 'react-router-dom'
+import { useLoaderData, useNavigate, useOutletContext } from 'react-router-dom'
 import { Order } from '../types'
 import isEqual from 'react-fast-compare'
 import { notify } from '../utils/notify'
@@ -16,6 +16,7 @@ const SingleOrderPage: React.FC = () => {
   const { data: loaderOrder, error } = useReadQuery(queryRef as QueryRef<loaderData>)
   const [order, setOrder] = useState<Order>(loaderOrder.findOrder)
   const [visible, setVisible] = useState(false)
+  const [setData]: [React.Dispatch<React.SetStateAction<Order[]>>] = useOutletContext()
 
   if (error) {
     notify({ error: error.message })
@@ -29,6 +30,9 @@ const SingleOrderPage: React.FC = () => {
       const res = await deleteOrder(order.id)
       if (res) {
         notify({ success: 'Order deleted successfully' })
+        setData((prev: Order[]) => {
+          return prev.filter((o) => o.id !== order.id)
+        })
         navigate('/orders', { state: { refresh: true } })
       }
     } catch (error) {
@@ -48,6 +52,10 @@ const SingleOrderPage: React.FC = () => {
       if (isEqual({ ...res, updated_on: '' }, { ...order, updated_on: '' })) {
         setVisible(false)
         notify({ success: 'Order edited successfully' })
+        navigate('/orders')
+        setData((prev: Order[]) => {
+          return prev.map((o) => (o.id === order.id ? res : o))
+        })
       }
     } catch (error) {
       notify({ error: 'Error while editing order' })
@@ -65,8 +73,7 @@ const SingleOrderPage: React.FC = () => {
 
   return (
     <div className="container mx-auto px-4 py-8">
-      {/* @ts-ignore this is a react 19 feature*/}
-      <form action={handleSubmit}>
+      <form>
         <input
           className="text-3xl font-bold mb-4 w-full focus:outline-primary"
           value={order.name}
@@ -88,7 +95,7 @@ const SingleOrderPage: React.FC = () => {
             <label className="font-semibold ">Priority:</label>
 
             <select
-              name="Priority"
+              name="priority"
               id="priority"
               className="w-full mt-1 p-2 border rounded focus:outline-primary"
               value={order.priority ?? ''}
@@ -150,7 +157,8 @@ const SingleOrderPage: React.FC = () => {
         {visible && (
           <button
             className="w-full bg-gray-800 mt-4 text-white rounded px-3 py-2 hover:bg-slate-600 trnsition"
-            type="submit"
+            type="button"
+            onClick={handleSubmit}
           >
             Save
           </button>

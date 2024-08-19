@@ -129,8 +129,6 @@ export const addProduct = async ({ request }: ActionFunctionArgs) => {
   const SKU = formData.get('SKU') as string
   let components = JSON.parse(formData.get('components') as string) as Component[] | [] | string[]
 
-  console.log(components)
-
   try {
     if (components && components.length != 0) {
       components = components.map((component) => (component as Component).id)
@@ -186,14 +184,14 @@ export const addOrder = async ({ request }: ActionFunctionArgs) => {
   const quantity = parseInt(formData.get('quantity') as string)
   const priority = parseInt(formData.get('priority') as string)
   try {
-    await client.mutate({
+    const { data } = await client.mutate({
       mutation: ADD_ORDER,
       variables: { name, quantity, priority, status },
     })
 
     notify({ success: 'Order added successfully' })
 
-    return redirect('/orders')
+    return data
   } catch (error: unknown) {
     notify({ error: 'Failed to add order' })
     return error as Error
@@ -205,6 +203,9 @@ export const deleteOrder = async (id: string) => {
     const { data } = await client.mutate({
       mutation: DELETE_ORDER,
       variables: { id },
+      update: (cache) => {
+        cache.evict({ fieldName: 'allOrders' })
+      },
     })
 
     return data.deleteOrder

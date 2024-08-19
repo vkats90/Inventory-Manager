@@ -4,7 +4,6 @@ import { useNavigate, useLoaderData } from 'react-router-dom'
 import { Order } from '../types'
 import { useReadQuery, QueryRef } from '@apollo/client'
 import { notify } from '../utils/notify'
-//import { exampleOrders } from '../assets/data/data'
 import CheckboxDropdown from '../components/filter'
 import {
   useReactTable,
@@ -75,7 +74,7 @@ export const OrderList: React.FC<{ orders: Order[]; InitColumns?: typeof initial
   orders,
   InitColumns,
 }) => {
-  const [data, _setData] = useState(() => [...orders])
+  const [data, setData] = useState(() => [...orders])
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>(
     InitColumns || initialTableHeaders
   )
@@ -99,7 +98,7 @@ export const OrderList: React.FC<{ orders: Order[]; InitColumns?: typeof initial
     <Card>
       {location.pathname != '/orders' && location.pathname != '/' && (
         <Modal onClose={() => navigate('/orders')}>
-          <Outlet />
+          <Outlet context={[setData]} />
         </Modal>
       )}
       <div className="flex justify-between">
