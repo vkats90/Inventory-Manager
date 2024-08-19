@@ -54,14 +54,13 @@ export const addComponent = async ({ request }: ActionFunctionArgs) => {
   const cost = parseFloat(formData.get('cost') as string)
 
   try {
-    await client.mutate({
+    const { data } = await client.mutate({
       mutation: ADD_COMPONENT,
       variables: { name, cost, stock },
-      refetchQueries: ['allComponents'],
     })
     notify({ success: 'Component added successfully' })
 
-    return redirect('/parts')
+    return data
   } catch (error: unknown) {
     notify({ error: 'Failed to add component' })
     return error as Error
@@ -86,6 +85,9 @@ export const deleteComponent = async (name: string) => {
     const { data } = await client.mutate({
       mutation: DELETE_COMPONENT,
       variables: { name },
+      update: (cache) => {
+        cache.evict({ fieldName: 'allComponents' })
+      },
     })
 
     return data.deleteComponent

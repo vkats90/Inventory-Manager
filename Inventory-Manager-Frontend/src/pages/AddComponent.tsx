@@ -1,8 +1,20 @@
-import React from 'react'
-import { useSubmit, Form } from 'react-router-dom'
+import React, { Component, useEffect } from 'react'
+import { useSubmit, Form, useOutletContext, useActionData } from 'react-router-dom'
+
+interface actionDataResponse {
+  addComponent: Component & { __typename: string }
+}
 
 const AddComponent: React.FC = () => {
   let submit = useSubmit()
+  let actionData = useActionData() as actionDataResponse
+
+  const [setData]: [React.Dispatch<React.SetStateAction<Component[]>>] = useOutletContext()
+
+  useEffect(() => {
+    if (actionData && actionData.addComponent.__typename == 'Component')
+      setData((prev: Component[]) => [...prev, actionData.addComponent])
+  }, [actionData, submit])
 
   return (
     <div className="add-component">

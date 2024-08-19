@@ -17,6 +17,7 @@ const preloadQuery = createQueryPreloader(client)
 export const allComponentsLoader = async () => {
   return preloadQuery(ALL_COMPONENTS, {
     errorPolicy: 'all',
+    fetchPolicy: 'cache-and-network',
   })
 }
 

@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { useLoaderData, useNavigate } from 'react-router-dom'
+import { useLoaderData, useNavigate, useOutletContext } from 'react-router-dom'
 import { Component } from '../types'
 import { editComponent, deleteComponent } from '../actionFunctions'
 import isEqual from 'react-fast-compare'
@@ -15,6 +15,7 @@ const SingleComponentPage: React.FC = () => {
   const { data: loaderComponent, error } = useReadQuery(queryRef as QueryRef<loaderData>)
   const [component, setComponent] = useState<Component>(loaderComponent.findComponent)
   const [visible, setVisible] = useState(false)
+  const [setData]: [React.Dispatch<React.SetStateAction<Component[]>>] = useOutletContext()
 
   if (error) {
     notify({ error: error.message })
@@ -28,7 +29,10 @@ const SingleComponentPage: React.FC = () => {
       const res = await deleteComponent(component.name)
       if (res) {
         notify({ success: 'Component deleted successfully' })
-        navigate('/parts', { state: { refresh: true } })
+        setData((prev: Component[]) => {
+          return prev.filter((c) => c.id !== component.id)
+        })
+        navigate('/parts')
       }
     } catch (error) {
       notify({ error: 'Error while deleting component' })
@@ -55,6 +59,10 @@ const SingleComponentPage: React.FC = () => {
       if (isEqual(res, component)) {
         setVisible(false)
         notify({ success: 'Component edited successfully' })
+        setData((prev: Component[]) => {
+          return prev.map((c) => (c.id === component.id ? component : c))
+        })
+        navigate('/parts')
       }
     } catch (error) {
       notify({ error: 'Error while editing component' })
@@ -63,8 +71,7 @@ const SingleComponentPage: React.FC = () => {
 
   return (
     <div className="container mx-auto px-4 py-8">
-      {/* @ts-ignore this is a react 19 feature*/}
-      <form action={handleSubmit}>
+      <form>
         <input
           className="text-3xl font-bold mb-4 w-full"
           name="name"
@@ -106,7 +113,8 @@ const SingleComponentPage: React.FC = () => {
         {visible && (
           <button
             className="w-full bg-gray-800 mt-4 text-white rounded px-3 py-2 hover:bg-slate-600 trnsition"
-            type="submit"
+            type="button"
+            onClick={handleSubmit}
           >
             Save
           </button>

@@ -46,7 +46,7 @@ export const ComponentList: React.FC<{
   components: Component[]
   InitColumns?: typeof initialPartHeaders
 }> = ({ components, InitColumns }) => {
-  const [data, _setData] = useState(() => [...components])
+  const [data, setData] = useState(() => [...components])
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>(
     InitColumns || initialPartHeaders
   )
@@ -71,7 +71,7 @@ export const ComponentList: React.FC<{
     <Card>
       {location.pathname != '/parts' && location.pathname != '/' && (
         <Modal onClose={() => navigate('/parts')}>
-          <Outlet />
+          <Outlet context={[setData]} />
         </Modal>
       )}
       <div className="flex justify-between">
