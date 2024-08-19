@@ -75,7 +75,7 @@ export const ProductList: React.FC<{
   products: Product[]
   InitColumns?: typeof initialTableHeaders
 }> = ({ products, InitColumns }) => {
-  const [data, _setData] = useState(() => [...products])
+  const [data, setData] = useState(() => [...products])
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>(
     InitColumns || initialTableHeaders
   )
@@ -100,7 +100,7 @@ export const ProductList: React.FC<{
     <Card>
       {location.pathname != '/products' && location.pathname != '/' && (
         <Modal onClose={() => navigate('/products')}>
-          <Outlet />
+          <Outlet context={[setData]} />
         </Modal>
       )}
       <div className="flex justify-between">

@@ -3,11 +3,15 @@
 ## To DO:
 
 - Make Orders, Products and Parts, update after adding/editing/deleting
-- Add components to addProduct and editproduct
+- correct font and size mismatch on different pages
+- add 404 page
+- Go through which fields are actually required in forms
+- Make UNAUTHARIZED errors send back to /login
 - Add loading state to Modals
 - Implement sorting to tables
 - Implement search
 - Implement input for some columns
+- Add login using google/shopify
 
 ## Hours spent:
 
@@ -37,3 +41,4 @@
     8.8: 1.5
     8.10: 2
     8.14: 2
+    8.19: 2

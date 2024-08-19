@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { useLoaderData, useNavigate } from 'react-router-dom'
+import { useLoaderData, useNavigate, useOutletContext } from 'react-router-dom'
 import { Product, Component } from '../types'
 import isEqual from 'react-fast-compare'
 import { notify } from '../utils/notify'
@@ -18,6 +18,7 @@ const SingleProductPage: React.FC = () => {
   const { data: loaderProduct, error } = useReadQuery(queryRef as QueryRef<loaderData>)
   const [product, setProduct] = useState<Product>(loaderProduct.findProduct)
   const [visible, setVisible] = useState(false)
+  const [setData]: [React.Dispatch<React.SetStateAction<Component[]>>] = useOutletContext()
 
   if (error) {
     notify({ error: error.message })
@@ -31,7 +32,10 @@ const SingleProductPage: React.FC = () => {
       const res = await deleteProduct(product.name)
       if (res) {
         notify({ success: 'Product deleted successfully' })
-        navigate('/products', { state: { refresh: true } })
+        setData((prev: Component[]) => {
+          return prev.filter((p) => p.id !== product.id)
+        })
+        navigate('/products')
       }
     } catch (error) {
       notify({ error: 'Error while deleting product' })
@@ -43,7 +47,14 @@ const SingleProductPage: React.FC = () => {
     const { name, value } = e.target
     setProduct((prev) => ({
       ...prev,
-      [name]: name === 'stock' ? parseInt(value) : name === 'cost' ? parseFloat(value) : value,
+      [name]:
+        name === 'stock'
+          ? parseInt(value)
+          : name === 'cost'
+          ? parseFloat(value)
+          : name == 'price'
+          ? parseFloat(value)
+          : value,
     }))
   }
 
@@ -61,6 +72,10 @@ const SingleProductPage: React.FC = () => {
       if (isEqual(res, product)) {
         setVisible(false)
         notify({ success: 'Product edited successfully' })
+        setData((prev: Component[]) => {
+          return prev.map((p) => (p.id === product.id ? product : p))
+        })
+        navigate('/products')
       }
     } catch (error) {
       notify({ error: 'Error while editing product' })
@@ -69,8 +84,7 @@ const SingleProductPage: React.FC = () => {
 
   return (
     <div className="container mx-auto px-4 py-8">
-      {/* @ts-ignore this is a react 19 feature*/}
-      <form action={handleSubmit}>
+      <form>
         <input
           className="text-3xl font-bold mb-4 w-full focus:outline-primary"
           value={product.name}
@@ -134,7 +148,8 @@ const SingleProductPage: React.FC = () => {
         {visible && (
           <button
             className="w-full bg-gray-800 mt-4 text-white rounded px-3 py-2 hover:bg-slate-600 trnsition"
-            type="submit"
+            type="button"
+            onClick={handleSubmit}
           >
             Save
           </button>

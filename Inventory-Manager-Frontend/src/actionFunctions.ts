@@ -133,14 +133,14 @@ export const addProduct = async ({ request }: ActionFunctionArgs) => {
     if (components && components.length != 0) {
       components = components.map((component) => (component as Component).id)
     }
-    await client.mutate({
+    const { data } = await client.mutate({
       mutation: ADD_PRODUCT,
       variables: { name, cost, stock, price, SKU, components },
     })
 
     notify({ success: 'Product added successfully' })
 
-    return redirect('/products')
+    return data
   } catch (error: unknown) {
     return error as Error
   }
@@ -151,6 +151,9 @@ export const deleteProduct = async (name: string) => {
     const { data } = await client.mutate({
       mutation: DELETE_PRODUCT,
       variables: { name },
+      update: (cache) => {
+        cache.evict({ fieldName: 'allProducts' })
+      },
     })
 
     return data.deleteProduct

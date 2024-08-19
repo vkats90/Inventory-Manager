@@ -1,13 +1,17 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { Component } from '../types'
 import { useLoaderData } from 'react-router-dom'
 import { notify } from '../utils/notify'
+import { Product } from '../types'
 import SelectComponent from '../components/selectComponent'
 import { useReadQuery, QueryRef } from '@apollo/client'
-import { useSubmit, Form } from 'react-router-dom'
+import { useSubmit, Form, useActionData, useNavigate, useOutletContext } from 'react-router-dom'
 
 interface loaderData {
   allComponents: Component[]
+}
+interface actionDataResponse {
+  addProduct: Product & { __typename: string }
 }
 
 const AddProduct: React.FC = () => {
@@ -15,6 +19,17 @@ const AddProduct: React.FC = () => {
   const { data: loaderData, error } = useReadQuery(queryRef as QueryRef<loaderData>)
   const [components, setComponents] = useState<Component[]>([])
   const submit = useSubmit()
+  const navigate = useNavigate()
+  let actionData = useActionData() as actionDataResponse
+  const [setData]: [React.Dispatch<React.SetStateAction<Product[]>>] = useOutletContext()
+
+  useEffect(() => {
+    console.log(actionData)
+    if (actionData && actionData.addProduct.__typename == 'Product') {
+      setData((prev: Product[]) => [...prev, actionData.addProduct])
+      navigate('/products')
+    }
+  }, [actionData, submit])
 
   if (error) {
     notify({ error: error.message })

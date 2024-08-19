@@ -25,19 +25,21 @@ export const findComponentLoader = async ({ params }: LoaderFunctionArgs) => {
   return preloadQuery(FIND_COMPONENT, {
     variables: { id: params.partID },
     errorPolicy: 'all',
+    fetchPolicy: 'cache-and-network',
   })
 }
 
 export const allProductsLoader = async () => {
   return preloadQuery(ALL_PRODUCTS, {
     errorPolicy: 'all',
+    fetchPolicy: 'cache-and-network',
   })
 }
 
 export const findProductLoader = async ({ params }: LoaderFunctionArgs) => {
   return preloadQuery(FIND_PRODUCT_AND_COMPONENTS, {
     variables: { id: params.productID },
-
+    fetchPolicy: 'cache-and-network',
     errorPolicy: 'all',
   })
 }
@@ -53,6 +55,7 @@ export const findOrderLoader = async ({ params }: LoaderFunctionArgs) => {
   return preloadQuery(FIND_ORDER, {
     variables: { id: params.orderID },
     errorPolicy: 'all',
+    fetchPolicy: 'cache-and-network',
   })
 }
 
@@ -73,5 +76,6 @@ export const meLoader = async () => {
 export const homeLoader = async () => {
   return preloadQuery(PRODUCTS_ORDERS_ME, {
     errorPolicy: 'all',
+    fetchPolicy: 'cache-and-network',
   })
 }
