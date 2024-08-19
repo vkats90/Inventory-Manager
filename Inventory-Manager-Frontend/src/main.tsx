@@ -24,7 +24,7 @@ import {
   findProductLoader,
   findOrderLoader,
 } from './loaderFunctions.ts'
-import { addComponent, addOrder, addProduct } from './actionFunctions.ts'
+import { addComponent, addOrder, addProduct, login } from './actionFunctions.ts'
 
 const client = new ApolloClient({
   uri: 'http://localhost:4000',
@@ -63,6 +63,7 @@ const router = createBrowserRouter([
       {
         path: '/login',
         element: <Login />,
+        action: login,
       },
       {
         path: '/parts',

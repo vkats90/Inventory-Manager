@@ -5,7 +5,6 @@ import { editComponent, deleteComponent } from '../actionFunctions'
 import isEqual from 'react-fast-compare'
 import { notify, verifyDelete } from '../utils/notify'
 import { useReadQuery, QueryRef } from '@apollo/client'
-import { useSubmit, Form } from 'react-router-dom'
 
 interface loaderData {
   findComponent: Component

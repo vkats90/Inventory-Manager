@@ -16,15 +16,26 @@ import {
 import { Component } from './types'
 import { notify } from './utils/notify'
 
-export const login = async (email: string, password: string) => {
+export const login = async ({ request }: ActionFunctionArgs) => {
+  const formData = await request.formData()
+  const email = formData.get('email') as string
+  const password = formData.get('password') as string
   try {
     const { data } = await client.mutate({
       mutation: LOGIN,
       variables: { email, password },
     })
+    const user = data.login
+    notify({
+      error: user.message,
+      success: !user.message ? 'Welcome back ' + user.name : undefined,
+    })
 
-    return data.login
+    return redirect('/')
   } catch (error: unknown) {
+    notify({
+      error: (error as Error).message,
+    })
     return error as Error
   }
 }
