@@ -2,7 +2,7 @@
   "name": "inventory-manager",
   "version": "1.0.0",
   "scripts": {
-    "start": "node server/index.js",
+    "start": "node Inventory-Manager-Backend/build/index.js",
     "build": "cd Inventory-Manager-Backend && npm install && npm run build"
   },
   "dependencies": {
