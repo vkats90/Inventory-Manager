@@ -40,7 +40,8 @@
     "dev": "ts-node-dev index.ts",
     "lint": "eslint --ext .ts .",
     "test": "jest --runInBand --detectOpenHandles --forceExit",
-    "tsc": "tsc"
+    "tsc": "tsc",
+    "build": "tsc"
   },
   "author": "Vlad Kats",
   "license": "ISC",

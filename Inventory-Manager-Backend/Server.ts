@@ -11,6 +11,7 @@ import session from 'express-session'
 import { v4 as uuid } from 'uuid'
 import passport from 'passport'
 import { GraphQLLocalStrategy, buildContext } from 'graphql-passport'
+import path from 'path'
 const bcrypt = require('bcrypt')
 
 dotenv.config()
@@ -123,6 +124,11 @@ const StartServer = async () => {
       },*/
     })
   )
+
+  app.use(express.static(path.join(__dirname, '../Inventory-Manager-Frontend/dist')))
+  app.get('*', (_req, res) => {
+    res.sendFile(path.join(__dirname, '../Inventory-Manager-Frontend/dist/index.html'))
+  })
 
   await new Promise<void>((resolve) => httpServer.listen({ port: 4000 }, resolve))
   console.log(`🚀 Server ready at http://localhost:4000/`)
