@@ -3,12 +3,12 @@
 ## To DO:
 
 - correct font and size mismatch on different pages
-- add 404 page
 - Go through which fields are actually required in forms
 - Implement sorting to tables
 - Implement search
 - Implement input for some columns
 - Add login using google/shopify
+- deploy site
 
 ## Hours spent:
 
@@ -39,4 +39,4 @@
     8.10: 2
     8.14: 2
     8.19: 2
-    8:20 :2
+    8:20 :3

@@ -15,6 +15,7 @@ import Order from './pages/Order.tsx'
 import AddOrder from './pages/AddOrder.tsx'
 import AddComponent from './pages/AddComponent.tsx'
 import SignUp from './pages/SignUp.tsx'
+import ErrorElement from './pages/errorElement.tsx'
 import { ApolloClient, InMemoryCache, ApolloProvider } from '@apollo/client'
 import {
   allComponentsLoader,
@@ -35,7 +36,7 @@ const client = new ApolloClient({
 const router = createBrowserRouter([
   {
     path: '/',
-
+    errorElement: <ErrorElement />,
     element: <App />,
     children: [
       {

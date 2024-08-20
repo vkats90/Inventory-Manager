@@ -126,7 +126,7 @@ export const OrderList: React.FC<{ orders: Order[]; InitColumns?: typeof initial
                 id={row.getValue('id')}
                 key={row.id}
                 onClick={_handleClick}
-                className={`border-b hover:bg-primary/30 cursor-pointer ${
+                className={`border-b hover:bg-gradient-to-r hover:from-primary/30 hover:to-white cursor-pointer ${
                   row.getValue('status') == 'Finished'
                     ? 'bg-green-100'
                     : row.getValue('status') == 'Shipped'
@@ -170,7 +170,6 @@ const OrderPage: React.FC = () => {
   const navigate = useNavigate()
 
   useEffect(() => {
-    console.log('error', error)
     if (error && error.graphQLErrors[0].extensions.code === 'UNAUTHORIZED') {
       notify({ error: 'You have to sign in to view this page' })
       navigate('/login')

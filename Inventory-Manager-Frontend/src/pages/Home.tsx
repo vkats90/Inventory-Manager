@@ -1,12 +1,12 @@
 import { ProductList } from './Products'
 import { OrderList } from './Orders'
-import { useLoaderData } from 'react-router-dom'
+import { useLoaderData, useNavigate } from 'react-router-dom'
 import { User, Product, Order } from '../types'
 import { useReadQuery, QueryRef } from '@apollo/client'
 import { notify } from '../utils/notify'
 import { AppContext } from '../App'
 //@ts-ignore
-import React, { useContext } from 'react'
+import React, { useContext, useEffect } from 'react'
 
 interface loaderData {
   allOrders: Order[]
@@ -41,10 +41,17 @@ const Home = () => {
   const queryRef = useLoaderData()
   const { data: loaderData, error } = useReadQuery(queryRef as QueryRef<loaderData>)
   const { setUser, user } = useContext(AppContext)
+  const navigate = useNavigate()
+
+  useEffect(() => {
+    if (error && error.graphQLErrors[0].extensions.code === 'UNAUTHORIZED') {
+      notify({ error: 'You have to sign in to view this page' })
+      navigate('/login')
+    }
+  }, [error])
 
   if (error) {
-    notify({ error: error.message })
-    return <div>Can't display page</div>
+    return <div>Cannot display page</div>
   }
 
   if (loaderData.me.name) setUser(loaderData.me.name)

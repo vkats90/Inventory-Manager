@@ -75,7 +75,7 @@ export const ComponentList: React.FC<{
         </Modal>
       )}
       <div className="flex justify-between">
-        <h2 className="text-2xl mb-4">Part List</h2>
+        <h2 className="text-2xl font-bold mb-4">Parts</h2>
         <CheckboxDropdown options={table.getAllColumns()} />
       </div>
       <div className="overflow-x-auto">
@@ -99,7 +99,7 @@ export const ComponentList: React.FC<{
                 id={row.getValue('id')}
                 key={row.id}
                 onClick={_handleClick}
-                className={`border-b  hover:bg-primary/30 cursor-pointer`}
+                className={`border-b  hover:bg-gradient-to-r hover:from-primary/30 hover:to-white cursor-pointer`}
               >
                 {row.getVisibleCells().map((cell) => (
                   <td key={cell.id} className="px-4 py-2">
@@ -135,7 +135,6 @@ const ComponentPage: React.FC = () => {
   const navigate = useNavigate()
 
   useEffect(() => {
-    console.log('error', error)
     if (error && error.graphQLErrors[0].extensions.code === 'UNAUTHORIZED') {
       notify({ error: 'You have to sign in to view this page' })
       navigate('/login')
