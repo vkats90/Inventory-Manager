@@ -104,6 +104,7 @@ const StartServer = async () => {
     expressMiddleware(server, {
       cors: false,
       context: ({ req, res }) => buildContext({ req, res }),
+      path: '/graphql',
       // @ts-ignore comment
       /*context: async ({ req }) => {
         const auth = req ? req.headers.authorization : null
