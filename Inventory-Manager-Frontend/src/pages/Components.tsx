@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import Card from '../components/card'
 import { useNavigate, useLoaderData, useLocation } from 'react-router-dom'
 import { Component } from '../types'
@@ -130,16 +130,22 @@ interface loaderData {
 }
 
 const ComponentPage: React.FC = () => {
-  //const { data: loaderData } = useLoaderData() as loaderData
   const queryRef = useLoaderData()
   const { data: loaderData, error } = useReadQuery(queryRef as QueryRef<loaderData>)
   const navigate = useNavigate()
 
+  useEffect(() => {
+    console.log('error', error)
+    if (error && error.graphQLErrors[0].extensions.code === 'UNAUTHORIZED') {
+      notify({ error: 'You have to sign in to view this page' })
+      navigate('/login')
+    }
+  }, [error])
+
   if (error) {
-    notify({ error: error.message })
-    navigate('/login')
-    return <div>Can't display page</div>
+    return <div>Cannot display page</div>
   }
+
   return (
     <div className="container mx-auto px-4 py-8">
       <ComponentList components={loaderData.allComponents} />

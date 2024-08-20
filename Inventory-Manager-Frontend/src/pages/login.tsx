@@ -1,5 +1,5 @@
 import Logo from '../assets/Inventory Manager copy.png'
-import { useSubmit, Form } from 'react-router-dom'
+import { useSubmit, Form, Link } from 'react-router-dom'
 
 export default function Login() {
   const submit = useSubmit()
@@ -31,9 +31,16 @@ export default function Login() {
           className="w-full border rounded mt-4 px-3 py-2 focus:outline-primary"
         />
 
-        <button className="w-full bg-primary mt-4 text-white rounded px-3 py-2" type="submit">
+        <button
+          className="w-full bg-primary mt-4 text-white rounded px-3 py-2 hover:bg-primary/70"
+          type="submit"
+        >
           Login
         </button>
+        <Link to="/register" className="text-center block mt-4 text-primary hover:text-primary/70">
+          {' '}
+          Sign up{' '}
+        </Link>
       </Form>
     </div>
   )

@@ -45,6 +45,7 @@ const AddProduct: React.FC = () => {
           event.preventDefault()
           submit(
             {
+              // @ts-ignore
               name: event.currentTarget.name.value,
               cost: event.currentTarget.cost.value,
               stock: event.currentTarget.stock.value,

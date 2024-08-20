@@ -355,10 +355,12 @@ export const ME = gql`
 `
 
 export const CREATE_USER = gql`
-  mutation CreateUser($username: String!, $password: String!) {
-    createUser(username: $username, password: $password) {
+  mutation CreateUser($email: String!, $password: String!, $name: String, $stores: [String]) {
+    createUser(email: $email, password: $password, name: $name, stores: $stores) {
+      email
       id
-      username
+      name
+      stores
     }
   }
 `

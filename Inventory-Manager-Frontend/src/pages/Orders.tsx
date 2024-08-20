@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import Card from '../components/card'
 import { useNavigate, useLoaderData } from 'react-router-dom'
 import { Order } from '../types'
@@ -167,10 +167,18 @@ interface loaderData {
 const OrderPage: React.FC = () => {
   const queryRef = useLoaderData()
   const { data: loaderData, error } = useReadQuery(queryRef as QueryRef<loaderData>)
+  const navigate = useNavigate()
+
+  useEffect(() => {
+    console.log('error', error)
+    if (error && error.graphQLErrors[0].extensions.code === 'UNAUTHORIZED') {
+      notify({ error: 'You have to sign in to view this page' })
+      navigate('/login')
+    }
+  }, [error])
 
   if (error) {
-    notify({ error: error.message })
-    return <div>Can't display page</div>
+    return <div>Cannot display page</div>
   }
 
   return (

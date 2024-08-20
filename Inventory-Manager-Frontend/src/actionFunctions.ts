@@ -12,6 +12,7 @@ import {
   ADD_PRODUCT,
   ADD_ORDER,
   LOGOUT,
+  CREATE_USER,
 } from './queries'
 import { Component } from './types'
 import { notify } from './utils/notify'
@@ -36,6 +37,27 @@ export const login = async ({ request }: ActionFunctionArgs) => {
     notify({
       error: (error as Error).message,
     })
+    return error as Error
+  }
+}
+
+export const register = async ({ request }: ActionFunctionArgs) => {
+  const formData = await request.formData()
+  const email = formData.get('email') as string
+  const password = formData.get('password') as string
+  const name = formData.get('name') as string
+  const store = formData.get('store') as string
+
+  try {
+    await client.mutate({
+      mutation: CREATE_USER,
+      variables: { email, password, name, stores: store.split(',') },
+    })
+    notify({ success: 'Account created successfully' })
+
+    return redirect('/')
+  } catch (error: unknown) {
+    notify({ error: 'Failed to create account' })
     return error as Error
   }
 }
