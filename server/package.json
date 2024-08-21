@@ -37,9 +37,9 @@
     "typescript": "^5.3.3"
   },
   "scripts": {
-    "dev": "ts-node-dev index.ts",
+    "dev": "NODE_ENV=development ts-node-dev index.ts",
     "lint": "eslint --ext .ts .",
-    "test": "jest --runInBand --detectOpenHandles --forceExit",
+    "test": "NODE_ENV=test jest --runInBand --detectOpenHandles --forceExit",
     "tsc": "tsc",
     "build": "tsc"
   },

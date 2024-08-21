@@ -2,7 +2,7 @@
   "name": "inventory-manager",
   "version": "1.0.0",
   "scripts": {
-    "start": "node server/build/index.js",
+    "start": "NODE_ENV=production node server/build/index.js",
     "build": "cd server && npm install && npm run build && cd .. && cd client && npm install && npm run build"
   },
   "dependencies": {

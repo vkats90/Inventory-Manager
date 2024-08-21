@@ -5,8 +5,8 @@
   "type": "module",
   "proxy": "http://localhost:4000",
   "scripts": {
-    "dev": "vite",
-    "build": "tsc -b && vite build",
+    "dev": "NODE_ENV=development vite",
+    "build": "NODE_ENV=production tsc -b && vite build",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview"
   },
@@ -14,6 +14,7 @@
     "@apollo/client": "^3.10.8",
     "@tanstack/react-table": "^8.19.3",
     "@types/react-dom": "npm:types-react-dom@beta",
+    "dotenv": "^16.4.5",
     "graphql": "^16.9.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
@@ -22,6 +23,7 @@
     "react-toastify": "^10.0.5"
   },
   "devDependencies": {
+    "@types/node": "^22.5.0",
     "@typescript-eslint/eslint-plugin": "^7.13.1",
     "@typescript-eslint/parser": "^7.13.1",
     "@vitejs/plugin-react": "^4.3.1",

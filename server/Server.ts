@@ -13,6 +13,7 @@ import passport from 'passport'
 import { GraphQLLocalStrategy, buildContext } from 'graphql-passport'
 const path = require('path')
 const bcrypt = require('bcrypt')
+require('dotenv').config()
 
 dotenv.config()
 import { User, HashedUser } from './types'
@@ -126,13 +127,15 @@ const StartServer = async () => {
     })
   )
 
-  app.use(express.static(path.join(__dirname, '../../client/dist')))
-  app.get('*', (_req, res) => {
-    res.sendFile(path.resolve(__dirname, '../../client/dist/index.html'))
-  })
+  if (process.env.NODE_ENV === 'production') {
+    app.use(express.static(path.join(__dirname, '../../client/dist')))
+    app.get('*', (_req, res) => {
+      res.sendFile(path.resolve(__dirname, '../../client/dist/index.html'))
+    })
+  }
 
-  await new Promise<void>((resolve) => httpServer.listen({ port: 5100 }, resolve))
-  console.log(`🚀 Server ready at http://localhost:5100/`)
+  await new Promise<void>((resolve) => httpServer.listen({ port: 4000 }, resolve))
+  console.log(`🚀 Server ready at http://localhost:4000/`)
 }
 
 export const stopServer = async () => {
