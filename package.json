@@ -2,8 +2,8 @@
   "name": "inventory-manager",
   "version": "1.0.0",
   "scripts": {
-    "start": "node Inventory-Manager-Backend/build/index.js",
-    "build": "cd Inventory-Manager-Backend && npm install && npm run build"
+    "start": "node server/build/index.js",
+    "build": "cd server && npm install && npm run build && cd .. && cd client && npm install && npm run build"
   },
   "dependencies": {
     "apollo-server-express": "^2.25.2",
