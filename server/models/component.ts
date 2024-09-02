@@ -13,6 +13,11 @@ const componentSchema = new mongoose.Schema({
     required: true,
   },
   cost: Number,
+  location: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'LocationModel',
+    index: true,
+  },
 })
 
 componentSchema.plugin(uniqueValidator)

@@ -21,6 +21,11 @@ const orderSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'UserModel',
   },
+  location: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'LocationModel',
+    index: true,
+  },
 })
 
 export default mongoose.model('OrderModel', orderSchema)

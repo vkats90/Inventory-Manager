@@ -23,6 +23,11 @@ const productSchema = new mongoose.Schema({
       ref: 'ComponentModel',
     },
   ],
+  location: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'LocationModel',
+    index: true,
+  },
 })
 
 productSchema.plugin(uniqueValidator)

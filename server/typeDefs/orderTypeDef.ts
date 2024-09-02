@@ -11,16 +11,24 @@ const orderTypeDef = gql`
     created_by: User!
     updated_on: String!
     updated_by: User
+    location: Location
   }
 
   extend type Query {
-    allOrders: [Order]
-    findOrder(id: ID!): Order
+    allOrders(location: ID!): [Order]!
+    findOrder(id: ID!, location: ID!): Order
   }
 
   extend type Mutation {
-    addOrder(name: String, quantity: Int, priority: Int): Order
-    editOrder(id: ID!, name: String, quantity: Int, priority: Int, status: String): Order
+    addOrder(name: String, quantity: Int, priority: Int, location: ID!): Order
+    editOrder(
+      id: ID!
+      name: String
+      quantity: Int
+      priority: Int
+      status: String
+      location: ID!
+    ): Order
     deleteOrder(id: String): String
   }
 `

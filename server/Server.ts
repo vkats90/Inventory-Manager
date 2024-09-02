@@ -26,6 +26,8 @@ import orderTypeDefs from './typeDefs/orderTypeDef'
 import orderResolver from './resolvers/orderResolvers'
 import userResolver from './resolvers/userResolvers'
 import userTypeDefs from './typeDefs/userTypeDef'
+import locationTypeDefs from './typeDefs/locationTypeDef'
+import locationResolver from './resolvers/locationResolvers'
 import userModel from './models/user'
 
 export const schema = buildSubgraphSchema([
@@ -33,6 +35,7 @@ export const schema = buildSubgraphSchema([
   { typeDefs: productTypeDefs, resolvers: productResolver },
   { typeDefs: orderTypeDefs, resolvers: orderResolver },
   { typeDefs: userTypeDefs, resolvers: userResolver },
+  { typeDefs: locationTypeDefs, resolvers: locationResolver },
 ])
 
 interface MyContext {
@@ -104,26 +107,7 @@ const StartServer = async () => {
     // @ts-ignore comment
     expressMiddleware(server, {
       cors: false,
-      context: ({ req, res }) => buildContext({ req, res }),
-
-      // @ts-ignore comment
-      /*context: async ({ req }) => {
-        const auth = req ? req.headers.authorization : null
-
-        if (auth && auth.startsWith('Bearer ')) {
-          try {
-            const decodedToken = jwt.verify(auth.substring(7), process.env.JWT_SECRET)
-            const currentUser: User | null = await userModel.findById(decodedToken.id)
-            return { currentUser }
-          } catch (error) {
-            throw new GraphQLError('wrong credentials', {
-              extensions: { code: 'UNAUTHORIZED' },
-            })
-          }
-        } else {
-          return { currentUser: null }
-        }
-      },*/
+      context: ({ req, res }) => buildContext({ req, res, currentLocation: req.body }),
     })
   )
 
@@ -135,7 +119,7 @@ const StartServer = async () => {
   }
 
   await new Promise<void>((resolve) => httpServer.listen({ port: 4000 }, resolve))
-  console.log(`🚀 Server ready at http://localhost:4000/`)
+  console.log(`🚀 Server ready at http://localhost:4000/graphql`)
 }
 
 export const stopServer = async () => {

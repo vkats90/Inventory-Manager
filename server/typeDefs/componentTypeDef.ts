@@ -6,16 +6,17 @@ const componentTypeDefs = gql`
     stock: Float!
     cost: Float
     id: ID!
+    location: Location
   }
 
   extend type Query {
-    allComponents: [Component]
-    findComponent(id: ID!): Component
+    allComponents(location: ID!): [Component]!
+    findComponent(id: ID!, location: ID!): Component
   }
 
   extend type Mutation {
-    addComponent(name: String!, stock: Float, cost: Float): Component
-    editComponent(id: ID!, name: String!, stock: Float, cost: Float): Component
+    addComponent(name: String!, stock: Float, cost: Float, location: ID!): Component
+    editComponent(id: ID!, name: String!, stock: Float, cost: Float, location: ID!): Component
     deleteComponent(name: String!): String
   }
 `

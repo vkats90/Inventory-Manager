@@ -9,6 +9,7 @@ export interface Product {
   SKU: string
   components: string[]
   id: string
+  location: Location
 }
 
 export interface Component {
@@ -16,6 +17,7 @@ export interface Component {
   stock: number
   cost: number
   id: string
+  location: Location
 }
 
 export interface Order {
@@ -28,6 +30,7 @@ export interface Order {
   updated_on: Date
   updated_by: string
   id: string
+  location: Location
 }
 
 export interface User {
@@ -35,11 +38,19 @@ export interface User {
   password: string
   id: string
   name: string
-  stores: string[]
+  permissions: { location: string; permission: 'admin' | 'read' | 'write' }[]
 }
 
 export interface HashedUser extends Omit<User, 'password'> {
   passwordHash: string
 }
 
-export interface MyContext extends PassportContext<HashedUser, ExpressRequest> {}
+export interface Location {
+  name: string
+  id: string
+  admin: User
+  address: string
+}
+
+export interface MyContext
+  extends PassportContext<HashedUser, ExpressRequest, { currentLocation: Location }> {}

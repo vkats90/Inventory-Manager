@@ -8,6 +8,7 @@ const bcrypt = require('bcrypt')
 const userResolver = {
   Query: {
     me: (_root: User, _args: User, context: MyContext) => {
+      //@ts-ignore
       return context.getUser()
     },
   },
@@ -17,12 +18,11 @@ const userResolver = {
       const user = new UserModel({
         email: args.email,
         name: args.name,
-        stores: args.stores,
         passwordHash: passwordHash,
       })
       try {
-        const res = await user.save()
-        await context.login(res as HashedUser)
+        const res = (await user.save()) as unknown as HashedUser
+        await context.login(res)
         return res
       } catch (error) {
         throw new GraphQLError('Saving user failed', {
@@ -37,7 +37,8 @@ const userResolver = {
     login: async (_root: User, { email, password }: User, context: MyContext) => {
       //@ts-ignore
       const { user } = await context.authenticate('graphql-local', { email, password })
-      await context.login(user as HashedUser)
+      await context.login(user as unknown as HashedUser)
+      //@ts-ignore
       return user
 
       /*const user = await UserModel.findOne({ email: args.email })
@@ -60,6 +61,47 @@ const userResolver = {
     logout: (_root: User, _args: User, context: MyContext) => {
       context.logout()
       return 'Successfully logged out'
+    },
+    changePermissions: async (
+      _root: User,
+      args: { user: string; location: string; permission: 'read' | 'write' | 'admin' },
+      context: MyContext
+    ) => {
+      if (!context.isAuthenticated()) {
+        throw new GraphQLError('wrong credentials', {
+          extensions: { code: 'UNAUTHORIZED' },
+        })
+      }
+      const currentUser = context.getUser()
+      const user: User | null = await UserModel.findById(args.user)
+      if (!user) {
+        throw new GraphQLError('User not found', {
+          extensions: { code: 'BAD_USER_INPUT' },
+        })
+      }
+      if (
+        !currentUser?.permissions?.find(
+          (perm) => perm.location === args.location && perm.permission === 'admin'
+        )
+      ) {
+        throw new GraphQLError('You do not have permission to change permissions', {
+          extensions: { code: 'UNAUTHORIZED' },
+        })
+      }
+      if (
+        !user.permissions.length ||
+        !user.permissions.find((perm) => perm.location && perm.location === args.location)
+      ) {
+        user.permissions.push({
+          location: args.location,
+          permission: args.permission,
+        })
+      }
+      user.permissions = user.permissions.map((perm) =>
+        perm.location === args.location
+          ? { location: args.location, permission: args.permission }
+          : perm
+      )
     },
   },
 }

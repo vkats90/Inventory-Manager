@@ -10,7 +10,16 @@ const schema = new mongoose.Schema({
     minlength: 4,
   },
   name: String,
-  stores: [String],
+  permissions: [
+    {
+      location: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'UserModel',
+      },
+      permission: String,
+    },
+  ],
+
   passwordHash: {
     type: String,
   },

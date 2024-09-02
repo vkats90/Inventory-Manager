@@ -6,20 +6,14 @@ const locationSchema = new mongoose.Schema({
   name: {
     type: String,
     required: true,
-    unique: true,
   },
   admin: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'UserModel',
   },
-  read: {
-    type: [mongoose.Schema.Types.ObjectId],
-    ref: 'UserModel',
-  },
-  write: {
-    type: [mongoose.Schema.Types.ObjectId],
-    ref: 'UserModel',
-  },
+  address: String,
 })
 
 locationSchema.plugin(uniqueValidator)
+
+export default mongoose.model('LocationModel', locationSchema)
