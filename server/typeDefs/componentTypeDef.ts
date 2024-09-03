@@ -10,7 +10,7 @@ const componentTypeDefs = gql`
   }
 
   extend type Query {
-    allComponents(location: ID!): [Component]!
+    allComponents: [Component]!
     findComponent(id: ID!, location: ID!): Component
   }
 

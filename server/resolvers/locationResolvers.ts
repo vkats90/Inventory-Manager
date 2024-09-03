@@ -48,16 +48,33 @@ const locationResolver = {
           extensions: { code: 'UNAUTHORIZED' },
         })
       }
-      console.log(context.authInfo?.currentLocation)
       const currentUser = context.getUser()
+      //@ts-ignore
+      const currentLocation = context.currentLocation
 
       if (!currentUser?.permissions.length) {
-        throw new GraphQLError('unauthorized to view location', {
+        throw new GraphQLError('no locations exist', {
+          extensions: { code: 'EMPTY' },
+        })
+      }
+
+      if (!currentLocation) {
+        throw new GraphQLError('no location set', {
+          extensions: { code: 'EMPTY' },
+        })
+      }
+
+      if (
+        !currentUser.permissions
+          .map((permission) => permission.location.toString())
+          .includes(currentLocation)
+      ) {
+        throw new GraphQLError('user does not have access to this location', {
           extensions: { code: 'UNAUTHORIZED' },
         })
       }
 
-      return LocationtModel.findById(currentUser ? currentUser.permissions[0].location : '')
+      return LocationtModel.findById(currentLocation).populate('admin')
     },
   },
   Mutation: {
@@ -83,6 +100,7 @@ const locationResolver = {
       })
 
       try {
+        await location.save()
         await UserModal.findByIdAndUpdate(currentUser.id, {
           $push: { permissions: { location, permission: 'admin' } },
         })
