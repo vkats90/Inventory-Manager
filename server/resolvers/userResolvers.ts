@@ -36,10 +36,11 @@ const userResolver = {
     },
     login: async (_root: User, { email, password }: User, context: MyContext) => {
       //@ts-ignore
-      console.log(context.currentLocation)
-      //@ts-ignore
       const { user } = await context.authenticate('graphql-local', { email, password })
+
       await context.login(user as unknown as HashedUser)
+
+      context.req.session.currentLocation = user?.permissions[0].location
       return user
 
       /*const user = await UserModel.findOne({ email: args.email })

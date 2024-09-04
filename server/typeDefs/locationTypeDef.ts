@@ -17,6 +17,7 @@ const locationTypeDefs = gql`
 
   extend type Mutation {
     addLocation(name: String!, address: String): Location
+    changeCurrentLocation(id: ID!): Location
     editLocation(name: String!, admin: ID!, address: String, id: ID!): Location
     deleteLocation(id: ID!): String
   }

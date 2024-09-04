@@ -1,5 +1,7 @@
 import { PassportContext } from 'graphql-passport'
 import { Request as ExpressRequest } from 'express'
+import 'express-session'
+import 'passport'
 
 export interface Product {
   name: string
@@ -54,3 +56,9 @@ export interface Location {
 
 export interface MyContext
   extends PassportContext<HashedUser, ExpressRequest, { currentLocation: Location }> {}
+
+declare module 'express-session' {
+  interface SessionData {
+    currentLocation: string
+  }
+}

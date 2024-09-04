@@ -49,8 +49,7 @@ const locationResolver = {
         })
       }
       const currentUser = context.getUser()
-      //@ts-ignore
-      const currentLocation = context.currentLocation
+      const currentLocation = context.req.session.currentLocation
 
       if (!currentUser?.permissions.length) {
         throw new GraphQLError('no locations exist', {
@@ -115,6 +114,34 @@ const locationResolver = {
           },
         })
       }
+    },
+    changeCurrentLocation: async (_root: Location, { id }: { id: string }, context: MyContext) => {
+      if (!context.isAuthenticated()) {
+        throw new GraphQLError('wrong credentials', {
+          extensions: { code: 'UNAUTHORIZED' },
+        })
+      }
+      const currentUser = context.getUser()
+      const location: Location | null = await LocationtModel.findById(id).populate('admin')
+
+      if (!location)
+        throw new GraphQLError("location doesn't exist", {
+          extensions: {
+            code: 'NOT_FOUND',
+            invalidArgs: id,
+          },
+        })
+
+      if (
+        !currentUser?.permissions.map((permission) => permission.location.toString()).includes(id)
+      ) {
+        throw new GraphQLError('user does not have access to this location', {
+          extensions: { code: 'UNAUTHORIZED' },
+        })
+      }
+
+      context.req.session.currentLocation = id
+      return location
     },
     editLocation: async (_root: Location, args: Location, context: MyContext) => {
       if (!context.isAuthenticated()) {
