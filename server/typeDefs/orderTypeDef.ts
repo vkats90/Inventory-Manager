@@ -1,9 +1,11 @@
 import { gql } from 'apollo-server-express'
 
 const orderTypeDef = gql`
+  union ItemTypes = Product | Component
+
   type Order {
     id: ID!
-    name: String!
+    item: ItemTypes!
     quantity: Int!
     priority: Int
     status: String
@@ -12,22 +14,24 @@ const orderTypeDef = gql`
     updated_on: String!
     updated_by: User
     location: Location
+    supplier: String
   }
 
   extend type Query {
-    allOrders(location: ID!): [Order]!
-    findOrder(id: ID!, location: ID!): Order
+    allOrders: [Order]!
+    findOrder(id: ID!): Order
   }
 
   extend type Mutation {
-    addOrder(name: String, quantity: Int, priority: Int, location: ID!): Order
+    addOrder(item: ID, quantity: Int, priority: Int, supplier: String): Order
     editOrder(
       id: ID!
-      name: String
+      item: ID
       quantity: Int
       priority: Int
       status: String
       location: ID!
+      supplier: String
     ): Order
     deleteOrder(id: String): String
   }

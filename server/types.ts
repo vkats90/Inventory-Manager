@@ -23,7 +23,7 @@ export interface Component {
 }
 
 export interface Order {
-  name: string
+  item: Product | Component
   quantity: number
   priority: 1 | 2 | 3
   status: 'Created' | 'Ordered' | 'Shipped' | 'Finished'
@@ -33,6 +33,7 @@ export interface Order {
   updated_by: string
   id: string
   location: Location
+  supplier: string
 }
 
 export interface User {
