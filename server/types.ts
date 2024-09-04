@@ -54,8 +54,9 @@ export interface Location {
   address: string
 }
 
-export interface MyContext
-  extends PassportContext<HashedUser, ExpressRequest, { currentLocation: Location }> {}
+export interface MyContext extends PassportContext<HashedUser, ExpressRequest> {
+  currentLocation: string
+}
 
 declare module 'express-session' {
   interface SessionData {

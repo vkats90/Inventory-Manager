@@ -10,7 +10,8 @@ const componentResolver = {
           extensions: { code: 'UNAUTHORIZED' },
         })
       }
-      return ComponentModel.find({})
+      const currentLocation = context.currentLocation
+      return ComponentModel.find({ location: currentLocation }).populate('location')
     },
     findComponent: async (_root: Component, { id }: { id: string }, context: MyContext) => {
       if (!context.isAuthenticated()) {
@@ -18,7 +19,10 @@ const componentResolver = {
           extensions: { code: 'UNAUTHORIZED' },
         })
       }
-      const part: Component | null = await ComponentModel.findById(id)
+      const part: Component | null = await ComponentModel.findOne({
+        _id: id,
+        location: context.currentLocation,
+      }).populate('location')
 
       if (!part)
         throw new GraphQLError("component doesn't exist", {
@@ -38,7 +42,7 @@ const componentResolver = {
           extensions: { code: 'UNAUTHORIZED' },
         })
       }
-      const component = new ComponentModel(args)
+      const component = new ComponentModel({ ...args, location: context.currentLocation })
       if (args.stock < 0)
         throw new GraphQLError('stock must be greater than 0', {
           extensions: {
@@ -48,7 +52,7 @@ const componentResolver = {
         })
       try {
         await component.save()
-        return component
+        return component.populate('location')
       } catch (error) {
         throw new GraphQLError('failed to add new component', {
           extensions: {
@@ -72,7 +76,10 @@ const componentResolver = {
             invalidArgs: args.stock,
           },
         })
-      const component = await ComponentModel.findOne({ _id: args.id })
+      const component = await ComponentModel.findOne({
+        _id: args.id,
+        location: context.currentLocation,
+      })
       if (!component)
         throw new GraphQLError("component doesn't exist", {
           extensions: {
@@ -83,7 +90,7 @@ const componentResolver = {
       try {
         return await ComponentModel.findOneAndUpdate({ _id: args.id }, args, {
           new: true,
-        })
+        }).populate('location')
       } catch (error) {
         throw new GraphQLError('failed to edit component', {
           extensions: {
@@ -100,7 +107,10 @@ const componentResolver = {
           extensions: { code: 'UNAUTHORIZEDT' },
         })
       }
-      const component = await ComponentModel.findOne({ name: args.name })
+      const component = await ComponentModel.findOne({
+        name: args.name,
+        location: context.currentLocation,
+      })
       if (!component)
         throw new GraphQLError("component doesn't exist", {
           extensions: {

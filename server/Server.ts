@@ -107,7 +107,8 @@ const StartServer = async () => {
     // @ts-ignore comment
     expressMiddleware(server, {
       cors: false,
-      context: ({ req, res }) => buildContext({ req, res, currentLocation: req.headers.location }),
+      context: ({ req, res }) =>
+        buildContext({ req, res, currentLocation: req.session.currentLocation }),
     })
   )
 

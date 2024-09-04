@@ -49,7 +49,7 @@ const locationResolver = {
         })
       }
       const currentUser = context.getUser()
-      const currentLocation = context.req.session.currentLocation
+      const currentLocation = context.currentLocation
 
       if (!currentUser?.permissions.length) {
         throw new GraphQLError('no locations exist', {
