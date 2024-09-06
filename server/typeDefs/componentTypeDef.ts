@@ -3,7 +3,7 @@ import { gql } from 'apollo-server-express'
 const componentTypeDefs = gql`
   type Component {
     name: String!
-    stock: Float!
+    stock: Int!
     cost: Float
     id: ID!
     location: Location

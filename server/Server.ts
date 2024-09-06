@@ -6,6 +6,7 @@ import http from 'http'
 import cors from 'cors'
 import { buildSubgraphSchema } from '@apollo/federation'
 import dotenv from 'dotenv'
+import MongoStore from 'connect-mongo'
 //import { GraphQLError } from 'graphql'
 import session from 'express-session'
 import { v4 as uuid } from 'uuid'
@@ -89,6 +90,7 @@ const StartServer = async () => {
       cookie: {
         maxAge: 1000 * 60 * 60 * 24,
       },
+      store: MongoStore.create({ mongoUrl: process.env.MONGODB_URI }),
     })
   )
 

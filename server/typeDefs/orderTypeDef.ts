@@ -17,6 +17,10 @@ const orderTypeDef = gql`
     supplier: String
   }
 
+  extend type ItemTypes {
+    __resolveType: String!
+  }
+
   extend type Query {
     allOrders: [Order]!
     findOrder(id: ID!): Order

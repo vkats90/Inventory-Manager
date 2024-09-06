@@ -5,6 +5,13 @@ import ProductModel from '../models/product'
 import { GraphQLError } from 'graphql'
 
 const orderResolver = {
+  ItemTypes: {
+    __resolveType(obj: any) {
+      if (obj.price !== undefined) return 'Product'
+      else if (obj.price == undefined) return 'Component'
+      return null
+    },
+  },
   Query: {
     allOrders: async (_root: User, _args: User, context: MyContext) => {
       if (!context.isAuthenticated()) {
@@ -54,9 +61,20 @@ const orderResolver = {
         })
       }
 
-      const item =
-        (await ComponentModel.findOne({ _id: args.item })) ||
-        (await ProductModel.findOne({ _id: args.item }))
+      let item
+      let itemType
+
+      const componentItem = await ComponentModel.findOne({ _id: args.item })
+      if (componentItem) {
+        item = componentItem
+        itemType = 'ComponentModel'
+      } else {
+        const productItem = await ProductModel.findOne({ _id: args.item })
+        if (productItem) {
+          item = productItem
+          itemType = 'ProductModel'
+        }
+      }
 
       if (!item) {
         throw new GraphQLError("item doesn't exist", {
@@ -69,7 +87,8 @@ const orderResolver = {
 
       const order = new OrderModel({
         ...args,
-        item,
+        item: item._id,
+        itemType: itemType,
         priority: args.priority ? args.priority : 1,
         status: 'Created',
         created_by: currentUser.id,
@@ -78,6 +97,7 @@ const orderResolver = {
         updated_on: Date.now(),
         location: currentLocation,
       })
+
       if (args.quantity < 0)
         throw new GraphQLError('quantity must be greater than 0', {
           extensions: {
@@ -96,9 +116,18 @@ const orderResolver = {
           },
         })
       }
-      return (
-        await (await (await order.populate('created_by')).populate('updated_by')).populate('item')
-      ).populate('location')
+      await order.populate('created_by')
+      await order.populate('updated_by')
+      await order.populate('location')
+
+      await order.populate({
+        path: 'item',
+        model: itemType,
+      })
+
+      console.log(order)
+
+      return order
     },
     editOrder: async (_root: Order, args: Order, context: MyContext) => {
       const currentUser = context.getUser()

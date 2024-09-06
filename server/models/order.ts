@@ -1,9 +1,14 @@
 import mongoose from 'mongoose'
 
 const orderSchema = new mongoose.Schema({
-  name: {
-    type: String,
+  item: {
+    type: mongoose.Schema.Types.ObjectId,
     required: true,
+    refPath: 'itemType',
+  },
+  itemType: {
+    type: String,
+    enum: ['ComponentModel', 'ProductModel'],
   },
   quantity: {
     type: Number,
@@ -26,6 +31,7 @@ const orderSchema = new mongoose.Schema({
     ref: 'LocationModel',
     index: true,
   },
+  supplier: String,
 })
 
 export default mongoose.model('OrderModel', orderSchema)
