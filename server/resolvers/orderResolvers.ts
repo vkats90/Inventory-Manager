@@ -2,6 +2,7 @@ import { Order, User, MyContext } from '../types'
 import OrderModel from '../models/order'
 import ComponentModel from '../models/component'
 import ProductModel from '../models/product'
+import LocationModel from '../models/location'
 import { GraphQLError } from 'graphql'
 import order from '../models/order'
 
@@ -58,6 +59,17 @@ const orderResolver = {
 
       if (!currentUser) {
         throw new GraphQLError('wrong credentials', {
+          extensions: { code: 'UNAUTHORIZED' },
+        })
+      }
+
+      if (
+        ['admin', 'write'].includes(
+          context.getUser()?.permissions.find((p) => p.location === context.currentLocation)
+            ?.permission as string
+        )
+      ) {
+        throw new GraphQLError('permission not granted', {
           extensions: { code: 'UNAUTHORIZED' },
         })
       }
@@ -135,6 +147,16 @@ const orderResolver = {
           extensions: { code: 'UNAUTHORIZED' },
         })
       }
+      if (
+        ['admin', 'write'].includes(
+          context.getUser()?.permissions.find((p) => p.location === context.currentLocation)
+            ?.permission as string
+        )
+      ) {
+        throw new GraphQLError('permission not granted', {
+          extensions: { code: 'UNAUTHORIZED' },
+        })
+      }
       if (args.quantity < 0)
         throw new GraphQLError('quantity must be greater than 0', {
           extensions: {
@@ -186,6 +208,17 @@ const orderResolver = {
         }
       }
 
+      if (args.location) {
+        const location = await LocationModel.findById(args.location)
+        if (!location)
+          throw new GraphQLError("location doesn't exist", {
+            extensions: {
+              code: 'BAD_USER_INPUT',
+              invalidArgs: args.location,
+            },
+          })
+      }
+
       try {
         return await OrderModel.findOneAndUpdate(
           { _id: args.id, location: context.currentLocation },
@@ -215,6 +248,16 @@ const orderResolver = {
     deleteOrder: async (_root: Order, args: Order, context: MyContext) => {
       if (!context.isAuthenticated()) {
         throw new GraphQLError('wrong credentials', {
+          extensions: { code: 'UNAUTHORIZED' },
+        })
+      }
+      if (
+        ['admin', 'write'].includes(
+          context.getUser()?.permissions.find((p) => p.location === context.currentLocation)
+            ?.permission as string
+        )
+      ) {
+        throw new GraphQLError('permission not granted', {
           extensions: { code: 'UNAUTHORIZED' },
         })
       }

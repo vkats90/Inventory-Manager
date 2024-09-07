@@ -1,5 +1,6 @@
 import { Component, User, MyContext } from '../types'
 import ComponentModel from '../models/component'
+import LocationModel from '../models/location'
 import { GraphQLError } from 'graphql'
 
 const componentResolver = {
@@ -42,6 +43,16 @@ const componentResolver = {
           extensions: { code: 'UNAUTHORIZED' },
         })
       }
+      if (
+        ['admin', 'write'].includes(
+          context.getUser()?.permissions.find((p) => p.location === context.currentLocation)
+            ?.permission as string
+        )
+      ) {
+        throw new GraphQLError('permission not granted', {
+          extensions: { code: 'UNAUTHORIZED' },
+        })
+      }
       const component = new ComponentModel({ ...args, location: context.currentLocation })
       if (args.stock < 0)
         throw new GraphQLError('stock must be greater than 0', {
@@ -69,6 +80,17 @@ const componentResolver = {
           extensions: { code: 'UNAUTHORIZED' },
         })
       }
+
+      if (
+        ['admin', 'write'].includes(
+          context.getUser()?.permissions.find((p) => p.location === context.currentLocation)
+            ?.permission as string
+        )
+      ) {
+        throw new GraphQLError('permission not granted', {
+          extensions: { code: 'UNAUTHORIZED' },
+        })
+      }
       if (args.stock < 0)
         throw new GraphQLError('stock must be greater than 0', {
           extensions: {
@@ -87,10 +109,25 @@ const componentResolver = {
             invalidArgs: args.id,
           },
         })
+
+      if (args.location) {
+        const location = await LocationModel.findById(args.location)
+        if (!location)
+          throw new GraphQLError("location doesn't exist", {
+            extensions: {
+              code: 'BAD_USER_INPUT',
+              invalidArgs: args.location,
+            },
+          })
+      }
       try {
-        return await ComponentModel.findOneAndUpdate({ _id: args.id }, args, {
-          new: true,
-        }).populate('location')
+        return await ComponentModel.findOneAndUpdate(
+          { _id: args.id, location: context.currentLocation },
+          args,
+          {
+            new: true,
+          }
+        ).populate('location')
       } catch (error) {
         throw new GraphQLError('failed to edit component', {
           extensions: {
@@ -107,6 +144,18 @@ const componentResolver = {
           extensions: { code: 'UNAUTHORIZEDT' },
         })
       }
+
+      if (
+        ['admin', 'write'].includes(
+          context.getUser()?.permissions.find((p) => p.location === context.currentLocation)
+            ?.permission as string
+        )
+      ) {
+        throw new GraphQLError('permission not granted', {
+          extensions: { code: 'UNAUTHORIZED' },
+        })
+      }
+
       const component = await ComponentModel.findOne({
         name: args.name,
         location: context.currentLocation,

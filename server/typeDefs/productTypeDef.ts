@@ -13,8 +13,8 @@ const productTypeDefs = gql`
   }
 
   extend type Query {
-    allProducts(location: ID!): [Product!]!
-    findProduct(id: ID!, location: ID!): Product
+    allProducts: [Product!]!
+    findProduct(id: ID!): Product
   }
 
   extend type Mutation {
@@ -25,7 +25,6 @@ const productTypeDefs = gql`
       price: Float
       SKU: String!
       components: [String]
-      location: ID!
     ): Product
     editProduct(
       id: ID!

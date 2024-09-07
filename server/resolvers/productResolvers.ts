@@ -1,5 +1,6 @@
 import { Product, User, MyContext } from '../types'
 import ProductModel from '../models/product'
+import LocationModel from '../models/location'
 import { GraphQLError } from 'graphql'
 
 const productResolver = {
@@ -10,7 +11,9 @@ const productResolver = {
           extensions: { code: 'UNAUTHORIZED' },
         })
       }
-      return ProductModel.find({}).populate('components')
+      return ProductModel.find({ location: context.currentLocation })
+        .populate('components')
+        .populate('location')
     },
 
     findProduct: async (_root: Product, { id }: { id: string }, context: MyContext) => {
@@ -19,7 +22,12 @@ const productResolver = {
           extensions: { code: 'UNAUTHORIZED' },
         })
       }
-      const product: Product | null = await ProductModel.findById(id).populate('components')
+      const product: Product | null = await ProductModel.findOne({
+        _id: id,
+        location: context.currentLocation,
+      })
+        .populate('components')
+        .populate('location')
 
       if (!product)
         throw new GraphQLError("product doesn't exist", {
@@ -38,6 +46,16 @@ const productResolver = {
           extensions: { code: 'UNAUTHORIZED' },
         })
       }
+      if (
+        ['admin', 'write'].includes(
+          context.getUser()?.permissions.find((p) => p.location === context.currentLocation)
+            ?.permission as string
+        )
+      ) {
+        throw new GraphQLError('permission not granted', {
+          extensions: { code: 'UNAUTHORIZED' },
+        })
+      }
       if (args.stock < 0)
         throw new GraphQLError('stock must be greater than 0', {
           extensions: {
@@ -45,7 +63,7 @@ const productResolver = {
             invalidArgs: args.stock,
           },
         })
-      const product = new ProductModel(args)
+      const product = new ProductModel({ ...args, location: context.currentLocation })
       if (!args.name)
         throw new GraphQLError("name can't be empty", {
           extensions: {
@@ -64,12 +82,22 @@ const productResolver = {
           },
         })
       }
-      return product.populate('components')
+      return (await product.populate('components')).populate('location')
     },
 
     editProduct: async (_root: Product, args: Product, context: MyContext) => {
       if (!context.isAuthenticated()) {
         throw new GraphQLError('wrong credentials', {
+          extensions: { code: 'UNAUTHORIZED' },
+        })
+      }
+      if (
+        ['admin', 'write'].includes(
+          context.getUser()?.permissions.find((p) => p.location === context.currentLocation)
+            ?.permission as string
+        )
+      ) {
+        throw new GraphQLError('permission not granted', {
           extensions: { code: 'UNAUTHORIZED' },
         })
       }
@@ -88,10 +116,25 @@ const productResolver = {
             invalidArgs: args.name,
           },
         })
+
+      if (args.location) {
+        const location = await LocationModel.findById(args.location)
+        if (!location)
+          throw new GraphQLError("location doesn't exist", {
+            extensions: {
+              code: 'BAD_USER_INPUT',
+              invalidArgs: args.location,
+            },
+          })
+      }
       try {
-        return await ProductModel.findOneAndUpdate({ _id: args.id }, args, { new: true }).populate(
-          'components'
+        return await ProductModel.findOneAndUpdate(
+          { _id: args.id, location: context.currentLocation },
+          args,
+          { new: true }
         )
+          .populate('components')
+          .populate('location')
       } catch (error) {
         throw new GraphQLError('failed to update product', {
           extensions: {
@@ -106,6 +149,16 @@ const productResolver = {
       if (!context.isAuthenticated()) {
         throw new GraphQLError('wrong credentials', {
           extensions: { code: 'UNAUTHORIZEDT' },
+        })
+      }
+      if (
+        ['admin', 'write'].includes(
+          context.getUser()?.permissions.find((p) => p.location === context.currentLocation)
+            ?.permission as string
+        )
+      ) {
+        throw new GraphQLError('permission not granted', {
+          extensions: { code: 'UNAUTHORIZED' },
         })
       }
       const product = await ProductModel.findOne({ name: args.name })
