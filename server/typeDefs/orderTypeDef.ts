@@ -34,7 +34,7 @@ const orderTypeDef = gql`
       quantity: Int
       priority: Int
       status: String
-      location: ID!
+      location: ID
       supplier: String
     ): Order
     deleteOrder(id: String): String

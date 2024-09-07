@@ -3,6 +3,7 @@ import OrderModel from '../models/order'
 import ComponentModel from '../models/component'
 import ProductModel from '../models/product'
 import { GraphQLError } from 'graphql'
+import order from '../models/order'
 
 const orderResolver = {
   ItemTypes: {
@@ -125,8 +126,6 @@ const orderResolver = {
         model: itemType,
       })
 
-      console.log(order)
-
       return order
     },
     editOrder: async (_root: Order, args: Order, context: MyContext) => {
@@ -153,7 +152,6 @@ const orderResolver = {
           })
       }
       const order = await OrderModel.findOne({ _id: args.id, location: context.currentLocation })
-
       if (!order)
         throw new GraphQLError("order doesn't exist", {
           extensions: {
@@ -162,24 +160,37 @@ const orderResolver = {
           },
         })
 
-      const item =
-        (await ComponentModel.findOne({ _id: args.item })) ||
-        (await ProductModel.findOne({ _id: args.item }))
+      let item
+      let itemType
 
-      if (!item) {
-        throw new GraphQLError("item doesn't exist", {
-          extensions: {
-            code: 'BAD_USER_INPUT',
-            invalidArgs: args.item,
-          },
-        })
+      if (args.item) {
+        const componentItem = await ComponentModel.findOne({ _id: args.item })
+        if (componentItem) {
+          item = componentItem
+          itemType = 'ComponentModel'
+        } else {
+          const productItem = await ProductModel.findOne({ _id: args.item })
+          if (productItem) {
+            item = productItem
+            itemType = 'ProductModel'
+          }
+        }
+
+        if (!item) {
+          throw new GraphQLError("item doesn't exist", {
+            extensions: {
+              code: 'BAD_USER_INPUT',
+              invalidArgs: args.item,
+            },
+          })
+        }
       }
+
       try {
         return await OrderModel.findOneAndUpdate(
           { _id: args.id, location: context.currentLocation },
           {
             ...args,
-            item,
             updated_by: currentUser.id,
             updated_on: Date.now(),
           },
@@ -187,8 +198,11 @@ const orderResolver = {
         )
           .populate('created_by')
           .populate('updated_by')
-          .populate('item')
           .populate('location')
+          .populate({
+            path: 'item',
+            model: itemType,
+          })
       } catch (error) {
         throw new GraphQLError('failed to add order', {
           extensions: {
