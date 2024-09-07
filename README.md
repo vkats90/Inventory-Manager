@@ -8,7 +8,6 @@
 - Implement search
 - Implement input for some columns
 - Add login using google/shopify
-- deploy site
 
 ## Hours spent:
 

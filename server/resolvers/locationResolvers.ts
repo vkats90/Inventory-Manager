@@ -161,7 +161,12 @@ const locationResolver = {
           },
         })
 
-      if (location.admin.id != currentUser?.id)
+      if (
+        location.admin.id != currentUser?.id ||
+        currentUser?.permissions.find(
+          (permission) => permission.location == context.currentLocation
+        )?.permission != 'admin'
+      )
         throw new GraphQLError('only admin can edit locations', {
           extensions: { code: 'UNAUTHORIZED' },
         })
@@ -197,7 +202,12 @@ const locationResolver = {
           },
         })
 
-      if (location.admin.id != currentUser?.id)
+      if (
+        location.admin.id != currentUser?.id ||
+        currentUser?.permissions.find(
+          (permission) => permission.location == context.currentLocation
+        )?.permission != 'admin'
+      )
         throw new GraphQLError('only admin can delete locations', {
           extensions: { code: 'UNAUTHORIZED' },
         })
