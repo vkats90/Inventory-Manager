@@ -2,6 +2,7 @@
   "dependencies": {
     "@apollo/federation": "^0.38.1",
     "@apollo/server": "^4.10.0",
+    "@types/passport-google-oauth2": "^0.1.10",
     "apollo-server-express": "^3.13.0",
     "bcrypt": "^5.1.1",
     "body-parser": "^1.20.2",
@@ -15,6 +16,7 @@
     "mongoose": "^8.1.0",
     "mongoose-unique-validator": "^5.0.0",
     "passport": "^0.7.0",
+    "passport-google-oauth20": "^2.0.0",
     "uuid": "^10.0.0"
   },
   "name": "inventory-manager-backend",
