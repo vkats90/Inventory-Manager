@@ -2,8 +2,20 @@ import { Product, User, MyContext } from '../types'
 import ProductModel from '../models/product'
 import LocationModel from '../models/location'
 import { GraphQLError } from 'graphql'
+import { PutObjectCommand, GetObjectCommand } from '@aws-sdk/client-s3'
+import { s3 } from '../s3config'
+import { GraphQLUpload, FileUpload } from 'graphql-upload-ts'
+import { getSignedUrl } from '@aws-sdk/s3-request-presigner'
+import uuid from 'uuid'
+
+interface UploadProductImageArgs {
+  productId: string
+  file: Promise<FileUpload>
+}
 
 const productResolver = {
+  Upload: GraphQLUpload,
+
   Query: {
     allProducts: async (_root: User, _args: User, context: MyContext) => {
       if (!context.isAuthenticated()) {
@@ -181,6 +193,87 @@ const productResolver = {
         })
       }
       return `Successfully deleted ${args.name}`
+    },
+    uploadProductImage: async (
+      _: any,
+      { productId, file }: UploadProductImageArgs
+    ): Promise<Product> => {
+      const { createReadStream, mimetype, filename } = await file
+
+      const stream = createReadStream()
+      const chunks: Buffer[] = []
+
+      for await (const chunk of stream) {
+        chunks.push(chunk as Buffer)
+      }
+
+      const buffer = Buffer.concat(chunks)
+
+      const params = {
+        Bucket: process.env.S3_BUCKET_NAME!,
+        Key: `products/${Date.now().toString()}-${filename}`,
+        Body: buffer,
+        ContentType: mimetype,
+      }
+
+      try {
+        const command = new PutObjectCommand(params)
+        await s3.send(command)
+
+        console.log('Successfully uploaded image:')
+
+        const updatedProduct: Product | null = await ProductModel.findByIdAndUpdate(
+          productId,
+          {
+            image: {
+              key: `products/${Date.now().toString()}-${filename}`,
+              bucket: process.env.Bucket,
+              mimetype: mimetype,
+            },
+          },
+          { new: true }
+        )
+
+        if (!updatedProduct) {
+          throw new Error('Product not found')
+        }
+
+        return updatedProduct
+      } catch (error) {
+        throw new GraphQLError('Failed to upload image', {
+          extensions: {
+            code: 'BAD_USER_INPUT',
+            invalidArgs: productId,
+            error,
+          },
+        })
+      }
+    },
+  },
+  Product: {
+    image: async (
+      product: Product
+    ): Promise<{ url: string; key: string; bucket: string; mimetype: string } | null> => {
+      if (product.image && product.image.key) {
+        const getObjectParams = {
+          Bucket: product.image.bucket,
+          Key: product.image.key,
+        }
+
+        try {
+          const command = new GetObjectCommand(getObjectParams)
+          const url = await getSignedUrl(s3, command, { expiresIn: 3600 })
+
+          return {
+            ...product.image,
+            url,
+          }
+        } catch (error) {
+          console.error('Error generating signed URL:', error)
+          return null
+        }
+      }
+      return null
     },
   },
 }

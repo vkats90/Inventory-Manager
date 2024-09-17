@@ -1,6 +1,15 @@
 import { gql } from 'apollo-server-express'
 
 const productTypeDefs = gql`
+  scalar Upload
+
+  type ProductImage {
+    url: String!
+    key: String!
+    bucket: String!
+    mimetype: String!
+  }
+
   type Product {
     name: String!
     stock: Int!
@@ -10,6 +19,7 @@ const productTypeDefs = gql`
     components: [Component]
     id: ID!
     location: Location
+    image: ProductImage
   }
 
   extend type Query {
@@ -37,6 +47,7 @@ const productTypeDefs = gql`
       location: ID
     ): Product
     deleteProduct(name: String!): String
+    uploadProductImage(productId: ID!, file: Upload): Product
   }
 `
 

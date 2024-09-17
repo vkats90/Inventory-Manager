@@ -12,6 +12,14 @@ export interface Product {
   components: string[]
   id: string
   location: Location
+  image?: ProductImage
+}
+
+export interface ProductImage {
+  url: string
+  key: string
+  bucket: string
+  mimetype: string
 }
 
 export interface Component {
