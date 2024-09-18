@@ -44,7 +44,7 @@ const SingleOrderPage: React.FC = () => {
     try {
       const res = await editOrder(
         order.id,
-        order.name,
+        order.item.name,
         order.quantity,
         order.priority,
         order.status
@@ -76,7 +76,7 @@ const SingleOrderPage: React.FC = () => {
       <form>
         <input
           className="text-3xl font-bold mb-4 w-full focus:outline-primary"
-          value={order.name}
+          value={order.item.name}
           onChange={handleInputChange}
           name="name"
         />

@@ -22,6 +22,7 @@ export const allComponentsLoader = async () => {
 }
 
 export const findComponentLoader = async ({ params }: LoaderFunctionArgs) => {
+  console.log('params', params.id)
   return preloadQuery(FIND_COMPONENT, {
     variables: { id: params.partID },
     errorPolicy: 'all',

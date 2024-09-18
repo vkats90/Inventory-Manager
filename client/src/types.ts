@@ -1,22 +1,24 @@
 // Order type
 export type Order = {
-  id: string
-  name: string
+  item: Product | Component
   quantity: number
-  priority: number | null
-  status: string
-  created_on: string
+  priority: 1 | 2 | 3 | null
+  status: 'Created' | 'Ordered' | 'Shipped' | 'Finished'
+  created_on: Date
   created_by: User
-  updated_on: string
-  updated_by: User | null
+  updated_on: Date
+  updated_by: User
+  id: string
+  location: Location
+  supplier: string
 }
 
 // User type (assuming a basic structure, adjust as needed)
 export type User = {
-  id: string
   email: string
+  id: string
   name: string
-  stores: string[]
+  permissions: { location: string; permission: 'admin' | 'read' | 'write' }[]
 }
 
 // Component type
@@ -27,6 +29,13 @@ export type Component = {
   id: string
 }
 
+export interface ProductImage {
+  url: string
+  key: string
+  bucket: string
+  mimetype: string
+}
+
 export type Product = {
   name: string
   stock: number
@@ -35,4 +44,13 @@ export type Product = {
   SKU: string
   components: Component[] | []
   id: string
+  location: Location
+  image?: ProductImage
+}
+
+export interface Location {
+  name: string
+  id: string
+  admin: User
+  address: string
 }

@@ -24,9 +24,9 @@ const defaultColumns = [
     cell: (info) => info.getValue(),
     enableHiding: false,
   }),
-  columnHelper.accessor('name', {
-    header: 'Name',
-    cell: (info) => info.getValue(),
+  columnHelper.accessor('item', {
+    header: 'Item',
+    cell: (info) => info.getValue().name,
   }),
   columnHelper.accessor('quantity', {
     header: 'Quantity',
@@ -44,16 +44,20 @@ const defaultColumns = [
     header: 'Created on',
     cell: (info) => new Date(Number(info.getValue())).toLocaleString(),
   }),
-  columnHelper.accessor('created_by.name', {
+  columnHelper.accessor('created_by', {
     header: 'Created by',
-    cell: (info) => info.getValue(),
+    cell: (info) => info.getValue().name,
   }),
   columnHelper.accessor('updated_on', {
     header: 'Updated on',
     cell: (info) => new Date(Number(info.getValue())).toLocaleString(),
   }),
-  columnHelper.accessor('updated_by.name', {
+  columnHelper.accessor('updated_by', {
     header: 'Updated by',
+    cell: (info) => info.getValue().name,
+  }),
+  columnHelper.accessor('supplier', {
+    header: 'Supplier',
     cell: (info) => info.getValue(),
   }),
 ]
@@ -68,6 +72,7 @@ const initialTableHeaders = {
   created_by: true,
   updated_on: true,
   updated_by: true,
+  supplier: true,
 }
 
 export const OrderList: React.FC<{ orders: Order[]; InitColumns?: typeof initialTableHeaders }> = ({

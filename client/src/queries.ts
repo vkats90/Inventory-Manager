@@ -11,11 +11,14 @@ export const ALL_PRODUCTS = gql`
       SKU
       components {
         name
-        id
         stock
         cost
+        id
       }
       id
+      location {
+        name
+      }
     }
   }
 `
@@ -31,9 +34,9 @@ export const FIND_PRODUCT = gql`
       SKU
       components {
         name
-        id
         stock
         cost
+        id
       }
       id
     }
@@ -50,17 +53,20 @@ export const FIND_PRODUCT_AND_COMPONENTS = gql`
       SKU
       components {
         name
-        id
         stock
         cost
+        id
       }
       id
     }
     allComponents {
+      id
+      cost
       name
       stock
-      cost
-      id
+      location {
+        name
+      }
     }
   }
 `
@@ -70,17 +76,17 @@ export const ADD_PRODUCT = gql`
   mutation AddProduct(
     $name: String!
     $stock: Int!
+    $sku: String!
     $cost: Float
     $price: Float
-    $SKU: String!
     $components: [String]
   ) {
     addProduct(
       name: $name
       stock: $stock
+      SKU: $sku
       cost: $cost
       price: $price
-      SKU: $SKU
       components: $components
     ) {
       name
@@ -90,9 +96,12 @@ export const ADD_PRODUCT = gql`
       SKU
       components {
         name
-        id
+        stock
       }
       id
+      location {
+        name
+      }
     }
   }
 `
@@ -100,22 +109,22 @@ export const ADD_PRODUCT = gql`
 // Mutation to edit an existing product
 export const EDIT_PRODUCT = gql`
   mutation EditProduct(
-    $name: String!
-    $stock: Int
-    $cost: Float
-    $price: Float
-    $SKU: String
     $components: [String]
+    $sku: String
+    $price: Float
+    $cost: Float
+    $stock: Int
+    $name: String!
     $id: ID!
   ) {
     editProduct(
-      id: $id
-      name: $name
-      stock: $stock
-      cost: $cost
-      price: $price
-      SKU: $SKU
       components: $components
+      SKU: $sku
+      price: $price
+      cost: $cost
+      stock: $stock
+      name: $name
+      id: $id
     ) {
       name
       stock
@@ -124,9 +133,9 @@ export const EDIT_PRODUCT = gql`
       SKU
       components {
         name
-        id
         stock
         cost
+        id
       }
       id
     }
@@ -144,10 +153,13 @@ export const DELETE_PRODUCT = gql`
 export const ALL_COMPONENTS = gql`
   query AllComponents {
     allComponents {
+      id
+      cost
       name
       stock
-      cost
-      id
+      location {
+        name
+      }
     }
   }
 `
@@ -171,18 +183,36 @@ export const ADD_COMPONENT = gql`
       stock
       cost
       id
+      location {
+        name
+      }
     }
   }
 `
 
 // Mutation to edit an existing component
 export const EDIT_COMPONENT = gql`
-  mutation EditComponent($id: ID!, $name: String!, $stock: Float, $cost: Float) {
-    editComponent(name: $name, stock: $stock, cost: $cost, id: $id) {
+  mutation EditComponent(
+    $editComponentId: ID!
+    $name: String!
+    $stock: Float
+    $cost: Float
+    $location: ID!
+  ) {
+    editComponent(
+      id: $editComponentId
+      name: $name
+      stock: $stock
+      cost: $cost
+      location: $location
+    ) {
       name
       stock
       cost
       id
+      location {
+        name
+      }
     }
   }
 `
@@ -199,16 +229,34 @@ export const ALL_ORDERS = gql`
   query AllOrders {
     allOrders {
       id
-      name
+
       quantity
       priority
       status
       created_on
       created_by {
+        email
+        id
         name
       }
       updated_on
       updated_by {
+        email
+        id
+        name
+      }
+      supplier
+      item {
+        ... on Product {
+          name
+          stock
+        }
+        ... on Component {
+          name
+          stock
+        }
+      }
+      location {
         name
       }
     }
@@ -225,29 +273,56 @@ export const PRODUCTS_ORDERS_ME = gql`
       SKU
       components {
         name
+        stock
+        cost
+        id
       }
       id
+      location {
+        name
+      }
     }
     allOrders {
       id
-      name
+
       quantity
       priority
       status
       created_on
       created_by {
+        email
+        id
         name
       }
       updated_on
       updated_by {
+        email
+        id
+        name
+      }
+      supplier
+      item {
+        ... on Product {
+          name
+          stock
+        }
+        ... on Component {
+          name
+          stock
+        }
+      }
+      location {
         name
       }
     }
     me {
-      name
       email
-      stores
       id
+      name
+      permissions {
+        location
+        permission
+      }
     }
   }
 `
@@ -256,41 +331,75 @@ export const FIND_ORDER = gql`
   query FindOrder($id: ID!) {
     findOrder(id: $id) {
       id
-      name
       quantity
       priority
       status
       created_on
       created_by {
+        email
         id
         name
       }
       updated_on
       updated_by {
+        email
         id
         name
       }
+      item {
+        ... on Component {
+          name
+          stock
+        }
+        ... on Product {
+          name
+          stock
+        }
+      }
+      location {
+        name
+      }
+      supplier
     }
   }
 `
 
 // Mutation to add a new order
 export const ADD_ORDER = gql`
-  mutation AddOrder($name: String, $quantity: Int, $priority: Int) {
-    addOrder(name: $name, quantity: $quantity, priority: $priority) {
-      name
+  mutation AddOrder($quantity: Int, $priority: Int, $item: ID, $supplier: String) {
+    addOrder(quantity: $quantity, priority: $priority, item: $item, supplier: $supplier) {
+      id
+
       quantity
       priority
       status
       created_on
       created_by {
+        email
         id
         name
       }
       updated_on
       updated_by {
+        email
         id
         name
+      }
+      location {
+        name
+      }
+      supplier
+      item {
+        ... on Product {
+          components {
+            name
+          }
+          stock
+        }
+        ... on Component {
+          name
+          cost
+        }
       }
     }
   }
@@ -298,23 +407,29 @@ export const ADD_ORDER = gql`
 
 // Mutation to edit an existing order
 export const EDIT_ORDER = gql`
-  mutation EditOrder($name: String, $quantity: Int, $priority: Int, $status: String, $id: ID!) {
-    editOrder(name: $name, quantity: $quantity, priority: $priority, status: $status, id: $id) {
+  mutation EditOrder($editOrderId: ID!, $priority: Int) {
+    editOrder(id: $editOrderId, priority: $priority) {
       id
-      name
+      item {
+        ... on Product {
+          name
+        }
+      }
       quantity
       priority
       status
       created_on
       created_by {
-        id
         name
       }
       updated_on
       updated_by {
-        id
         name
       }
+      location {
+        name
+      }
+      supplier
     }
   }
 `
@@ -332,7 +447,10 @@ export const LOGIN = gql`
       email
       id
       name
-      stores
+      permissions {
+        location
+        permission
+      }
     }
   }
 `
@@ -346,21 +464,27 @@ export const LOGOUT = gql`
 export const ME = gql`
   query Me {
     me {
-      name
       email
-      stores
       id
+      name
+      permissions {
+        location
+        permission
+      }
     }
   }
 `
 
 export const CREATE_USER = gql`
-  mutation CreateUser($email: String!, $password: String!, $name: String, $stores: [String]) {
-    createUser(email: $email, password: $password, name: $name, stores: $stores) {
+  mutation CreateUser($email: String!, $password: String!, $name: String) {
+    createUser(email: $email, password: $password, name: $name) {
       email
       id
       name
-      stores
+      permissions {
+        location
+        permission
+      }
     }
   }
 `
