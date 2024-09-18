@@ -10,13 +10,21 @@ const productTypeDefs = gql`
     mimetype: String!
   }
 
+  type ComponentNoLocation {
+    name: String!
+    stock: Int!
+    cost: Float
+    id: ID!
+    location: String
+  }
+
   type Product {
     name: String!
     stock: Int!
     cost: Float
     price: Float
     SKU: String!
-    components: [Component]
+    components: [ComponentNoLocation]
     id: ID!
     location: Location
     image: ProductImage

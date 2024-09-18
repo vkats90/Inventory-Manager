@@ -7,7 +7,8 @@
 - Implement sorting to tables
 - Implement search
 - Implement input for some columns
-- Add login using google/shopify
+- Add login using shopify
+- Editing product (adding component) doesn't work properly
 
 ## Hours spent:
 

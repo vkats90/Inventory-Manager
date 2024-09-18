@@ -37,6 +37,7 @@ export const FIND_PRODUCT = gql`
         stock
         cost
         id
+        location
       }
       id
     }
@@ -56,6 +57,7 @@ export const FIND_PRODUCT_AND_COMPONENTS = gql`
         stock
         cost
         id
+        location
       }
       id
     }
@@ -76,7 +78,7 @@ export const ADD_PRODUCT = gql`
   mutation AddProduct(
     $name: String!
     $stock: Int!
-    $sku: String!
+    $SKU: String!
     $cost: Float
     $price: Float
     $components: [String]
@@ -84,7 +86,7 @@ export const ADD_PRODUCT = gql`
     addProduct(
       name: $name
       stock: $stock
-      SKU: $sku
+      SKU: $SKU
       cost: $cost
       price: $price
       components: $components
@@ -136,6 +138,7 @@ export const EDIT_PRODUCT = gql`
         stock
         cost
         id
+        location
       }
       id
     }
