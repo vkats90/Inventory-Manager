@@ -2,7 +2,7 @@ import { Product, User, MyContext } from '../types'
 import ProductModel from '../models/product'
 import LocationModel from '../models/location'
 import { GraphQLError } from 'graphql'
-import { PutObjectCommand, GetObjectCommand } from '@aws-sdk/client-s3'
+import { PutObjectCommand, GetObjectCommand, ListObjectsCommand } from '@aws-sdk/client-s3'
 import { s3 } from '../s3config'
 import { GraphQLUpload, FileUpload } from 'graphql-upload-ts'
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner'
@@ -210,7 +210,7 @@ const productResolver = {
       const buffer = Buffer.concat(chunks)
 
       const params = {
-        Bucket: process.env.S3_BUCKET_NAME!,
+        Bucket: process.env.S3_BUCKET_NAME,
         Key: `products/${Date.now().toString()}-${filename}`,
         Body: buffer,
         ContentType: mimetype,
@@ -218,9 +218,8 @@ const productResolver = {
 
       try {
         const command = new PutObjectCommand(params)
-        await s3.send(command)
-
-        console.log('Successfully uploaded image:')
+        const res = await getSignedUrl(s3, command)
+        console.log('res:', res)
 
         const updatedProduct: Product | null = await ProductModel.findByIdAndUpdate(
           productId,
