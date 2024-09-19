@@ -27,6 +27,7 @@ export type Component = {
   stock: number
   cost: number | null
   id: string
+  location: Location | string
 }
 
 export interface ProductImage {

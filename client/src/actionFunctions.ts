@@ -135,7 +135,6 @@ export const editProduct = async (
       mutation: EDIT_PRODUCT,
       variables: { id, name, cost, stock, price, SKU, components },
     })
-
     return data.editProduct
   } catch (error: unknown) {
     return error as Error

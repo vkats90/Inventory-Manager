@@ -18,6 +18,7 @@ export const ALL_PRODUCTS = gql`
       id
       location {
         name
+        id
       }
     }
   }
@@ -68,6 +69,7 @@ export const FIND_PRODUCT_AND_COMPONENTS = gql`
       stock
       location {
         name
+        id
       }
     }
   }
@@ -162,6 +164,7 @@ export const ALL_COMPONENTS = gql`
       stock
       location {
         name
+        id
       }
     }
   }

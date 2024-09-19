@@ -1,7 +1,8 @@
 import React, { useState } from 'react'
-import { Component } from '../types'
+import { Component, Location } from '../types'
 import Modal from './modal' // Assuming you have a Modal component
 import AddComponent from '../pages/AddComponent'
+import { __Type } from 'graphql'
 
 interface SelectComponentProps {
   selectedParts: Component[]
@@ -33,7 +34,10 @@ const SelectComponent: React.FC<SelectComponentProps> = ({ selectedParts, allPar
   const handleCheckboxChange = (part: Component) => {
     const updatedParts = selectedPartsState.map((x) => x.name).includes(part.name)
       ? selectedPartsState.filter((p) => p.name !== part.name)
-      : [...selectedPartsState, part]
+      : [
+          ...selectedPartsState,
+          { ...part, location: (part.location as Location).id, __typename: 'ComponentNoLocation' },
+        ]
     setSelectedPartsState(updatedParts)
   }
 
