@@ -8,6 +8,7 @@
 - Implement search
 - Implement input for some columns
 - Add login using shopify
+- Move loader for locations, currentlocation, and curret user from home to app.
 
 ## Hours spent:
 

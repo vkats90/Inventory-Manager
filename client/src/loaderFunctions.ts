@@ -5,7 +5,7 @@ import {
   ME,
   FIND_COMPONENT,
   FIND_ORDER,
-  PRODUCTS_ORDERS_ME,
+  PRODUCTS_ORDERS_ME_LOCATIONS,
   FIND_PRODUCT_AND_COMPONENTS,
 } from './queries'
 import { client } from './client'
@@ -75,7 +75,7 @@ export const meLoader = async () => {
 }
 
 export const homeLoader = async () => {
-  return preloadQuery(PRODUCTS_ORDERS_ME, {
+  return preloadQuery(PRODUCTS_ORDERS_ME_LOCATIONS, {
     errorPolicy: 'all',
     fetchPolicy: 'cache-and-network',
   })

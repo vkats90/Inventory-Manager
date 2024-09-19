@@ -1,16 +1,15 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
+import LocationDropdown from './locationDropdown'
 
 import Logo from '../assets/Inventory Manager copy.png'
-//@ts-ignore
-import { useContext } from 'react'
 import { AppContext } from '../App'
 import { logout } from '../actionFunctions'
 
 const Sidebar: React.FC = () => {
-  const location = useLocation()
+  const urllocation = useLocation()
   const navigate = useNavigate()
-  const { setUser } = useContext(AppContext)
+  const { setUser, location, setLocation, allLocations } = useContext(AppContext)
 
   const links = [
     { name: 'Home', path: '/' },
@@ -19,7 +18,7 @@ const Sidebar: React.FC = () => {
     { name: 'Orders', path: '/orders' },
   ]
 
-  if (location.pathname == '/login' || location.pathname == '/register') return
+  if (urllocation.pathname == '/login' || urllocation.pathname == '/register') return
 
   return (
     <div className="bg-slate-200 w-64 min-h-screen p-1">
@@ -32,13 +31,20 @@ const Sidebar: React.FC = () => {
                 <Link
                   to={link.path}
                   className={`block p-2 rounded  hover:ring-primary hover:ring-2 transition-colors ${
-                    location.pathname === link.path ? 'bg-primary/70 text-white' : ''
+                    urllocation.pathname === link.path ? 'bg-primary/70 text-white' : ''
                   }`}
                 >
                   {link.name}
                 </Link>
               </li>
             ))}
+            <li className="mb-4">
+              <LocationDropdown
+                currentLocation={location}
+                setCurrentLocation={setLocation}
+                allLocations={allLocations}
+              />
+            </li>
           </ul>
           <a
             onClick={() => {

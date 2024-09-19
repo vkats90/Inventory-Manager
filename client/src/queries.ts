@@ -269,7 +269,7 @@ export const ALL_ORDERS = gql`
   }
 `
 
-export const PRODUCTS_ORDERS_ME = gql`
+export const PRODUCTS_ORDERS_ME_LOCATIONS = gql`
   query ProductsOrdersMe {
     allProducts {
       name
@@ -328,6 +328,22 @@ export const PRODUCTS_ORDERS_ME = gql`
       permissions {
         location
         permission
+      }
+    }
+    allLocations {
+      name
+      id
+      admin {
+        name
+      }
+      address
+    }
+    currentLocation {
+      name
+      id
+      address
+      admin {
+        email
       }
     }
   }
