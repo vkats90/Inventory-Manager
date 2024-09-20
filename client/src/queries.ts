@@ -269,8 +269,8 @@ export const ALL_ORDERS = gql`
   }
 `
 
-export const PRODUCTS_ORDERS_ME_LOCATIONS = gql`
-  query ProductsOrdersMe {
+export const PRODUCTS_ORDERS = gql`
+  query ProductsOrders {
     allProducts {
       name
       stock
@@ -321,6 +321,11 @@ export const PRODUCTS_ORDERS_ME_LOCATIONS = gql`
         name
       }
     }
+  }
+`
+
+export const ME_LOCATIONS = gql`
+  query ProductsOrdersMe {
     me {
       email
       id
@@ -507,6 +512,19 @@ export const CREATE_USER = gql`
         location
         permission
       }
+    }
+  }
+`
+
+export const CHANGE_LOCATION = gql`
+  mutation ChangeCurrentLocation($id: ID!) {
+    changeCurrentLocation(id: $id) {
+      name
+      admin {
+        email
+      }
+      address
+      id
     }
   }
 `

@@ -5,8 +5,9 @@ import {
   ME,
   FIND_COMPONENT,
   FIND_ORDER,
-  PRODUCTS_ORDERS_ME_LOCATIONS,
+  PRODUCTS_ORDERS,
   FIND_PRODUCT_AND_COMPONENTS,
+  ME_LOCATIONS,
 } from './queries'
 import { client } from './client'
 import { redirect, LoaderFunctionArgs } from 'react-router-dom'
@@ -75,7 +76,14 @@ export const meLoader = async () => {
 }
 
 export const homeLoader = async () => {
-  return preloadQuery(PRODUCTS_ORDERS_ME_LOCATIONS, {
+  return preloadQuery(PRODUCTS_ORDERS, {
+    errorPolicy: 'all',
+    fetchPolicy: 'cache-and-network',
+  })
+}
+
+export const appLoader = async () => {
+  return preloadQuery(ME_LOCATIONS, {
     errorPolicy: 'all',
     fetchPolicy: 'cache-and-network',
   })

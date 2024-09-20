@@ -1,7 +1,7 @@
 import { ProductList } from './Products'
 import { OrderList } from './Orders'
 import { useLoaderData, useNavigate } from 'react-router-dom'
-import { User, Product, Order, Location } from '../types'
+import { Product, Order } from '../types'
 import { useReadQuery, QueryRef } from '@apollo/client'
 import { notify } from '../utils/notify'
 import { AppContext } from '../App'
@@ -11,9 +11,6 @@ import React, { useContext, useEffect } from 'react'
 interface loaderData {
   allOrders: Order[]
   allProducts: Product[]
-  me: User
-  allLocations: Location[]
-  currentLocation: Location
 }
 
 const initialOrderHeaders = {
@@ -43,7 +40,7 @@ const initialProductHeaders = {
 const Home = () => {
   const queryRef = useLoaderData()
   const { data: loaderData, error } = useReadQuery(queryRef as QueryRef<loaderData>)
-  const { setUser, user, setAllLocations, setLocation } = useContext(AppContext)
+  const { user } = useContext(AppContext)
   const navigate = useNavigate()
 
   useEffect(() => {
@@ -56,12 +53,6 @@ const Home = () => {
   if (error) {
     return <div>Cannot display page</div>
   }
-
-  useEffect(() => {
-    if (loaderData.me.name) setUser(loaderData.me.name)
-    if (loaderData.allLocations) setAllLocations(loaderData.allLocations)
-    if (loaderData.currentLocation) setLocation(loaderData.currentLocation)
-  }, [loaderData])
 
   return (
     <div className="container ">

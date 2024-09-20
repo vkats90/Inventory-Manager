@@ -9,7 +9,7 @@ import { logout } from '../actionFunctions'
 const Sidebar: React.FC = () => {
   const urllocation = useLocation()
   const navigate = useNavigate()
-  const { setUser, location, setLocation, allLocations } = useContext(AppContext)
+  const { setUser } = useContext(AppContext)
 
   const links = [
     { name: 'Home', path: '/' },
@@ -39,11 +39,7 @@ const Sidebar: React.FC = () => {
               </li>
             ))}
             <li className="mb-4">
-              <LocationDropdown
-                currentLocation={location}
-                setCurrentLocation={setLocation}
-                allLocations={allLocations}
-              />
+              <LocationDropdown />
             </li>
           </ul>
           <a

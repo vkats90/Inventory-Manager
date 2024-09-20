@@ -16,7 +16,7 @@ const userResolver = {
     createUser: async (_root: User, args: User, context: MyContext) => {
       const passwordHash = await bcrypt.hash(args.password, 10)
       const user = new UserModel({
-        email: args.email,
+        email: args.email.toLowerCase(),
         name: args.name,
         passwordHash: passwordHash,
       })

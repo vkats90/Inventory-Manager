@@ -61,7 +61,7 @@ const StartServer = async () => {
   passport.use(
     new GraphQLLocalStrategy(async (email, password, done) => {
       const matchingUser: HashedUser | null = await UserModel.findOne({
-        email,
+        email: (email as string).toLowerCase(),
       })
       if (matchingUser && (await bcrypt.compare(password, matchingUser.passwordHash))) {
         done(null, matchingUser)

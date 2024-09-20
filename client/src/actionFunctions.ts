@@ -13,6 +13,7 @@ import {
   ADD_ORDER,
   LOGOUT,
   CREATE_USER,
+  CHANGE_LOCATION,
 } from './queries'
 import { Component } from './types'
 import { notify } from './utils/notify'
@@ -233,6 +234,21 @@ export const deleteOrder = async (id: string) => {
     })
 
     return data.deleteOrder
+  } catch (error: unknown) {
+    return error as Error
+  }
+}
+
+export const changeCurrentLocation = async ({ request }: ActionFunctionArgs) => {
+  try {
+    console.log(request.body)
+    const { data } = await client.mutate({
+      mutation: CHANGE_LOCATION,
+      //@ts-ignore
+      variables: { id: request.body?.id },
+    })
+    notify({ success: 'Location Changed' })
+    return data.changeLocation
   } catch (error: unknown) {
     return error as Error
   }

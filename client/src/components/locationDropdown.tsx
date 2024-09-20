@@ -1,24 +1,24 @@
-import React, { useState } from 'react'
-import { Location } from '../types'
+import React, { useContext } from 'react'
+import { AppContext } from '../App'
+import { useMutation } from '@apollo/client'
+import { CHANGE_LOCATION } from '../queries'
+import { client } from '../client'
 
-interface LocationDropdownProps {
-  currentLocation: Location | null
-  allLocations: Location[]
-  setCurrentLocation: (location: Location | null) => void
-}
+const LocationDropdown: React.FC = () => {
+  const { setLocation, allLocations, location } = useContext(AppContext)
+  const [changeLocation] = useMutation(CHANGE_LOCATION)
 
-const LocationDropdown: React.FC<LocationDropdownProps> = ({
-  currentLocation,
-  allLocations,
-  setCurrentLocation,
-}: LocationDropdownProps) => {
-  const [chosenLocation, setChosenLocation] = useState<Location | null>(currentLocation)
-
-  const handleLocationChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const location = allLocations.find((location) => location.id === e.target.value)
+  const handleLocationChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    const location = allLocations.find((location) => location.id === event.target.value)
     if (location) {
-      setChosenLocation(location)
-      setCurrentLocation(location)
+      setLocation(location)
+      changeLocation({
+        variables: { id: location.id },
+        client,
+        onCompleted: () => {
+          window.location.reload()
+        },
+      })
     }
   }
 
@@ -27,7 +27,7 @@ const LocationDropdown: React.FC<LocationDropdownProps> = ({
       <select
         name="location"
         id="location"
-        value={chosenLocation?.id || currentLocation?.id}
+        value={location?.id}
         onChange={handleLocationChange}
         className="focus:outline-none w-full"
       >
