@@ -1,5 +1,6 @@
 import Logo from '../assets/Inventory Manager copy.png'
 import { useSubmit, Form, Link } from 'react-router-dom'
+import GoogleLoginButton from '@/components/google-login-button'
 
 export default function Login() {
   const submit = useSubmit()
@@ -42,6 +43,11 @@ export default function Login() {
           Sign up{' '}
         </Link>
       </Form>
+      <div className="text-center mt-4 m-auto w-fit">
+        <Link type="button" to="http://localhost:4000/auth/google">
+          <GoogleLoginButton />
+        </Link>
+      </div>
     </div>
   )
 }

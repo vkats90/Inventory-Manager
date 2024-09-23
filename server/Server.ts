@@ -87,7 +87,7 @@ const StartServer = async () => {
         done: VerifyCallback
       ) {
         const matchingUser: HashedUser | null = await UserModel.findOne({
-          email: profile._json.email,
+          email: profile._json.email.toLowerCase(),
         })
         if (matchingUser) {
           done(null, matchingUser)
@@ -169,9 +169,12 @@ const StartServer = async () => {
   app.get(
     '/auth/google/callback',
     passport.authenticate('google', {
-      successRedirect: 'http://localhost:4000/graphql',
-      failureRedirect: 'http://localhost:4000/graphql',
-    })
+      failureRedirect: 'http://localhost:5173/login',
+    }),
+    (req, res) => {
+      req.session.currentLocation = (req.user as User)?.permissions[0].location
+      res.redirect('http://localhost:5173/')
+    }
   )
 
   await new Promise<void>((resolve) => httpServer.listen({ port: 4000 }, resolve))
