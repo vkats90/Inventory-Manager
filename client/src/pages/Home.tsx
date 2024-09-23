@@ -3,7 +3,6 @@ import { OrderList } from './Orders'
 import { useLoaderData, useNavigate } from 'react-router-dom'
 import { Product, Order } from '../types'
 import { useReadQuery, QueryRef } from '@apollo/client'
-import { notify } from '../utils/notify'
 import { AppContext } from '../App'
 //@ts-ignore
 import React, { useContext, useEffect } from 'react'
@@ -45,7 +44,6 @@ const Home = () => {
 
   useEffect(() => {
     if (error && error.graphQLErrors[0].extensions.code === 'UNAUTHORIZED') {
-      notify({ error: 'You have to sign in to view this page' })
       navigate('/login')
     }
   }, [error])

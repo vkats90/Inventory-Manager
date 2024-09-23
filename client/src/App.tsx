@@ -7,7 +7,6 @@ import Skeleton from './components/skeleton'
 import Card from './components/card'
 import { useLoaderData, useNavigate } from 'react-router-dom'
 import { useReadQuery, QueryRef } from '@apollo/client'
-import { notify } from './utils/notify'
 import { User } from './types'
 
 interface loaderData {
@@ -40,15 +39,14 @@ function App() {
   const queryRef = useLoaderData()
   const { data: loaderData, error } = useReadQuery(queryRef as QueryRef<loaderData>)
   const [inView, setInView] = useState(false)
-  const [user, setUser] = useState(loaderData?.me?.name)
-  const [location, setLocation] = useState<Location | null>(loaderData?.currentLocation)
-  const [allLocations, setAllLocations] = useState<Location[]>(loaderData?.allLocations)
+  const [user, setUser] = useState(loaderData?.me?.name || '')
+  const [location, setLocation] = useState<Location | null>(loaderData?.currentLocation || '')
+  const [allLocations, setAllLocations] = useState<Location[]>(loaderData?.allLocations || [])
 
   const navigate = useNavigate()
 
   useEffect(() => {
     if (error && error.graphQLErrors[0].extensions.code === 'UNAUTHORIZED') {
-      notify({ error: 'You have to sign in to view this page' })
       navigate('/login')
     }
   }, [])
