@@ -14,6 +14,14 @@ import {
 } from '@tanstack/react-table'
 import Modal from '../components/modal'
 import { Outlet } from 'react-router-dom'
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/components/ui/table'
 
 const columnHelper = createColumnHelper<Order>()
 
@@ -111,23 +119,23 @@ export const OrderList: React.FC<{ orders: Order[]; InitColumns?: typeof initial
         <CheckboxDropdown options={table.getAllColumns()} />
       </div>
       <div className="overflow-x-auto">
-        <table className="min-w-full table-auto">
-          <thead>
+        <Table>
+          <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
-              <tr key={headerGroup.id} className="bg-primary/70 text-white text-left">
+              <TableRow key={headerGroup.id}>
                 {headerGroup.headers.map((header) => (
-                  <th key={header.id} className="px-4 py-2">
+                  <TableHead key={header.id} className="px-4 py-2">
                     {header.isPlaceholder
                       ? null
                       : flexRender(header.column.columnDef.header, header.getContext())}
-                  </th>
+                  </TableHead>
                 ))}
-              </tr>
+              </TableRow>
             ))}
-          </thead>
-          <tbody>
+          </TableHeader>
+          <TableBody>
             {table.getRowModel().rows.map((row) => (
-              <tr
+              <TableRow
                 id={row.getValue('id')}
                 key={row.id}
                 onClick={_handleClick}
@@ -142,14 +150,14 @@ export const OrderList: React.FC<{ orders: Order[]; InitColumns?: typeof initial
                 }`}
               >
                 {row.getVisibleCells().map((cell) => (
-                  <td key={cell.id} className="px-4 py-2">
+                  <TableCell key={cell.id} className="px-4 py-2">
                     {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                  </td>
+                  </TableCell>
                 ))}
-              </tr>
+              </TableRow>
             ))}
-          </tbody>
-        </table>
+          </TableBody>
+        </Table>
       </div>
       <div className="flex justify-end">
         <button

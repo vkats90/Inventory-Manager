@@ -5,6 +5,14 @@ import { Component } from '../types'
 import Modal from '../components/modal'
 import { Outlet } from 'react-router-dom'
 import { useReadQuery, QueryRef } from '@apollo/client'
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/components/ui/table'
 
 import {
   useReactTable,
@@ -79,37 +87,37 @@ export const ComponentList: React.FC<{
         <CheckboxDropdown options={table.getAllColumns()} />
       </div>
       <div className="overflow-x-auto">
-        <table className="min-w-full table-auto ">
-          <thead>
+        <Table>
+          <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
-              <tr key={headerGroup.id} className="bg-primary/70 text-left text-white ">
+              <TableRow key={headerGroup.id}>
                 {headerGroup.headers.map((header) => (
-                  <th key={header.id} className="px-4 py-2">
+                  <TableHead key={header.id} className="px-4 py-2">
                     {header.isPlaceholder
                       ? null
                       : flexRender(header.column.columnDef.header, header.getContext())}
-                  </th>
+                  </TableHead>
                 ))}
-              </tr>
+              </TableRow>
             ))}
-          </thead>
-          <tbody>
+          </TableHeader>
+          <TableBody>
             {table.getRowModel().rows.map((row) => (
-              <tr
+              <TableRow
                 id={row.getValue('id')}
                 key={row.id}
                 onClick={_handleClick}
-                className={`border-b  hover:bg-gradient-to-r hover:from-primary/30 hover:to-white cursor-pointer`}
+                className={`hover:bg-gradient-to-r hover:from-primary/30 hover:to-white cursor-pointer border-b`}
               >
                 {row.getVisibleCells().map((cell) => (
-                  <td key={cell.id} className="px-4 py-2">
+                  <TableCell key={cell.id} className="px-4 py-2">
                     {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                  </td>
+                  </TableCell>
                 ))}
-              </tr>
+              </TableRow>
             ))}
-          </tbody>
-        </table>
+          </TableBody>
+        </Table>
       </div>
       <div className="flex justify-end">
         <button

@@ -8,8 +8,8 @@ interface ModalProps {
 
 const Modal: React.FC<ModalProps> = ({ onClose, children }) => {
   return (
-    <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50">
-      <div className="relative bg-white p-6 rounded shadow-lg ">
+    <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50 z-30">
+      <div className="relative bg-white p-6 rounded shadow-lg  ">
         <div className="absolute top-2 right-2 justify-end">
           <button
             className=" text-black rounded px-4 py-2 mr-2 hover:rotate-90 transition ease-in-out"

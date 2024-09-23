@@ -4,6 +4,14 @@ import { useNavigate, useLoaderData, useLocation } from 'react-router-dom'
 import { Product } from '../types'
 import { useReadQuery, QueryRef } from '@apollo/client'
 import { notify } from '../utils/notify'
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/components/ui/table'
 
 //import { exampleProducts } from '../assets/data/data'
 import {
@@ -107,38 +115,38 @@ export const ProductList: React.FC<{
         <h2 className="text-2xl font-bold mb-4">Product List</h2>
         <CheckboxDropdown options={table.getAllColumns()} />
       </div>
-      <div className="overflow-x-auto">
-        <table className="min-w-full table-auto">
-          <thead>
+      <div className="overflow-x-auto ">
+        <Table>
+          <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
-              <tr key={headerGroup.id} className="bg-primary/70 text-white text-left">
+              <TableRow key={headerGroup.id}>
                 {headerGroup.headers.map((header) => (
-                  <th key={header.id} className="px-4 py-2">
+                  <TableHead key={header.id} className="px-4 py-2">
                     {header.isPlaceholder
                       ? null
                       : flexRender(header.column.columnDef.header, header.getContext())}
-                  </th>
+                  </TableHead>
                 ))}
-              </tr>
+              </TableRow>
             ))}
-          </thead>
-          <tbody>
+          </TableHeader>
+          <TableBody>
             {table.getRowModel().rows.map((row) => (
-              <tr
+              <TableRow
                 id={row.getValue('id')}
                 key={row.id}
                 onClick={_handleClick}
-                className={`border-b hover:bg-gradient-to-r hover:from-primary/30 hover:to-white cursor-pointer`}
+                className={`border-b hover:bg-gradient-to-r hover:from-primary/30 hover:to-white cursor-pointer `}
               >
                 {row.getVisibleCells().map((cell) => (
-                  <td key={cell.id} className="px-4 py-2">
+                  <TableCell key={cell.id} className="px-4 py-2">
                     {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                  </td>
+                  </TableCell>
                 ))}
-              </tr>
+              </TableRow>
             ))}
-          </tbody>
-        </table>
+          </TableBody>
+        </Table>
       </div>
       <div className="flex justify-end">
         <button
