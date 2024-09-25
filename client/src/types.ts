@@ -11,6 +11,7 @@ export type Order = {
   id: string
   location: Location
   supplier: string
+  image?: ProductImage
 }
 
 // User type (assuming a basic structure, adjust as needed)

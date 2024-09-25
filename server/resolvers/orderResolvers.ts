@@ -105,9 +105,9 @@ const orderResolver = {
         priority: args.priority ? args.priority : 1,
         status: 'Created',
         created_by: currentUser.id,
-        created_on: Date.now(),
+        created_on: new Date().toISOString(),
         updated_by: currentUser.id,
-        updated_on: Date.now(),
+        updated_on: new Date().toISOString(),
         location: currentLocation,
       })
 

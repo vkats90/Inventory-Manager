@@ -5,6 +5,8 @@ import { Order } from '../types'
 import { useReadQuery, QueryRef } from '@apollo/client'
 import { notify } from '../utils/notify'
 import CheckboxDropdown from '../components/filter'
+import { compareDates, compareNumbers } from '@/utils/compare'
+import { ComparisonOperator } from '../utils/compare'
 import SearchWithColumnFilter from '../components/search-with-column-filter'
 import {
   useReactTable,
@@ -29,79 +31,6 @@ import {
 
 const columnHelper = createColumnHelper<Order>()
 
-const defaultColumns = [
-  columnHelper.accessor('image', {
-    header: '',
-    meta: { headerClassName: 'w-16' },
-    cell: () => (
-      <div className="border-2 rounded-sm w-8 h-8 flex justify-center align-middle pt-1 ">
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          id="Layer_1"
-          data-name="Layer 1"
-          viewBox="0 0 24 24"
-          fill="lightgray"
-          width="80%"
-          height="80%"
-        >
-          <path d="M9,7.5c0-.83,.67-1.5,1.5-1.5s1.5,.67,1.5,1.5-.67,1.5-1.5,1.5-1.5-.67-1.5-1.5Zm15-.5v6c0,2.76-2.24,5-5,5H10c-2.76,0-5-2.24-5-5V7c0-2.76,2.24-5,5-5h9c2.76,0,5,2.24,5,5ZM7,13c0,.77,.29,1.47,.77,2.01l5.24-5.24c.98-.98,2.69-.98,3.67,0l1.04,1.04c.23,.23,.62,.23,.85,0l3.43-3.43v-.38c0-1.65-1.35-3-3-3H10c-1.65,0-3,1.35-3,3v6Zm15,0v-2.79l-2.02,2.02c-.98,.98-2.69,.98-3.67,0l-1.04-1.04c-.23-.23-.61-.23-.85,0l-4.79,4.79c.12,.02,.24,.02,.37,.02h9c1.65,0,3-1.35,3-3Zm-5,7H5c-1.65,0-3-1.35-3-3v-6c0-.74,.27-1.45,.77-2,.37-.41,.33-1.04-.08-1.41-.41-.37-1.04-.33-1.41,.08-.82,.92-1.28,2.1-1.28,3.34v6c0,2.76,2.24,5,5,5h12c.55,0,1-.45,1-1s-.45-1-1-1Z" />
-        </svg>
-      </div>
-    ),
-  }),
-  columnHelper.accessor('id', {
-    id: 'id',
-    header: 'ID',
-    cell: (info) => info.getValue(),
-    enableHiding: false,
-  }),
-  columnHelper.accessor('item', {
-    header: 'Item',
-    cell: (info) => info.getValue().name,
-    filterFn: 'includesString',
-  }),
-  columnHelper.accessor('quantity', {
-    header: 'Quantity',
-    cell: (info) => info.getValue(),
-    filterFn: (row, id, value) => (row.getValue(id) as number) <= value,
-  }),
-  columnHelper.accessor('priority', {
-    header: 'Priority',
-    cell: (info) => info.getValue(),
-    filterFn: (row, id, value) => (row.getValue(id) as number) == value,
-  }),
-  columnHelper.accessor('status', {
-    header: 'Status',
-    cell: (info) => info.getValue(),
-    filterFn: 'includesString',
-  }),
-  columnHelper.accessor('created_on', {
-    header: 'Created on',
-    cell: (info) => new Date(Number(info.getValue())).toLocaleString(),
-    filterFn: (row, id, value) => (row.getValue(id) as number) == value,
-  }),
-  columnHelper.accessor('created_by', {
-    header: 'Created by',
-    cell: (info) => info.getValue().name,
-    filterFn: 'includesString',
-  }),
-  columnHelper.accessor('updated_on', {
-    header: 'Updated on',
-    cell: (info) => new Date(Number(info.getValue())).toLocaleString(),
-    filterFn: (row, id, value) => (row.getValue(id) as number) == value,
-  }),
-  columnHelper.accessor('updated_by', {
-    header: 'Updated by',
-    cell: (info) => info.getValue().name,
-    filterFn: 'includesString',
-  }),
-  columnHelper.accessor('supplier', {
-    header: 'Supplier',
-    cell: (info) => info.getValue(),
-    filterFn: 'includesString',
-  }),
-]
-
 const initialTableHeaders = {
   id: false,
   name: true,
@@ -125,7 +54,81 @@ export const OrderList: React.FC<{ orders: Order[]; InitColumns?: typeof initial
   )
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([])
   const [globalFilter, setGlobalFilter] = useState('')
+  const [operator, setOperator] = useState<ComparisonOperator>('eq')
   const navigate = useNavigate()
+
+  const defaultColumns = [
+    columnHelper.accessor('image', {
+      header: '',
+      meta: { headerClassName: 'w-16' },
+      cell: () => (
+        <div className="border-2 rounded-sm w-8 h-8 flex justify-center align-middle pt-1 ">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            id="Layer_1"
+            data-name="Layer 1"
+            viewBox="0 0 24 24"
+            fill="lightgray"
+            width="80%"
+            height="80%"
+          >
+            <path d="M9,7.5c0-.83,.67-1.5,1.5-1.5s1.5,.67,1.5,1.5-.67,1.5-1.5,1.5-1.5-.67-1.5-1.5Zm15-.5v6c0,2.76-2.24,5-5,5H10c-2.76,0-5-2.24-5-5V7c0-2.76,2.24-5,5-5h9c2.76,0,5,2.24,5,5ZM7,13c0,.77,.29,1.47,.77,2.01l5.24-5.24c.98-.98,2.69-.98,3.67,0l1.04,1.04c.23,.23,.62,.23,.85,0l3.43-3.43v-.38c0-1.65-1.35-3-3-3H10c-1.65,0-3,1.35-3,3v6Zm15,0v-2.79l-2.02,2.02c-.98,.98-2.69,.98-3.67,0l-1.04-1.04c-.23-.23-.61-.23-.85,0l-4.79,4.79c.12,.02,.24,.02,.37,.02h9c1.65,0,3-1.35,3-3Zm-5,7H5c-1.65,0-3-1.35-3-3v-6c0-.74,.27-1.45,.77-2,.37-.41,.33-1.04-.08-1.41-.41-.37-1.04-.33-1.41,.08-.82,.92-1.28,2.1-1.28,3.34v6c0,2.76,2.24,5,5,5h12c.55,0,1-.45,1-1s-.45-1-1-1Z" />
+          </svg>
+        </div>
+      ),
+    }),
+    columnHelper.accessor('id', {
+      id: 'id',
+      header: 'ID',
+      cell: (info) => info.getValue(),
+      enableHiding: false,
+    }),
+    columnHelper.accessor('item', {
+      header: 'Item',
+      cell: (info) => info.getValue().name,
+      filterFn: 'includesString',
+    }),
+    columnHelper.accessor('quantity', {
+      header: 'Quantity',
+      cell: (info) => info.getValue(),
+      filterFn: (row, id, value) => compareNumbers(row.getValue(id) as number, value, operator),
+    }),
+    columnHelper.accessor('priority', {
+      header: 'Priority',
+      cell: (info) => info.getValue(),
+      filterFn: (row, id, value) => compareNumbers(row.getValue(id) as number, value, operator),
+    }),
+    columnHelper.accessor('status', {
+      header: 'Status',
+      cell: (info) => info.getValue(),
+      filterFn: 'includesString',
+    }),
+    columnHelper.accessor('created_on', {
+      header: 'Created on',
+      cell: (info) => new Date(Number(info.getValue())).toLocaleString(),
+      filterFn: (row, id, value) => compareDates(row.getValue(id) as Date, value, operator),
+    }),
+    columnHelper.accessor('created_by', {
+      header: 'Created by',
+      cell: (info) => info.getValue().name,
+      filterFn: 'includesString',
+    }),
+    columnHelper.accessor('updated_on', {
+      header: 'Updated on',
+      cell: (info) => new Date(Number(info.getValue())).toLocaleString(),
+      filterFn: (row, id, value) => compareDates(row.getValue(id) as Date, value, operator),
+    }),
+    columnHelper.accessor('updated_by', {
+      header: 'Updated by',
+      cell: (info) => info.getValue().name,
+      filterFn: 'includesString',
+    }),
+    columnHelper.accessor('supplier', {
+      header: 'Supplier',
+      cell: (info) => info.getValue(),
+      filterFn: 'includesString',
+    }),
+  ]
 
   const table = useReactTable({
     data,
@@ -167,7 +170,11 @@ export const OrderList: React.FC<{ orders: Order[]; InitColumns?: typeof initial
       )}
       <div className="flex justify-between">
         <h2 className="text-2xl font-bold mb-4">Order List</h2>
-        <SearchWithColumnFilter columns={table.getAllColumns()} onSearch={handleSearch} />
+        <SearchWithColumnFilter
+          columns={table.getAllColumns()}
+          onSearch={handleSearch}
+          setOperator={setOperator}
+        />
         <CheckboxDropdown options={table.getAllColumns()} />
       </div>
       <div className="overflow-x-auto">
