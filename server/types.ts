@@ -28,9 +28,11 @@ export interface Component {
   cost: number
   id: string
   location: Location
+  image?: ProductImage
 }
 
 export interface Order {
+  image?: ProductImage
   item: Product | Component
   quantity: number
   priority: 1 | 2 | 3

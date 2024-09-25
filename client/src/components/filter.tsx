@@ -1,75 +1,51 @@
-import React, { useState } from 'react'
+'use client'
+
 import { Column } from '@tanstack/react-table'
 import { Component, Product, Order } from '../types'
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
+import { Button } from '@/components/ui/button'
+import { ChevronDown } from 'lucide-react'
 
 interface FilterProps {
   options: Column<Component>[] | Column<Product>[] | Column<Order>[]
 }
 
-const CheckboxDropdown: React.FC<FilterProps> = ({ options }) => {
-  const [isOpen, setIsOpen] = useState(false)
-
-  const toggleDropdown = () => setIsOpen(!isOpen)
-
+export default function CheckboxDropdown({ options }: FilterProps) {
   return (
-    <div className="inline-block text-left relative">
-      <div>
-        <button
-          type="button"
-          className="inline-flex justify-center w-full rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2  focus:ring-primary"
-          onClick={toggleDropdown}
-        >
+    <Popover>
+      <PopoverTrigger asChild>
+        <Button variant="outline" className="w-[120px] justify-between">
           Filter
-          <svg
-            className="-mr-1 ml-2 h-5 w-5"
-            xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 20 20"
-            fill="currentColor"
-            aria-hidden="true"
-          >
-            <path
-              fillRule="evenodd"
-              d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
-              clipRule="evenodd"
-            />
-          </svg>
-        </button>
-      </div>
-
-      {isOpen && (
-        <div className="origin-top-right absolute right-0 mt-2 w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5">
-          <div
-            className="py-1"
-            role="menu"
-            aria-orientation="vertical"
-            aria-labelledby="options-menu"
-          >
-            {options.map((option) => {
-              return (
-                <div>
-                  {option.id != 'id' && (
-                    <label
-                      key={option.id}
-                      className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-primary/20 hover:text-gray-900 accent-primary"
-                      role="menuitem"
-                    >
-                      <input
-                        type="checkbox"
-                        className="form-checkbox h-5 w-5"
-                        checked={option.getIsVisible()}
-                        onChange={option.getToggleVisibilityHandler()}
-                      />
-                      <span className="ml-2">{option.columnDef.header as string}</span>
-                    </label>
-                  )}
-                </div>
-              )
-            })}
-          </div>
+          <ChevronDown className="ml-2 h-4 w-4" />
+        </Button>
+      </PopoverTrigger>
+      <PopoverContent className="w-56 p-0">
+        <div
+          className="py-1"
+          role="menu"
+          aria-orientation="vertical"
+          aria-labelledby="options-menu"
+        >
+          {options.map((option) => {
+            if (option.id === 'id' || option.id === 'image') return null
+            return (
+              <label
+                key={option.id}
+                className="flex items-center px-4 py-2 text-s text-gray-700 hover:bg-primary/20 hover:text-gray-900 accent-primary"
+                role="menuitem"
+              >
+                <input
+                  type="checkbox"
+                  className="form-checkbox h-4 w-4"
+                  checked={option.getIsVisible()}
+                  onChange={option.getToggleVisibilityHandler()}
+                />
+                <span className="ml-2">{option.columnDef.header as string}</span>
+              </label>
+            )
+          })}
         </div>
-      )}
-    </div>
+      </PopoverContent>
+    </Popover>
   )
 }
-
-export default CheckboxDropdown

@@ -23,6 +23,7 @@ export type User = {
 
 // Component type
 export type Component = {
+  image: ProductImage
   name: string
   stock: number
   cost: number | null
