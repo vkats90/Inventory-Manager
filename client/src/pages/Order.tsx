@@ -47,7 +47,8 @@ const SingleOrderPage: React.FC = () => {
         order.item.name,
         order.quantity,
         order.priority,
-        order.status
+        order.status,
+        order.supplier
       )
       if (isEqual({ ...res, updated_on: '' }, { ...order, updated_on: '' })) {
         setVisible(false)
@@ -69,6 +70,7 @@ const SingleOrderPage: React.FC = () => {
       ...prev,
       [name]: name === 'quantity' || name === 'priority' ? parseInt(value) : value,
     }))
+    console.log(order)
   }
 
   return (
@@ -151,6 +153,17 @@ const SingleOrderPage: React.FC = () => {
               className="w-full mt-1 p-2 border rounded bg-gray-100 focus:outline-primary"
               value={order.updated_by?.name ?? 'N/A'}
               readOnly
+            />
+          </div>
+          <div>
+            <label className="font-semibold">Supplier:</label>
+            <input
+              id="supplier"
+              className="w-full mt-1 p-2 border rounded focus:outline-primary"
+              type="text"
+              value={order.supplier}
+              onChange={handleInputChange}
+              name="supplier"
             />
           </div>
         </div>

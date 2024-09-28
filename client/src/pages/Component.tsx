@@ -1,4 +1,5 @@
-import React, { useState } from 'react'
+import React, { useState, useContext } from 'react'
+import { AppContext } from '../App'
 import { useLoaderData, useNavigate, useOutletContext } from 'react-router-dom'
 import { Component } from '../types'
 import { editComponent, deleteComponent } from '../actionFunctions'
@@ -12,8 +13,12 @@ interface loaderData {
 
 const SingleComponentPage: React.FC = () => {
   const queryRef = useLoaderData()
+  const { location, allLocations } = useContext(AppContext)
   const { data: loaderComponent, error } = useReadQuery(queryRef as QueryRef<loaderData>)
-  const [component, setComponent] = useState<Component>(loaderComponent.findComponent)
+  const [component, setComponent] = useState<Component>({
+    ...loaderComponent.findComponent,
+    location: location?.id || '',
+  })
   const [visible, setVisible] = useState(false)
   const [setData]: [React.Dispatch<React.SetStateAction<Component[]>>] = useOutletContext()
 
@@ -54,9 +59,19 @@ const SingleComponentPage: React.FC = () => {
         component.id,
         component.name,
         component.cost ? component.cost : 0,
-        component.stock
+        component.stock,
+        component.location as string
       )
-      if (isEqual(res, component)) {
+      console.log(res, component)
+
+      if (location != res.location.id) {
+        console.log('edited location')
+        notify({ success: 'Component succesfully moved to the ' + res.location.name + ' location' })
+        setData((prev: Component[]) => {
+          return prev.filter((c) => c.id !== component.id)
+        })
+        navigate('/parts')
+      } else if (isEqual({ ...res, location: res.location.id }, component)) {
         setVisible(false)
         notify({ success: 'Component edited successfully' })
         setData((prev: Component[]) => {
@@ -108,6 +123,21 @@ const SingleComponentPage: React.FC = () => {
               onChange={handleInputChange}
               name="cost"
             />
+          </div>
+          <div>
+            <label className="font-semibold">Location:</label>
+            <select
+              className="w-full mt-1 p-2 border rounded focus:outline-primary"
+              value={component.location as string}
+              onChange={handleInputChange as unknown as React.ChangeEventHandler<HTMLSelectElement>}
+              name="location"
+            >
+              {allLocations.map((location) => (
+                <option key={location.id} value={location.id}>
+                  {location.name}
+                </option>
+              ))}
+            </select>
           </div>
         </div>
         {visible && (

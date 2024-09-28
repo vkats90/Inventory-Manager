@@ -90,11 +90,17 @@ export const addComponent = async ({ request }: ActionFunctionArgs) => {
   }
 }
 
-export const editComponent = async (id: string, name: string, cost: number, stock: number) => {
+export const editComponent = async (
+  id: string,
+  name: string,
+  cost: number,
+  stock: number,
+  location: string
+) => {
   try {
     const { data } = await client.mutate({
       mutation: EDIT_COMPONENT,
-      variables: { id, name, cost, stock },
+      variables: { id, name, cost, stock, location },
     })
 
     return data.editComponent
@@ -126,7 +132,8 @@ export const editProduct = async (
   stock: number,
   price: number,
   SKU: string,
-  components: Component[] | [] | string[]
+  components: Component[] | [] | string[],
+  location: string
 ) => {
   try {
     if (components.length != 0) {
@@ -134,7 +141,7 @@ export const editProduct = async (
     }
     const { data } = await client.mutate({
       mutation: EDIT_PRODUCT,
-      variables: { id, name, cost, stock, price, SKU, components },
+      variables: { id, name, cost, stock, price, SKU, components, location },
     })
     return data.editProduct
   } catch (error: unknown) {
@@ -189,12 +196,13 @@ export const editOrder = async (
   name: string,
   quantity: number,
   priority: number | null,
-  status: string
+  status: string,
+  supplier: string
 ) => {
   try {
     const { data } = await client.mutate({
       mutation: EDIT_ORDER,
-      variables: { id, name, quantity, priority, status },
+      variables: { id, name, quantity, priority, status, supplier },
     })
 
     return data.editOrder

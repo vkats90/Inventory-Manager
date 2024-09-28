@@ -3,6 +3,7 @@ import { Component, Location } from '../types'
 import Modal from './modal' // Assuming you have a Modal component
 import AddComponent from '../pages/AddComponent'
 import { __Type } from 'graphql'
+import { Button } from './ui/button'
 
 interface SelectComponentProps {
   selectedParts: Component[]
@@ -84,13 +85,14 @@ const SelectComponent: React.FC<SelectComponentProps> = ({ selectedParts, allPar
         </tbody>
       </table>
       <div className="flex justify-between">
-        <button
+        <Button
+          variant="outline"
           type="button"
-          className="bg-primary hover:bg-primary/70 text-white font-bold py-1 px-3 rounded focus:outline-none focus:shadow-outline mt-4"
+          className="mt-3"
           onClick={filteredParts ? handleCallback : () => setFilteredParts(!filteredParts)}
         >
           {filteredParts ? 'Confirm Selection' : 'Select More'}
-        </button>
+        </Button>
         {filteredParts && (
           <button
             type="button"

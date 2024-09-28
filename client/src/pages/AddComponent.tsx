@@ -1,6 +1,8 @@
-import React, { useEffect } from 'react'
-import { Component } from '../types'
+import React, { useEffect, useContext } from 'react'
+import { AppContext } from '@/App'
+import { Component } from '@/types'
 import { useSubmit, Form, useOutletContext, useActionData, useNavigate } from 'react-router-dom'
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 
 interface actionDataResponse {
   addComponent: Component & { __typename: string }
@@ -12,6 +14,7 @@ const AddComponent: React.FC = () => {
   let actionData = useActionData() as actionDataResponse
 
   const [setData]: [React.Dispatch<React.SetStateAction<Component[]>>] = useOutletContext()
+  const { location } = useContext(AppContext)
 
   useEffect(() => {
     if (actionData && actionData.addComponent.__typename == 'Component') {
@@ -66,6 +69,28 @@ const AddComponent: React.FC = () => {
             required
           />
         </div>
+
+        <TooltipProvider>
+          <Tooltip>
+            <div className="mb-4 gap-4 flex items-center align-middle justify-between">
+              <label className="block text-gray-700 text-lg font-medium mb-2  " htmlFor="location">
+                Location:
+              </label>
+              <TooltipTrigger>
+                <input
+                  value={location?.name}
+                  name="location"
+                  id="location"
+                  className="shadow appearance-none border rounded w-60 py-2 px-3 text-gray-700 leading-tight focus:outline-primary focus:shadow-outline"
+                  disabled
+                />
+              </TooltipTrigger>
+            </div>
+            <TooltipContent>
+              <p>To add in a different location, change to that location</p>
+            </TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
 
         <div className="flex justify-center">
           <button

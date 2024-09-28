@@ -120,6 +120,7 @@ export const EDIT_PRODUCT = gql`
     $stock: Int
     $name: String!
     $id: ID!
+    $location: ID
   ) {
     editProduct(
       components: $components
@@ -129,6 +130,7 @@ export const EDIT_PRODUCT = gql`
       stock: $stock
       name: $name
       id: $id
+      location: $location
     ) {
       name
       stock
@@ -143,6 +145,10 @@ export const EDIT_PRODUCT = gql`
         location
       }
       id
+      location {
+        name
+        id
+      }
     }
   }
 `
@@ -198,26 +204,15 @@ export const ADD_COMPONENT = gql`
 
 // Mutation to edit an existing component
 export const EDIT_COMPONENT = gql`
-  mutation EditComponent(
-    $editComponentId: ID!
-    $name: String!
-    $stock: Float
-    $cost: Float
-    $location: ID!
-  ) {
-    editComponent(
-      id: $editComponentId
-      name: $name
-      stock: $stock
-      cost: $cost
-      location: $location
-    ) {
+  mutation EditComponent($id: ID!, $name: String!, $stock: Float, $cost: Float, $location: ID!) {
+    editComponent(id: $id, name: $name, stock: $stock, cost: $cost, location: $location) {
       name
       stock
       cost
       id
       location {
         name
+        id
       }
     }
   }
@@ -434,8 +429,24 @@ export const ADD_ORDER = gql`
 
 // Mutation to edit an existing order
 export const EDIT_ORDER = gql`
-  mutation EditOrder($editOrderId: ID!, $priority: Int) {
-    editOrder(id: $editOrderId, priority: $priority) {
+  mutation EditOrder(
+    $id: ID!
+    $priority: Int
+    $item: ID
+    $quantity: Int
+    $status: String
+    $location: ID
+    $supplier: String
+  ) {
+    editOrder(
+      id: $id
+      priority: $priority
+      item: $item
+      quantity: $quantity
+      status: $status
+      location: $location
+      supplier: $supplier
+    ) {
       id
       item {
         ... on Product {

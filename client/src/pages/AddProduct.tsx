@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useContext } from 'react'
+import { AppContext } from '@/App'
 import { Component } from '../types'
 import { useLoaderData } from 'react-router-dom'
 import { notify } from '../utils/notify'
@@ -6,6 +7,7 @@ import { Product } from '../types'
 import SelectComponent from '../components/selectComponent'
 import { useReadQuery, QueryRef } from '@apollo/client'
 import { useSubmit, Form, useActionData, useNavigate, useOutletContext } from 'react-router-dom'
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 
 interface loaderData {
   allComponents: Component[]
@@ -18,6 +20,7 @@ const AddProduct: React.FC = () => {
   const queryRef = useLoaderData()
   const { data: loaderData, error } = useReadQuery(queryRef as QueryRef<loaderData>)
   const [components, setComponents] = useState<Component[]>([])
+  const { location } = useContext(AppContext)
   const submit = useSubmit()
   const navigate = useNavigate()
   let actionData = useActionData() as actionDataResponse
@@ -114,6 +117,28 @@ const AddProduct: React.FC = () => {
             className="shadow appearance-none border rounded w-60 py-2 px-3 text-gray-700 leading-tight focus:outline-primary focus:shadow-outline"
           />
         </div>
+        <TooltipProvider>
+          <Tooltip>
+            <div className="mb-4 gap-4 flex items-center align-middle justify-between">
+              <label className="block font-semibold mb-2 " htmlFor="location">
+                Location:
+              </label>
+              <TooltipTrigger>
+                <input
+                  type="text"
+                  value={location?.name}
+                  name="location"
+                  id="location"
+                  className="shadow appearance-none border rounded w-60 py-2 px-3 text-gray-700 leading-tight focus:outline-primary focus:shadow-outline"
+                  disabled
+                />
+              </TooltipTrigger>
+            </div>
+            <TooltipContent>
+              <p>To add in a different location, change to that location</p>
+            </TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
         <SelectComponent
           selectedParts={[]}
           allParts={loaderData.allComponents}

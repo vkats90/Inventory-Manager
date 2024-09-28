@@ -47,7 +47,7 @@ export type Product = {
   SKU: string
   components: Component[] | []
   id: string
-  location: Location
+  location: Location | string
   image?: ProductImage
 }
 

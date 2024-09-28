@@ -1,4 +1,5 @@
-import React, { useState } from 'react'
+import React, { useState, useContext } from 'react'
+import { AppContext } from '../App'
 import { useLoaderData, useNavigate, useOutletContext } from 'react-router-dom'
 import { Product, Component } from '../types'
 import isEqual from 'react-fast-compare'
@@ -14,11 +15,15 @@ interface loaderData {
 }
 
 const SingleProductPage: React.FC = () => {
+  const { location, allLocations } = useContext(AppContext)
   const queryRef = useLoaderData()
   const { data: loaderProduct, error } = useReadQuery(queryRef as QueryRef<loaderData>)
-  const [product, setProduct] = useState<Product>(loaderProduct.findProduct)
+  const [product, setProduct] = useState<Product>({
+    ...loaderProduct.findProduct,
+    location: location?.id || '',
+  })
   const [visible, setVisible] = useState(false)
-  const [setData]: [React.Dispatch<React.SetStateAction<Component[]>>] = useOutletContext()
+  const [setData]: [React.Dispatch<React.SetStateAction<Product[]>>] = useOutletContext()
 
   if (error) {
     notify({ error: error.message })
@@ -32,7 +37,7 @@ const SingleProductPage: React.FC = () => {
       const res = await deleteProduct(product.name)
       if (res) {
         notify({ success: 'Product deleted successfully' })
-        setData((prev: Component[]) => {
+        setData((prev) => {
           return prev.filter((p) => p.id !== product.id)
         })
         navigate('/products')
@@ -67,12 +72,20 @@ const SingleProductPage: React.FC = () => {
         product.stock,
         product.price ? product.price : 0,
         product.SKU,
-        product.components
+        product.components,
+        product.location as string
       )
-      if (isEqual(res, product)) {
+      if (location?.id != res.location.id) {
+        console.log('edited location')
+        notify({ success: 'Component succesfully moved to the ' + res.location.name + ' location' })
+        setData((prev) => {
+          return prev.filter((p) => p.id !== product.id)
+        })
+        navigate('/products')
+      } else if (isEqual({ ...res, location: res.location.id }, product)) {
         setVisible(false)
         notify({ success: 'Product edited successfully' })
-        setData((prev: Component[]) => {
+        setData((prev) => {
           return prev.map((p) => (p.id === product.id ? product : p))
         })
         navigate('/products')
@@ -132,6 +145,21 @@ const SingleProductPage: React.FC = () => {
               onChange={handleInputChange}
               name="price"
             />
+          </div>
+          <div>
+            <label className="font-semibold">Location:</label>
+            <select
+              className="w-full mt-1 p-2 border rounded focus:outline-primary"
+              value={product.location as string}
+              onChange={handleInputChange as unknown as React.ChangeEventHandler<HTMLSelectElement>}
+              name="location"
+            >
+              {allLocations.map((location) => (
+                <option key={location.id} value={location.id}>
+                  {location.name}
+                </option>
+              ))}
+            </select>
           </div>
         </div>
 
