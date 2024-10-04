@@ -64,8 +64,8 @@ const SingleComponentPage: React.FC = () => {
       )
       console.log(res, component)
 
-      if (location != res.location.id) {
-        console.log('edited location')
+      if (location?.id != res.location.id) {
+        console.log('edited location', location?.id, res.location.id)
         notify({ success: 'Component succesfully moved to the ' + res.location.name + ' location' })
         setData((prev: Component[]) => {
           return prev.filter((c) => c.id !== component.id)

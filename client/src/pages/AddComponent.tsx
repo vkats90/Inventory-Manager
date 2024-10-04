@@ -77,13 +77,9 @@ const AddComponent: React.FC = () => {
                 Location:
               </label>
               <TooltipTrigger>
-                <input
-                  value={location?.name}
-                  name="location"
-                  id="location"
-                  className="shadow appearance-none border rounded w-60 py-2 px-3 text-gray-700 leading-tight focus:outline-primary focus:shadow-outline"
-                  disabled
-                />
+                <div className="shadow text-left bg-gray-100 cursor-default appearance-none border rounded w-60 py-2 px-3 text-gray-700 leading-tight focus:outline-primary focus:shadow-outline">
+                  {location?.name}
+                </div>
               </TooltipTrigger>
             </div>
             <TooltipContent>
