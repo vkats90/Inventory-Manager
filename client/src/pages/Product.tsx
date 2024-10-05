@@ -77,7 +77,7 @@ const SingleProductPage: React.FC = () => {
       )
       if (location?.id != res.location.id) {
         console.log('edited location')
-        notify({ success: 'Component succesfully moved to the ' + res.location.name + ' location' })
+        notify({ success: 'Product succesfully moved to the ' + res.location.name + ' location' })
         setData((prev) => {
           return prev.filter((p) => p.id !== product.id)
         })

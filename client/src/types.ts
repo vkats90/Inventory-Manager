@@ -1,7 +1,6 @@
 // Order type
 export type Order = {
-  item: Product | Component
-  quantity: number
+  items: [{ item: Product | Component; quantity: number }]
   priority: 1 | 2 | 3 | null
   status: 'Created' | 'Ordered' | 'Shipped' | 'Finished'
   created_on: Date
@@ -9,7 +8,7 @@ export type Order = {
   updated_on: Date
   updated_by: User
   id: string
-  location: Location
+  location: Location | string
   supplier: string
   image?: ProductImage
 }

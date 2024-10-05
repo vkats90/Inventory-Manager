@@ -83,15 +83,14 @@ export const OrderList: React.FC<{ orders: Order[]; InitColumns?: typeof initial
       cell: (info) => info.getValue(),
       enableHiding: false,
     }),
-    columnHelper.accessor('item', {
-      header: 'Item',
-      cell: (info) => info.getValue().name,
+    columnHelper.accessor('items', {
+      header: 'Items',
+      cell: (info) =>
+        info
+          .getValue()
+          .map((item) => item.quantity)
+          .join(', '),
       filterFn: 'includesString',
-    }),
-    columnHelper.accessor('quantity', {
-      header: 'Quantity',
-      cell: (info) => info.getValue(),
-      filterFn: (row, id, value) => compareNumbers(row.getValue(id) as number, value, operator),
     }),
     columnHelper.accessor('priority', {
       header: 'Priority',

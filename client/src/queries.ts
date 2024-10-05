@@ -230,8 +230,6 @@ export const ALL_ORDERS = gql`
   query AllOrders {
     allOrders {
       id
-
-      quantity
       priority
       status
       created_on
@@ -247,15 +245,8 @@ export const ALL_ORDERS = gql`
         name
       }
       supplier
-      item {
-        ... on Product {
-          name
-          stock
-        }
-        ... on Component {
-          name
-          stock
-        }
+      items {
+        quantity
       }
       location {
         name
@@ -285,8 +276,6 @@ export const PRODUCTS_ORDERS = gql`
     }
     allOrders {
       id
-
-      quantity
       priority
       status
       created_on
@@ -302,15 +291,8 @@ export const PRODUCTS_ORDERS = gql`
         name
       }
       supplier
-      item {
-        ... on Product {
-          name
-          stock
-        }
-        ... on Component {
-          name
-          stock
-        }
+      items {
+        quantity
       }
       location {
         name
@@ -353,7 +335,6 @@ export const FIND_ORDER = gql`
   query FindOrder($id: ID!) {
     findOrder(id: $id) {
       id
-      quantity
       priority
       status
       created_on
@@ -368,15 +349,8 @@ export const FIND_ORDER = gql`
         id
         name
       }
-      item {
-        ... on Component {
-          name
-          stock
-        }
-        ... on Product {
-          name
-          stock
-        }
+      items {
+        quantity
       }
       location {
         name

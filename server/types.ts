@@ -33,8 +33,12 @@ export interface Component {
 
 export interface Order {
   image?: ProductImage
-  item: Product | Component
-  quantity: number
+  items: [
+    {
+      item: Product | Component
+      quantity: number
+    }
+  ]
   priority: 1 | 2 | 3
   status: 'Created' | 'Ordered' | 'Shipped' | 'Finished'
   created_on: Date

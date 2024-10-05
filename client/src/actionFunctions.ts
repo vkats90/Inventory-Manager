@@ -193,16 +193,16 @@ export const deleteProduct = async (name: string) => {
 
 export const editOrder = async (
   id: string,
-  name: string,
-  quantity: number,
+  items: [{ item: string; quantity: number }],
   priority: number | null,
   status: string,
-  supplier: string
+  supplier: string,
+  location: string
 ) => {
   try {
     const { data } = await client.mutate({
       mutation: EDIT_ORDER,
-      variables: { id, name, quantity, priority, status, supplier },
+      variables: { id, name, items, priority, status, supplier, location },
     })
 
     return data.editOrder
@@ -219,7 +219,7 @@ export const addOrder = async ({ request }: ActionFunctionArgs) => {
   try {
     const { data } = await client.mutate({
       mutation: ADD_ORDER,
-      variables: { name, quantity, priority, status },
+      variables: { name, quantity, priority, status, location },
     })
 
     notify({ success: 'Order added successfully' })

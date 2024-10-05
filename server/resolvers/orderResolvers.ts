@@ -5,6 +5,7 @@ import ProductModel from '../models/product'
 import LocationModel from '../models/location'
 import { GraphQLError } from 'graphql'
 import order from '../models/order'
+import e from 'express'
 
 const orderResolver = {
   ItemTypes: {
@@ -22,11 +23,16 @@ const orderResolver = {
         })
       }
       const currentLocation = context.currentLocation
-      return await OrderModel.find({ location: currentLocation })
-        .populate('created_by')
-        .populate('updated_by')
-        .populate('item')
-        .populate('location')
+      const orders = await OrderModel.find({ location: currentLocation })
+
+      console.log(orders[0].items)
+      for (const order of orders) {
+        await order.populate('created_by')
+        await order.populate('updated_by')
+        await order.populate('location')
+        await order.populate('items.item')
+      }
+      return orders
     },
     findOrder: async (_root: Order, { id }: { id: string }, context: MyContext) => {
       if (!context.isAuthenticated()) {
@@ -38,7 +44,7 @@ const orderResolver = {
       const order: Order | null = await OrderModel.findOne({ _id: id, location: currentLocation })
         .populate('created_by')
         .populate('updated_by')
-        .populate('item')
+        .populate('items.item')
         .populate('location')
 
       if (!order)
@@ -53,7 +59,7 @@ const orderResolver = {
     },
   },
   Mutation: {
-    addOrder: async (_root: Order, args: Order, context: MyContext) => {
+    addOrder: async (_root: Order, args: any, context: MyContext) => {
       const currentUser = context.getUser()
       const currentLocation = context.currentLocation
 
@@ -74,34 +80,48 @@ const orderResolver = {
         })
       }
 
-      let item
-      let itemType
-
-      const componentItem = await ComponentModel.findOne({ _id: args.item })
-      if (componentItem) {
-        item = componentItem
-        itemType = 'ComponentModel'
-      } else {
-        const productItem = await ProductModel.findOne({ _id: args.item })
-        if (productItem) {
-          item = productItem
-          itemType = 'ProductModel'
-        }
-      }
-
-      if (!item) {
-        throw new GraphQLError("item doesn't exist", {
+      if (args.items.length === 0)
+        throw new GraphQLError('item cannot be empty', {
           extensions: {
             code: 'BAD_USER_INPUT',
             invalidArgs: args.item,
           },
         })
+
+      const componentItems = args.items.filter(
+        (i: { item: string; itemType: string; quantity: number }) => i.itemType === 'ComponentModel'
+      )
+      const productItems = args.items.filter(
+        (i: { item: string; itemType: string; quantity: number }) => i.itemType === 'ProductModel'
+      )
+
+      for (const item of componentItems) {
+        const componentItem = await ComponentModel.findOne({ _id: item.item })
+        if (!componentItem) {
+          throw new GraphQLError("item doesn't exist", {
+            extensions: {
+              code: 'BAD_USER_INPUT',
+              invalidArgs: item.item,
+            },
+          })
+        }
+      }
+
+      for (const item of productItems) {
+        const productItem = await ProductModel.findOne({ _id: item.item })
+        if (!productItem) {
+          throw new GraphQLError("item doesn't exist", {
+            extensions: {
+              code: 'BAD_USER_INPUT',
+              invalidArgs: item.item,
+            },
+          })
+        }
       }
 
       const order = new OrderModel({
         ...args,
-        item: item._id,
-        itemType: itemType,
+        items: args.items,
         priority: args.priority ? args.priority : 1,
         status: 'Created',
         created_by: currentUser.id,
@@ -124,23 +144,22 @@ const orderResolver = {
         throw new GraphQLError('failed to add new order', {
           extensions: {
             code: 'BAD_USER_INPUT',
-            invalidArgs: args.item.name,
+            invalidArgs: args.item[0].name,
             error,
           },
         })
       }
+
       await order.populate('created_by')
       await order.populate('updated_by')
       await order.populate('location')
+      await order.populate('items.item')
 
-      await order.populate({
-        path: 'item',
-        model: itemType,
-      })
+      console.log(order)
 
       return order
     },
-    editOrder: async (_root: Order, args: Order, context: MyContext) => {
+    editOrder: async (_root: Order, args: any, context: MyContext) => {
       const currentUser = context.getUser()
       if (!currentUser) {
         throw new GraphQLError('wrong credentials', {
@@ -186,25 +205,23 @@ const orderResolver = {
       let itemType
 
       if (args.item) {
-        const componentItem = await ComponentModel.findOne({ _id: args.item })
-        if (componentItem) {
-          item = componentItem
-          itemType = 'ComponentModel'
-        } else {
-          const productItem = await ProductModel.findOne({ _id: args.item })
-          if (productItem) {
-            item = productItem
-            itemType = 'ProductModel'
-          }
-        }
+        const componentItems = args.item.filter(
+          (i: { item: string; itemType: string }) => i.itemType === 'Component'
+        )
+        const productItems = args.item.filter(
+          (i: { item: string; itemType: string }) => i.itemType === 'Product'
+        )
 
-        if (!item) {
-          throw new GraphQLError("item doesn't exist", {
-            extensions: {
-              code: 'BAD_USER_INPUT',
-              invalidArgs: args.item,
-            },
-          })
+        for (const item of componentItems) {
+          const componentItem = await ComponentModel.findOne({ _id: item.item })
+          if (!componentItem) {
+            throw new GraphQLError("item doesn't exist", {
+              extensions: {
+                code: 'BAD_USER_INPUT',
+                invalidArgs: item.item,
+              },
+            })
+          }
         }
       }
 
@@ -220,22 +237,31 @@ const orderResolver = {
       }
 
       try {
-        return await OrderModel.findOneAndUpdate(
+        const order = await OrderModel.findOneAndUpdate(
           { _id: args.id, location: context.currentLocation },
           {
             ...args,
             updated_by: currentUser.id,
             updated_on: Date.now(),
+            item: args.item,
           },
           { new: true }
         )
           .populate('created_by')
           .populate('updated_by')
           .populate('location')
-          .populate({
-            path: 'item',
-            model: itemType,
-          })
+
+        for (const item of args.item) {
+          let itemType
+          if (item.itemType === 'Component') {
+            itemType = ComponentModel
+          } else {
+            itemType = ProductModel
+          }
+          await order?.populate({ path: 'item', model: itemType })
+        }
+
+        return order
       } catch (error) {
         throw new GraphQLError('failed to add order', {
           extensions: {

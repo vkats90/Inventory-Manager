@@ -3,10 +3,20 @@ import { gql } from 'apollo-server-express'
 const orderTypeDef = gql`
   union ItemTypes = Product | Component
 
+  type ItemInterface {
+    item: ItemTypes
+    quantity: Int
+  }
+
+  input newItemType {
+    item: ID
+    itemType: String
+    quantity: Int
+  }
+
   type Order {
     id: ID!
-    item: ItemTypes!
-    quantity: Int!
+    items: [ItemInterface]!
     priority: Int
     status: String
     created_on: String!
@@ -27,11 +37,10 @@ const orderTypeDef = gql`
   }
 
   extend type Mutation {
-    addOrder(item: ID, quantity: Int, priority: Int, supplier: String): Order
+    addOrder(items: [newItemType], priority: Int, supplier: String): Order
     editOrder(
       id: ID!
-      item: ID
-      quantity: Int
+      items: [newItemType]
       priority: Int
       status: String
       location: ID

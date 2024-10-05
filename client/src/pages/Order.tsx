@@ -1,4 +1,5 @@
-import React, { useState } from 'react'
+import React, { useState, useContext } from 'react'
+import { AppContext } from '../App'
 import { useLoaderData, useNavigate, useOutletContext } from 'react-router-dom'
 import { Order } from '../types'
 import isEqual from 'react-fast-compare'
@@ -14,7 +15,11 @@ interface loaderData {
 const SingleOrderPage: React.FC = () => {
   const queryRef = useLoaderData()
   const { data: loaderOrder, error } = useReadQuery(queryRef as QueryRef<loaderData>)
-  const [order, setOrder] = useState<Order>(loaderOrder.findOrder)
+  const { location, allLocations } = useContext(AppContext)
+  const [order, setOrder] = useState<Order>({
+    ...loaderOrder.findOrder,
+    location: location?.id || '',
+  })
   const [visible, setVisible] = useState(false)
   const [setData]: [React.Dispatch<React.SetStateAction<Order[]>>] = useOutletContext()
 
@@ -44,13 +49,19 @@ const SingleOrderPage: React.FC = () => {
     try {
       const res = await editOrder(
         order.id,
-        order.item.name,
-        order.quantity,
+        order.items,
         order.priority,
         order.status,
-        order.supplier
+        order.supplier,
+        order.location as string
       )
-      if (isEqual({ ...res, updated_on: '' }, { ...order, updated_on: '' })) {
+      if (location?.id != res.location.id) {
+        notify({ success: 'Order succesfully moved to the ' + res.location.name + ' location' })
+        setData((prev: Order[]) => {
+          return prev.filter((c) => c.id !== order.id)
+        })
+        navigate('/orders')
+      } else if (isEqual({ ...res, updated_on: '' }, { ...order, updated_on: '' })) {
         setVisible(false)
         notify({ success: 'Order edited successfully' })
         navigate('/orders')
@@ -78,21 +89,11 @@ const SingleOrderPage: React.FC = () => {
       <form>
         <input
           className="text-3xl font-bold mb-4 w-full focus:outline-primary"
-          value={order.item.name}
+          value={order.items[0].quantity}
           onChange={handleInputChange}
           name="name"
         />
         <div className="grid grid-cols-2 gap-4">
-          <div>
-            <label className="font-semibold">Quantity:</label>
-            <input
-              className="w-full mt-1 p-2 border rounded focus:outline-primary"
-              type="number"
-              value={order.quantity}
-              onChange={handleInputChange}
-              name="quantity"
-            />
-          </div>
           <div>
             <label className="font-semibold ">Priority:</label>
 
@@ -165,6 +166,21 @@ const SingleOrderPage: React.FC = () => {
               onChange={handleInputChange}
               name="supplier"
             />
+          </div>
+          <div>
+            <label className="font-semibold">Location:</label>
+            <select
+              className="w-full mt-1 p-2 border rounded focus:outline-primary"
+              value={order.location as string}
+              onChange={handleInputChange as unknown as React.ChangeEventHandler<HTMLSelectElement>}
+              name="location"
+            >
+              {allLocations.map((location) => (
+                <option key={location.id} value={location.id}>
+                  {location.name}
+                </option>
+              ))}
+            </select>
           </div>
         </div>
         {visible && (
