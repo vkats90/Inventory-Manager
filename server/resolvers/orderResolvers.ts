@@ -1,22 +1,36 @@
-import { Order, User, MyContext } from '../types'
+import { Order, User, MyContext, OrderItem } from '../types'
 import OrderModel from '../models/order'
 import ComponentModel from '../models/component'
 import ProductModel from '../models/product'
 import LocationModel from '../models/location'
 import { GraphQLError } from 'graphql'
-import order from '../models/order'
-import e from 'express'
 
 const orderResolver = {
   ItemTypes: {
     __resolveType(obj: any) {
       if (obj.price !== undefined) return 'Product'
-      else if (obj.price == undefined) return 'Component'
-      return null
+      return 'Component'
+    },
+  },
+  ItemInterface: {
+    item: async (parent: OrderItem) => {
+      const Model = parent.itemType === 'ProductModel' ? ProductModel : ComponentModel
+      // @ts-ignore
+      return await Model.findById(parent.item)
+    },
+  },
+  Product: {
+    __isTypeOf(obj: any) {
+      return obj.price !== undefined
+    },
+  },
+  Component: {
+    __isTypeOf(obj: any) {
+      return obj.price === undefined
     },
   },
   Query: {
-    allOrders: async (_root: User, _args: User, context: MyContext) => {
+    allOrders: async (_root: any, _args: any, context: MyContext) => {
       if (!context.isAuthenticated()) {
         throw new GraphQLError('wrong credentials', {
           extensions: { code: 'UNAUTHORIZED' },
@@ -24,13 +38,10 @@ const orderResolver = {
       }
       const currentLocation = context.currentLocation
       const orders = await OrderModel.find({ location: currentLocation })
+        .populate('created_by')
+        .populate('updated_by')
+        .populate('location')
 
-      for (const order of orders) {
-        await order.populate('created_by')
-        await order.populate('updated_by')
-        await order.populate('location')
-        await order.populate('items.item')
-      }
       return orders
     },
     findOrder: async (_root: Order, { id }: { id: string }, context: MyContext) => {
@@ -43,7 +54,6 @@ const orderResolver = {
       const order: Order | null = await OrderModel.findOne({ _id: id, location: currentLocation })
         .populate('created_by')
         .populate('updated_by')
-        .populate('items.item')
         .populate('location')
 
       if (!order)
@@ -152,9 +162,6 @@ const orderResolver = {
       await order.populate('created_by')
       await order.populate('updated_by')
       await order.populate('location')
-      await order.populate('items.item')
-
-      console.log(order)
 
       return order
     },
@@ -249,16 +256,6 @@ const orderResolver = {
           .populate('created_by')
           .populate('updated_by')
           .populate('location')
-
-        for (const item of args.item) {
-          let itemType
-          if (item.itemType === 'Component') {
-            itemType = ComponentModel
-          } else {
-            itemType = ProductModel
-          }
-          await order?.populate({ path: 'item', model: itemType })
-        }
 
         return order
       } catch (error) {

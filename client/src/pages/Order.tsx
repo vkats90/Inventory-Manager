@@ -59,19 +59,24 @@ const SingleOrderPage: React.FC = () => {
     try {
       const res = await editOrder(
         order.id,
-        order.items,
         order.priority,
         order.status,
         order.supplier,
         order.location as string
       )
+      console.log(res, order)
       if (location?.id != res.location.id) {
         notify({ success: 'Order succesfully moved to the ' + res.location.name + ' location' })
         setData((prev: Order[]) => {
           return prev.filter((c) => c.id !== order.id)
         })
         navigate('/orders')
-      } else if (isEqual({ ...res, updated_on: '' }, { ...order, updated_on: '' })) {
+      } else if (
+        isEqual(
+          { ...res, updated_on: '', location: '' },
+          { ...order, updated_on: '', location: '' }
+        )
+      ) {
         setVisible(false)
         notify({ success: 'Order edited successfully' })
         navigate('/orders')
@@ -91,7 +96,6 @@ const SingleOrderPage: React.FC = () => {
       ...prev,
       [name]: name === 'quantity' || name === 'priority' ? parseInt(value) : value,
     }))
-    console.log(order)
   }
 
   const handleDeleteItem = (index: number) => {
@@ -123,7 +127,7 @@ const SingleOrderPage: React.FC = () => {
                       <ImagePlus className="h-8 w-8 text-gray-400" />
                     </div>
                   </TableCell>
-                  <TableCell className="font-medium">Item Name</TableCell>
+                  <TableCell className="font-medium">{item.item.name}</TableCell>
                   <TableCell>{item.quantity}</TableCell>
                   <TableCell>
                     <Button

@@ -235,21 +235,36 @@ export const ALL_ORDERS = gql`
       created_on
       created_by {
         email
-        id
         name
       }
       updated_on
       updated_by {
         email
-        id
         name
+      }
+      location {
+        name
+        address
       }
       supplier
       items {
         quantity
-      }
-      location {
-        name
+
+        item {
+          ... on Product {
+            name
+            stock
+            cost
+            price
+          }
+          ... on Component {
+            name
+            stock
+            cost
+          }
+        }
+
+        itemType
       }
     }
   }
@@ -312,22 +327,37 @@ export const FIND_ORDER = gql`
   query FindOrder($id: ID!) {
     findOrder(id: $id) {
       id
+      items {
+        quantity
+        itemType
+        item {
+          ... on Product {
+            name
+            stock
+            cost
+            price
+            SKU
+            id
+          }
+          ... on Component {
+            name
+            stock
+            cost
+            id
+          }
+        }
+      }
       priority
       status
       created_on
       created_by {
         email
-        id
         name
       }
       updated_on
       updated_by {
         email
-        id
         name
-      }
-      items {
-        quantity
       }
       location {
         name
@@ -380,43 +410,56 @@ export const ADD_ORDER = gql`
 
 // Mutation to edit an existing order
 export const EDIT_ORDER = gql`
-  mutation EditOrder(
+  mutation Mutation(
     $id: ID!
+    $items: [newItemType]
     $priority: Int
-    $item: ID
-    $quantity: Int
     $status: String
     $location: ID
     $supplier: String
   ) {
     editOrder(
       id: $id
+      items: $items
       priority: $priority
-      item: $item
-      quantity: $quantity
       status: $status
       location: $location
       supplier: $supplier
     ) {
       id
-      item {
-        ... on Product {
-          name
+      items {
+        item {
+          ... on Product {
+            name
+            stock
+            cost
+            price
+            SKU
+          }
+          ... on Component {
+            name
+            stock
+            cost
+          }
         }
+        quantity
+        itemType
       }
-      quantity
       priority
       status
       created_on
       created_by {
         name
+        email
       }
       updated_on
       updated_by {
         name
+        email
       }
       location {
         name
+        id
       }
       supplier
     }

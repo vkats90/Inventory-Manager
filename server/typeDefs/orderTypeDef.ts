@@ -6,6 +6,7 @@ const orderTypeDef = gql`
   type ItemInterface {
     item: ItemTypes
     quantity: Int
+    itemType: String
   }
 
   input newItemType {

@@ -193,7 +193,7 @@ export const deleteProduct = async (name: string) => {
 
 export const editOrder = async (
   id: string,
-  items: [{ item: string; quantity: number }],
+
   priority: number | null,
   status: string,
   supplier: string,
@@ -202,7 +202,7 @@ export const editOrder = async (
   try {
     const { data } = await client.mutate({
       mutation: EDIT_ORDER,
-      variables: { id, name, items, priority, status, supplier, location },
+      variables: { id, name, priority, status, supplier, location },
     })
 
     return data.editOrder

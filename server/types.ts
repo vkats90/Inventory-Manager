@@ -1,5 +1,6 @@
 import { PassportContext } from 'graphql-passport'
 import { Request as ExpressRequest } from 'express'
+import mongoose from 'mongoose'
 import 'express-session'
 import 'passport'
 
@@ -71,6 +72,11 @@ export interface Location {
 
 export interface MyContext extends PassportContext<HashedUser, ExpressRequest> {
   currentLocation: string
+}
+export interface OrderItem {
+  item: mongoose.Types.ObjectId
+  quantity: number
+  itemType: 'ProductModel' | 'ComponentModel'
 }
 
 declare module 'express-session' {
