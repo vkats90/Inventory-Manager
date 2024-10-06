@@ -11,17 +11,6 @@ interface OrderStatus {
 
 type OrderStatusKey = keyof OrderStatus
 
-const orderData = {
-  totalOrders: 5,
-  statuses: [
-    { status: 'Created', count: 2, color: 'bg-blue-500' },
-    { status: 'Ordered', count: 1, color: 'bg-yellow-500' },
-    { status: 'Shipped', count: 1, color: 'bg-green-500' },
-    { status: 'Finished', count: 1, color: 'bg-purple-500' },
-  ],
-  highPriorityCreated: 2,
-}
-
 const statusColors = {
   Created: 'bg-blue-500',
   Ordered: 'bg-yellow-500',
@@ -63,6 +52,7 @@ export default function OrderDashboard({
               <Progress
                 value={(ordersByStatus[status as OrderStatusKey] / orderData.length) * 100}
                 className="h-2 mt-2"
+                // @ts-ignore
                 indicatorClassName={statusColors[status as OrderStatusKey]}
               />
             </CardContent>
@@ -91,6 +81,7 @@ export default function OrderDashboard({
           <Progress
             value={(highPriorityCreatedOrders / orderData.length) * 100}
             className="h-2 mt-2"
+            // @ts-ignore
             indicatorClassName="bg-red-500"
           />
         </CardContent>

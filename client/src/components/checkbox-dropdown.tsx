@@ -1,12 +1,11 @@
 "'use client'"
 
-import React from "'react'"
-import { Column } from "'@tanstack/react-table'"
-import { Component, Product, Order } from "'../types'"
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
-import { Button } from "@/components/ui/button"
-import { Checkbox } from "@/components/ui/checkbox"
-import { ChevronDown } from "lucide-react"
+import { Column } from '@tanstack/react-table'
+import { Component, Product, Order } from '../types'
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
+import { Button } from '@/components/ui/button'
+import { Checkbox } from '@/components/ui/checkbox'
+import { ChevronDown } from 'lucide-react'
 
 interface FilterProps {
   options: Column<Component>[] | Column<Product>[] | Column<Order>[]
@@ -22,7 +21,12 @@ export function CheckboxDropdownComponent({ options }: FilterProps) {
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-56 p-0">
-        <div className="py-1" role="menu" aria-orientation="vertical" aria-labelledby="options-menu">
+        <div
+          className="py-1"
+          role="menu"
+          aria-orientation="vertical"
+          aria-labelledby="options-menu"
+        >
           {options.map((option) => {
             if (option.id === "'id'") return null
             return (

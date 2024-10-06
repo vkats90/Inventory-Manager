@@ -17,7 +17,7 @@ import {
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 import { Button } from '@/components/ui/button'
 import { Calendar } from '@/components/ui/calendar'
-import { format, set } from 'date-fns'
+import { format } from 'date-fns'
 import { cn } from '@/lib/utils'
 
 interface FilterProps {
@@ -49,8 +49,8 @@ const SearchWithColumnFilter: React.FC<FilterProps> = ({ columns, onSearch, setO
     }
   }
 
-  const handleDateChange = (date: Date | null) => {
-    setSelectedDate(date)
+  const handleDateChange = (date: Date | undefined) => {
+    setSelectedDate(date || null)
 
     onSearch(date ? date.valueOf().toString() : '', selectedColumn)
   }
@@ -79,12 +79,12 @@ const SearchWithColumnFilter: React.FC<FilterProps> = ({ columns, onSearch, setO
               <PopoverContent className="w-auto p-0" align="start">
                 <Calendar
                   mode="single"
-                  selected={selectedDate}
+                  selected={selectedDate || undefined}
                   onSelect={handleDateChange}
                   disabled={(date) => date > new Date() || date < new Date('1900-01-01')}
                   initialFocus
                 />
-                <Button variant="link" onClick={() => handleDateChange(null)}>
+                <Button variant="link" onClick={() => handleDateChange(undefined)}>
                   Clear
                 </Button>
               </PopoverContent>

@@ -29,6 +29,7 @@ export default function PartsDashboard({ totalParts, lowStockParts }: ProductDat
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{totalParts}</div>
+            {/* @ts-ignore */}
             <Progress value={100} className="h-2 mt-2" indicatorClassName="bg-blue-500" />
           </CardContent>
         </Card>
@@ -43,6 +44,7 @@ export default function PartsDashboard({ totalParts, lowStockParts }: ProductDat
             <Progress
               value={(lowStockParts / totalParts) * 100}
               className="h-2 mt-2"
+              // @ts-ignore
               indicatorClassName="bg-yellow-500"
             />
           </CardContent>
