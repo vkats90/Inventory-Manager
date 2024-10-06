@@ -54,7 +54,7 @@ const SingleProductPage: React.FC = () => {
       ...prev,
       [name]:
         name === 'stock'
-          ? parseInt(value)
+          ? Number(value)
           : name === 'cost'
           ? parseFloat(value)
           : name == 'price'

@@ -5,7 +5,7 @@ import {
   ME,
   FIND_COMPONENT,
   FIND_ORDER,
-  PRODUCTS_ORDERS,
+  SUMMARY,
   FIND_PRODUCT_AND_COMPONENTS,
   ME_LOCATIONS,
 } from './queries'
@@ -76,7 +76,7 @@ export const meLoader = async () => {
 }
 
 export const homeLoader = async () => {
-  return preloadQuery(PRODUCTS_ORDERS, {
+  return preloadQuery(SUMMARY, {
     errorPolicy: 'all',
     fetchPolicy: 'cache-and-network',
   })

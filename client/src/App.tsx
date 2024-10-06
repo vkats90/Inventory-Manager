@@ -8,6 +8,7 @@ import Card from './components/card'
 import { useLoaderData, useNavigate } from 'react-router-dom'
 import { useReadQuery, QueryRef } from '@apollo/client'
 import { User } from './types'
+import { set } from 'date-fns'
 
 interface loaderData {
   userLocations: Location[]
@@ -69,7 +70,7 @@ function App() {
       }}
     >
       <div className="bg-slate-200 min-h-[100vh] flex font-Ubuntu">
-        {location && user && <Sidebar />}
+        <Sidebar />
         <ToastContainer />
         <Suspense
           fallback={

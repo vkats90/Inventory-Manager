@@ -18,6 +18,14 @@ const Sidebar: React.FC = () => {
     { name: 'Orders', path: '/orders' },
   ]
 
+  if (
+    urllocation.pathname == '/login' ||
+    urllocation.pathname == '/register' ||
+    urllocation.pathname == '/no-location' ||
+    urllocation.pathname == '/create-location'
+  )
+    return
+
   return (
     <div className="bg-slate-200 w-64 min-h-screen p-1">
       <div className="bg-white rounded-lg w-full h-full p-2  shadow-lg relative">

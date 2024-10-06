@@ -49,7 +49,7 @@ const SingleComponentPage: React.FC = () => {
     const { name, value } = e.target
     setComponent((prev) => ({
       ...prev,
-      [name]: name === 'stock' ? parseInt(value) : name === 'cost' ? parseFloat(value) : value,
+      [name]: name === 'stock' ? Number(value) : name === 'cost' ? parseFloat(value) : value,
     }))
   }
 

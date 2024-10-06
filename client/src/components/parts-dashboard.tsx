@@ -7,12 +7,7 @@ interface ProductData {
   lowStockParts: number
 }
 
-const partsData: ProductData = {
-  totalParts: 3,
-  lowStockParts: 2,
-}
-
-export default function PartsDashboard() {
+export default function PartsDashboard({ totalParts, lowStockParts }: ProductData) {
   return (
     <div className="p-2 space-y-6  rounded-lg">
       <Card>
@@ -21,7 +16,7 @@ export default function PartsDashboard() {
           <Package className="h-6 w-6 text-muted-foreground" />
         </CardHeader>
         <CardContent>
-          <div className="text-4xl font-bold">{partsData.totalParts}</div>
+          <div className="text-4xl font-bold">{totalParts}</div>
           <p className="text-xs text-muted-foreground">Total Parts</p>
         </CardContent>
       </Card>
@@ -33,7 +28,7 @@ export default function PartsDashboard() {
             <Package className="h-4 w-4 text-blue-500" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{partsData.totalParts}</div>
+            <div className="text-2xl font-bold">{totalParts}</div>
             <Progress value={100} className="h-2 mt-2" indicatorClassName="bg-blue-500" />
           </CardContent>
         </Card>
@@ -44,9 +39,9 @@ export default function PartsDashboard() {
             <AlertTriangle className="h-4 w-4 text-yellow-500" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{partsData.lowStockParts}</div>
+            <div className="text-2xl font-bold">{lowStockParts}</div>
             <Progress
-              value={(partsData.lowStockParts / partsData.totalParts) * 100}
+              value={(lowStockParts / totalParts) * 100}
               className="h-2 mt-2"
               indicatorClassName="bg-yellow-500"
             />
@@ -74,9 +69,7 @@ export default function PartsDashboard() {
               <div
                 className="bg-green-500 h-4 rounded-full"
                 style={{
-                  width: `${
-                    ((partsData.totalParts - partsData.lowStockParts) / partsData.totalParts) * 100
-                  }%`,
+                  width: `${((totalParts - lowStockParts) / totalParts) * 100}%`,
                 }}
               ></div>
             </div>
@@ -84,14 +77,14 @@ export default function PartsDashboard() {
               <div
                 className="bg-yellow-500 h-4 rounded-full"
                 style={{
-                  width: `${(partsData.lowStockParts / partsData.totalParts) * 100}%`,
+                  width: `${(lowStockParts / totalParts) * 100}%`,
                 }}
               ></div>
             </div>
           </div>
           <div className="flex justify-between mt-2 text-sm">
-            <span>{partsData.totalParts - partsData.lowStockParts} In Stock</span>
-            <span>{partsData.lowStockParts} Low Stock</span>
+            <span>{totalParts - lowStockParts} In Stock</span>
+            <span>{lowStockParts} Low Stock</span>
           </div>
         </CardContent>
       </Card>

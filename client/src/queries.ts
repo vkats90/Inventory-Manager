@@ -255,48 +255,25 @@ export const ALL_ORDERS = gql`
   }
 `
 
-export const PRODUCTS_ORDERS = gql`
-  query ProductsOrders {
+export const SUMMARY = gql`
+  query Summary {
+    allComponents {
+      name
+      stock
+    }
     allProducts {
       name
       stock
-      cost
-      price
       SKU
-      components {
-        name
-        stock
-        cost
-        id
-      }
-      id
-      location {
-        name
-      }
     }
     allOrders {
-      id
-      priority
-      status
-      created_on
-      created_by {
-        email
-        id
-        name
-      }
-      updated_on
-      updated_by {
-        email
-        id
-        name
-      }
-      supplier
       items {
         quantity
       }
-      location {
-        name
-      }
+      status
+      updated_on
+      supplier
+      priority
     }
   }
 `

@@ -1,6 +1,14 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { Package, Truck, ShoppingCart, AlertTriangle, TrendingUp, Clock } from 'lucide-react'
+import {
+  Package,
+  Truck,
+  ShoppingCart,
+  AlertTriangle,
+  TrendingUp,
+  Clock,
+  Hammer,
+} from 'lucide-react'
 
 interface RecommendationProps {
   orderData: {
@@ -80,6 +88,7 @@ export function RecommendationCardComponent({
           </TabsContent>
           <TabsContent value="parts" className="space-y-4 mt-4">
             <div className="flex items-start space-x-2">
+              <Hammer className="h-5 w-5 text-blue-500 mt-0.5" />
               <div>
                 <h4 className="text-sm font-medium">Replenish Low Stock Parts</h4>
                 <p className="text-sm text-neutral-500 dark:text-neutral-400">

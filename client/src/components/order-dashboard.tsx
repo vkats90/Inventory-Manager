@@ -1,19 +1,17 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Progress } from '@/components/ui/progress'
+import { Order } from '@/types'
 
 interface OrderStatus {
-  status: string
-  count: number
-  color: string
+  Created: number
+  Ordered: number
+  Shipped: number
+  Finished: number
 }
 
-interface OrderData {
-  totalOrders: number
-  statuses: OrderStatus[]
-  highPriorityCreated: number
-}
+type OrderStatusKey = keyof OrderStatus
 
-const orderData: OrderData = {
+const orderData = {
   totalOrders: 5,
   statuses: [
     { status: 'Created', count: 2, color: 'bg-blue-500' },
@@ -24,7 +22,22 @@ const orderData: OrderData = {
   highPriorityCreated: 2,
 }
 
-export default function OrderDashboard() {
+const statusColors = {
+  Created: 'bg-blue-500',
+  Ordered: 'bg-yellow-500',
+  Shipped: 'bg-green-500',
+  Finished: 'bg-purple-500',
+}
+
+export default function OrderDashboard({
+  orderData,
+  ordersByStatus,
+  highPriorityCreatedOrders,
+}: {
+  orderData: Order[]
+  ordersByStatus: OrderStatus
+  highPriorityCreatedOrders: number
+}) {
   return (
     <div className="p-2 space-y-6  rounded-lg">
       <Card>
@@ -33,24 +46,24 @@ export default function OrderDashboard() {
           <span className="text-sm text-muted-foreground">Last 30 days</span>
         </CardHeader>
         <CardContent>
-          <div className="text-4xl font-bold">{orderData.totalOrders}</div>
+          <div className="text-4xl font-bold">{orderData.length}</div>
           <p className="text-xs text-muted-foreground">Total Orders</p>
         </CardContent>
       </Card>
 
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-        {orderData.statuses.map((status) => (
-          <Card key={status.status}>
+        {Object.keys(ordersByStatus).map((status) => (
+          <Card key={status}>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">{status.status}</CardTitle>
-              <div className={`w-4 h-4 rounded-full ${status.color}`} />
+              <CardTitle className="text-sm font-medium">{status}</CardTitle>
+              <div className={`w-4 h-4 rounded-full ${statusColors[status as OrderStatusKey]}`} />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">{status.count}</div>
+              <div className="text-2xl font-bold">{ordersByStatus[status as OrderStatusKey]}</div>
               <Progress
-                value={(status.count / orderData.totalOrders) * 100}
+                value={(ordersByStatus[status as OrderStatusKey] / orderData.length) * 100}
                 className="h-2 mt-2"
-                indicatorClassName={status.color}
+                indicatorClassName={statusColors[status as OrderStatusKey]}
               />
             </CardContent>
           </Card>
@@ -74,9 +87,9 @@ export default function OrderDashboard() {
           </svg>
         </CardHeader>
         <CardContent>
-          <div className="text-2xl font-bold">{orderData.highPriorityCreated}</div>
+          <div className="text-2xl font-bold">{highPriorityCreatedOrders}</div>
           <Progress
-            value={(orderData.highPriorityCreated / orderData.totalOrders) * 100}
+            value={(highPriorityCreatedOrders / orderData.length) * 100}
             className="h-2 mt-2"
             indicatorClassName="bg-red-500"
           />

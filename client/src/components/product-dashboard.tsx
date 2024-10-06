@@ -7,12 +7,7 @@ interface ProductData {
   lowStockProducts: number
 }
 
-const productData: ProductData = {
-  totalProducts: 3,
-  lowStockProducts: 2,
-}
-
-export default function ProductDashboard() {
+export default function ProductDashboard({ totalProducts, lowStockProducts }: ProductData) {
   return (
     <div className="p-2 space-y-6  rounded-lg">
       <Card>
@@ -21,7 +16,7 @@ export default function ProductDashboard() {
           <Package className="h-6 w-6 text-muted-foreground" />
         </CardHeader>
         <CardContent>
-          <div className="text-4xl font-bold">{productData.totalProducts}</div>
+          <div className="text-4xl font-bold">{totalProducts}</div>
           <p className="text-xs text-muted-foreground">Total Products</p>
         </CardContent>
       </Card>
@@ -33,7 +28,7 @@ export default function ProductDashboard() {
             <Package className="h-4 w-4 text-blue-500" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{productData.totalProducts}</div>
+            <div className="text-2xl font-bold">{totalProducts}</div>
             <Progress value={100} className="h-2 mt-2" indicatorClassName="bg-blue-500" />
           </CardContent>
         </Card>
@@ -44,9 +39,9 @@ export default function ProductDashboard() {
             <AlertTriangle className="h-4 w-4 text-yellow-500" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{productData.lowStockProducts}</div>
+            <div className="text-2xl font-bold">{lowStockProducts}</div>
             <Progress
-              value={(productData.lowStockProducts / productData.totalProducts) * 100}
+              value={(lowStockProducts / totalProducts) * 100}
               className="h-2 mt-2"
               indicatorClassName="bg-yellow-500"
             />
@@ -74,11 +69,7 @@ export default function ProductDashboard() {
               <div
                 className="bg-green-500 h-4 rounded-full"
                 style={{
-                  width: `${
-                    ((productData.totalProducts - productData.lowStockProducts) /
-                      productData.totalProducts) *
-                    100
-                  }%`,
+                  width: `${((totalProducts - lowStockProducts) / totalProducts) * 100}%`,
                 }}
               ></div>
             </div>
@@ -86,14 +77,14 @@ export default function ProductDashboard() {
               <div
                 className="bg-yellow-500 h-4 rounded-full"
                 style={{
-                  width: `${(productData.lowStockProducts / productData.totalProducts) * 100}%`,
+                  width: `${(lowStockProducts / totalProducts) * 100}%`,
                 }}
               ></div>
             </div>
           </div>
           <div className="flex justify-between mt-2 text-sm">
-            <span>{productData.totalProducts - productData.lowStockProducts} In Stock</span>
-            <span>{productData.lowStockProducts} Low Stock</span>
+            <span>{totalProducts - lowStockProducts} In Stock</span>
+            <span>{lowStockProducts} Low Stock</span>
           </div>
         </CardContent>
       </Card>
