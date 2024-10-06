@@ -312,7 +312,7 @@ export const ME_LOCATIONS = gql`
         permission
       }
     }
-    allLocations {
+    userLocations {
       name
       id
       admin {
@@ -508,6 +508,16 @@ export const CHANGE_LOCATION = gql`
       admin {
         email
       }
+      address
+      id
+    }
+  }
+`
+
+export const CREATE_LOCATION = gql`
+  mutation AddLocation($name: String!, $address: String) {
+    addLocation(name: $name, address: $address) {
+      name
       address
       id
     }

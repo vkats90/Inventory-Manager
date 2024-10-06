@@ -69,22 +69,6 @@ const SignUp = () => {
           />
         </div>
 
-        <div className=" gap-4 flex items-center align-middle justify-between">
-          <label className="block flex-grow text-right font-semibold  mt-3 " htmlFor="store">
-            Store:
-          </label>
-          <input
-            type="text"
-            name="store"
-            placeholder="Store Name"
-            className="w-4/5 border rounded mt-4 px-3 py-2 focus:outline-primary"
-          />
-        </div>
-        <p className="text-sm text-gray-500 text-right ">
-          {' '}
-          * Add multiple stores by putting a comma between them
-        </p>
-
         <button
           className="w-full bg-primary mt-8 text-white rounded px-3 py-2 hover:bg-primary/70"
           type="submit"

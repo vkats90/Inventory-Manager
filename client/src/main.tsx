@@ -16,6 +16,8 @@ import AddOrder from './pages/AddOrder.tsx'
 import AddComponent from './pages/AddComponent.tsx'
 import SignUp from './pages/SignUp.tsx'
 import ReleaseNotes from './pages/Version-release.tsx'
+import NoLocation from './pages/NoLocation.tsx'
+import CreateLocation from './pages/CreateLocation.tsx'
 import ErrorElement from './pages/errorElement.tsx'
 import { ApolloClient, InMemoryCache, ApolloProvider } from '@apollo/client'
 import {
@@ -35,6 +37,7 @@ import {
   login,
   register,
   changeCurrentLocation,
+  addLocation,
 } from './actionFunctions.ts'
 
 const client = new ApolloClient({
@@ -82,6 +85,15 @@ const router = createBrowserRouter([
         path: '/register',
         element: <SignUp />,
         action: register,
+      },
+      {
+        path: '/no-location',
+        element: <NoLocation />,
+      },
+      {
+        path: '/create-location',
+        element: <CreateLocation />,
+        action: addLocation,
       },
       {
         path: '/parts',

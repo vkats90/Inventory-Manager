@@ -14,6 +14,7 @@ import {
   LOGOUT,
   CREATE_USER,
   CHANGE_LOCATION,
+  CREATE_LOCATION,
 } from './queries'
 import { Component } from './types'
 import { notify } from './utils/notify'
@@ -47,16 +48,15 @@ export const register = async ({ request }: ActionFunctionArgs) => {
   const email = formData.get('email') as string
   const password = formData.get('password') as string
   const name = formData.get('name') as string
-  const store = formData.get('store') as string
 
   try {
     await client.mutate({
       mutation: CREATE_USER,
-      variables: { email, password, name, stores: store.split(',') },
+      variables: { email, password, name, permissions: [] },
     })
     notify({ success: 'Account created successfully' })
 
-    return redirect('/')
+    return redirect('/no-location')
   } catch (error: unknown) {
     notify({ error: 'Failed to create account' })
     return error as Error
@@ -258,6 +258,25 @@ export const changeCurrentLocation = async ({ request }: ActionFunctionArgs) => 
     notify({ success: 'Location Changed' })
     return data.changeLocation
   } catch (error: unknown) {
+    return error as Error
+  }
+}
+
+export const addLocation = async ({ request }: ActionFunctionArgs) => {
+  const formData = await request.formData()
+  const address = formData.get('address') as string
+  const name = formData.get('name') as string
+
+  try {
+    await client.mutate({
+      mutation: CREATE_LOCATION,
+      variables: { name, address },
+    })
+    notify({ success: 'Location created successfully' })
+
+    return redirect('/')
+  } catch (error: unknown) {
+    notify({ error: 'Failed to create location' })
     return error as Error
   }
 }

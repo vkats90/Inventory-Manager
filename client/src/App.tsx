@@ -10,7 +10,7 @@ import { useReadQuery, QueryRef } from '@apollo/client'
 import { User } from './types'
 
 interface loaderData {
-  allLocations: Location[]
+  userLocations: Location[]
   currentLocation: Location
   me: User
 }
@@ -23,7 +23,7 @@ export const AppContext = createContext<{
   location: Location | null
   setLocation: (location: Location | null) => void
   allLocations: Location[]
-  setAllLocations: (allLocations: Location[]) => void
+  setAllLocations: (userLocations: Location[]) => void
 }>({
   inView: false,
   setInView: (_inView: boolean) => {},
@@ -41,13 +41,16 @@ function App() {
   const [inView, setInView] = useState(false)
   const [user, setUser] = useState(loaderData?.me?.name || '')
   const [location, setLocation] = useState<Location | null>(loaderData?.currentLocation || '')
-  const [allLocations, setAllLocations] = useState<Location[]>(loaderData?.allLocations || [])
+  const [allLocations, setAllLocations] = useState<Location[]>(loaderData?.userLocations || [])
 
   const navigate = useNavigate()
 
   useEffect(() => {
     if (error && error.graphQLErrors[0].extensions.code === 'UNAUTHORIZED') {
       navigate('/login')
+    }
+    if (!loaderData?.currentLocation) {
+      navigate('/no-location')
     }
   }, [])
 
@@ -66,7 +69,7 @@ function App() {
       }}
     >
       <div className="bg-slate-200 min-h-[100vh] flex font-Ubuntu">
-        <Sidebar />
+        {location && user && <Sidebar />}
         <ToastContainer />
         <Suspense
           fallback={
@@ -81,7 +84,7 @@ function App() {
         </Suspense>
         <Link
           to="/version-release"
-          className="absolute right-2 bottom-2 text-gray-400 text-sm hover:text-gray-400"
+          className="absolute right-2 top-2 text-gray-400 text-sm hover:text-gray-400"
         >
           v1.0.1
         </Link>

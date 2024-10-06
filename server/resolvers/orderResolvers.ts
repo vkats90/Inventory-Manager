@@ -25,7 +25,6 @@ const orderResolver = {
       const currentLocation = context.currentLocation
       const orders = await OrderModel.find({ location: currentLocation })
 
-      console.log(orders[0].items)
       for (const order of orders) {
         await order.populate('created_by')
         await order.populate('updated_by')

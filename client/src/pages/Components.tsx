@@ -132,51 +132,58 @@ export const ComponentList: React.FC<{
       )}
       <div className="flex justify-between">
         <h2 className="text-2xl font-bold mb-4">Parts</h2>
-        <SearchWithColumnFilter
-          columns={table.getAllColumns()}
-          onSearch={handleSearch}
-          setOperator={setOperator}
-        />
-        <CheckboxDropdown options={table.getAllColumns()} />
+        {data.length > 0 && (
+          <SearchWithColumnFilter
+            columns={table.getAllColumns()}
+            onSearch={handleSearch}
+            setOperator={setOperator}
+          />
+        )}
+        {data.length > 0 && <CheckboxDropdown options={table.getAllColumns()} />}
       </div>
-      <div className="overflow-x-auto">
-        <Table>
-          <TableHeader>
-            {table.getHeaderGroups().map((headerGroup) => (
-              <TableRow key={headerGroup.id}>
-                {headerGroup.headers.map((header) => (
-                  <TableHead
-                    key={header.id}
-                    className={`px-4 py-2 ${
-                      (header.column.columnDef.meta as any)?.headerClassName || ''
-                    }`}
-                  >
-                    {header.isPlaceholder
-                      ? null
-                      : flexRender(header.column.columnDef.header, header.getContext())}
-                  </TableHead>
-                ))}
-              </TableRow>
-            ))}
-          </TableHeader>
-          <TableBody>
-            {table.getRowModel().rows.map((row) => (
-              <TableRow
-                id={row.getValue('id')}
-                key={row.id}
-                onClick={_handleClick}
-                className={`hover:bg-gradient-to-r hover:from-primary/30 hover:to-white cursor-pointer border-b`}
-              >
-                {row.getVisibleCells().map((cell) => (
-                  <TableCell key={cell.id} className="px-4 py-2">
-                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                  </TableCell>
-                ))}
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </div>
+      {data.length > 0 && (
+        <div className="overflow-x-auto">
+          <Table>
+            <TableHeader>
+              {table.getHeaderGroups().map((headerGroup) => (
+                <TableRow key={headerGroup.id}>
+                  {headerGroup.headers.map((header) => (
+                    <TableHead
+                      key={header.id}
+                      className={`px-4 py-2 ${
+                        (header.column.columnDef.meta as any)?.headerClassName || ''
+                      }`}
+                    >
+                      {header.isPlaceholder
+                        ? null
+                        : flexRender(header.column.columnDef.header, header.getContext())}
+                    </TableHead>
+                  ))}
+                </TableRow>
+              ))}
+            </TableHeader>
+            <TableBody>
+              {table.getRowModel().rows.map((row) => (
+                <TableRow
+                  id={row.getValue('id')}
+                  key={row.id}
+                  onClick={_handleClick}
+                  className={`hover:bg-gradient-to-r hover:from-primary/30 hover:to-white cursor-pointer border-b`}
+                >
+                  {row.getVisibleCells().map((cell) => (
+                    <TableCell key={cell.id} className="px-4 py-2">
+                      {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                    </TableCell>
+                  ))}
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </div>
+      )}
+      {data.length === 0 && (
+        <div className="text-center text-lg font-medium text-gray-500 my-8"> No parts yet</div>
+      )}
       <div className="flex justify-end">
         <button
           className="bg-primary hover:bg-primary/80 text-white font-regular my-4 py-1 px-4 rounded shadow-md focus:outline-none focus:shadow-outline"
