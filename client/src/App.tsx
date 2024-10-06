@@ -1,6 +1,6 @@
 import { createContext, useState, Suspense, useEffect } from 'react'
 import type { Location } from './types'
-import { Outlet } from 'react-router-dom'
+import { Outlet, Link } from 'react-router-dom'
 import Sidebar from './components/sidebar'
 import { ToastContainer } from 'react-toastify'
 import Skeleton from './components/skeleton'
@@ -79,6 +79,12 @@ function App() {
         >
           <Outlet />
         </Suspense>
+        <Link
+          to="/version-release"
+          className="absolute right-2 bottom-2 text-gray-400 text-sm hover:text-gray-400"
+        >
+          v1.0.1
+        </Link>
       </div>
     </AppContext.Provider>
   )

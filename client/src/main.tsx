@@ -15,6 +15,7 @@ import Order from './pages/Order.tsx'
 import AddOrder from './pages/AddOrder.tsx'
 import AddComponent from './pages/AddComponent.tsx'
 import SignUp from './pages/SignUp.tsx'
+import ReleaseNotes from './pages/Version-release.tsx'
 import ErrorElement from './pages/errorElement.tsx'
 import { ApolloClient, InMemoryCache, ApolloProvider } from '@apollo/client'
 import {
@@ -115,6 +116,10 @@ const router = createBrowserRouter([
             action: addOrder,
           },
         ],
+      },
+      {
+        path: '/version-release',
+        element: <ReleaseNotes />,
       },
     ],
   },
