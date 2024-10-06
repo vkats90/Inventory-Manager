@@ -8,7 +8,6 @@ import Card from './components/card'
 import { useLoaderData, useNavigate } from 'react-router-dom'
 import { useReadQuery, QueryRef } from '@apollo/client'
 import { User } from './types'
-import { set } from 'date-fns'
 
 interface loaderData {
   userLocations: Location[]

@@ -8,6 +8,7 @@ import CheckboxDropdown from '../components/filter'
 import { compareDates, compareNumbers } from '@/utils/compare'
 import { ComparisonOperator } from '../utils/compare'
 import SearchWithColumnFilter from '../components/search-with-column-filter'
+import { ImagePlus } from 'lucide-react'
 import {
   useReactTable,
   getCoreRowModel,
@@ -32,7 +33,7 @@ import {
 const columnHelper = createColumnHelper<Order>()
 
 const initialTableHeaders = {
-  id: false,
+  id: true,
   name: true,
   quantity: true,
   priority: true,
@@ -62,18 +63,8 @@ export const OrderList: React.FC<{ orders: Order[]; InitColumns?: typeof initial
       header: '',
       meta: { headerClassName: 'w-16' },
       cell: () => (
-        <div className="border-2 rounded-sm w-8 h-8 flex justify-center align-middle pt-1 ">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            id="Layer_1"
-            data-name="Layer 1"
-            viewBox="0 0 24 24"
-            fill="lightgray"
-            width="80%"
-            height="80%"
-          >
-            <path d="M9,7.5c0-.83,.67-1.5,1.5-1.5s1.5,.67,1.5,1.5-.67,1.5-1.5,1.5-1.5-.67-1.5-1.5Zm15-.5v6c0,2.76-2.24,5-5,5H10c-2.76,0-5-2.24-5-5V7c0-2.76,2.24-5,5-5h9c2.76,0,5,2.24,5,5ZM7,13c0,.77,.29,1.47,.77,2.01l5.24-5.24c.98-.98,2.69-.98,3.67,0l1.04,1.04c.23,.23,.62,.23,.85,0l3.43-3.43v-.38c0-1.65-1.35-3-3-3H10c-1.65,0-3,1.35-3,3v6Zm15,0v-2.79l-2.02,2.02c-.98,.98-2.69,.98-3.67,0l-1.04-1.04c-.23-.23-.61-.23-.85,0l-4.79,4.79c.12,.02,.24,.02,.37,.02h9c1.65,0,3-1.35,3-3Zm-5,7H5c-1.65,0-3-1.35-3-3v-6c0-.74,.27-1.45,.77-2,.37-.41,.33-1.04-.08-1.41-.41-.37-1.04-.33-1.41,.08-.82,.92-1.28,2.1-1.28,3.34v6c0,2.76,2.24,5,5,5h12c.55,0,1-.45,1-1s-.45-1-1-1Z" />
-          </svg>
+        <div className="h-8 w-8 rounded-md border border-dashed border-gray-300 flex items-center justify-center">
+          <ImagePlus className="h-6 w-6 text-gray-400" />
         </div>
       ),
     }),
@@ -85,11 +76,7 @@ export const OrderList: React.FC<{ orders: Order[]; InitColumns?: typeof initial
     }),
     columnHelper.accessor('items', {
       header: 'Items',
-      cell: (info) =>
-        info
-          .getValue()
-          .map((item) => item.quantity)
-          .join(', '),
+      cell: (info) => info.getValue().length.toString(),
       filterFn: 'includesString',
     }),
     columnHelper.accessor('priority', {

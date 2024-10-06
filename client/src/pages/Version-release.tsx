@@ -24,6 +24,7 @@ const releaseNotes = [
       'Added sign in with google',
       'Added search table functionality',
       'Added version release page',
+      'Upgraded homepage to show a detailed dashboard',
     ],
     fixes: ['Fixed issue where filter dropdown would be cut off'],
   },

@@ -1,12 +1,22 @@
 import React, { useState, useContext } from 'react'
 import { AppContext } from '../App'
 import { useLoaderData, useNavigate, useOutletContext } from 'react-router-dom'
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/components/ui/table'
+import { Button } from '@/components/ui/button'
 import { Order } from '../types'
 import isEqual from 'react-fast-compare'
 import { notify } from '../utils/notify'
 import { verifyDelete } from '../utils/notify'
 import { deleteOrder, editOrder } from '../actionFunctions'
 import { useReadQuery, QueryRef } from '@apollo/client'
+import { ImagePlus, Trash2 } from 'lucide-react'
 
 interface loaderData {
   findOrder: Order
@@ -84,15 +94,55 @@ const SingleOrderPage: React.FC = () => {
     console.log(order)
   }
 
+  const handleDeleteItem = (index: number) => {
+    setOrder((prev) => ({
+      ...prev,
+      items: prev.items.filter((_, i) => i !== index) as Order['items'],
+    }))
+    setVisible(true)
+  }
+
   return (
     <div className="container mx-auto px-4 py-8">
       <form>
-        <input
-          className="text-3xl font-bold mb-4 w-full focus:outline-primary"
-          value={order.items[0].quantity}
-          onChange={handleInputChange}
-          name="name"
-        />
+        <div className="rounded-md mb-4">
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead className="w-[50px]"></TableHead>
+                <TableHead>Item Name</TableHead>
+                <TableHead>Quantity</TableHead>
+                <TableHead className="w-16"></TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {order.items.map((item, index) => (
+                <TableRow key={index}>
+                  <TableCell>
+                    <div className="h-10 w-10 rounded-md border border-dashed border-gray-300 flex items-center justify-center">
+                      <ImagePlus className="h-8 w-8 text-gray-400" />
+                    </div>
+                  </TableCell>
+                  <TableCell className="font-medium">Item Name</TableCell>
+                  <TableCell>{item.quantity}</TableCell>
+                  <TableCell>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      onClick={() => {
+                        handleDeleteItem(index)
+                      }}
+                    >
+                      <Trash2 className="h-4 w-4 text-red-500" />
+                      <span className="sr-only">Delete item</span>
+                    </Button>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </div>
+
         <div className="grid grid-cols-2 gap-4">
           <div>
             <label className="font-semibold ">Priority:</label>
@@ -194,18 +244,10 @@ const SingleOrderPage: React.FC = () => {
         )}
       </form>
       <button
-        className=" absolute bottom-4 right-4 w-fit bg-red-600 hover:bg-red-700 mt-4 text-white rounded px-1 py-1 shadow-sm shadow-gray-600"
+        className=" absolute bottom-4 right-4 w-fit mt-4 text-red-500 hover:text-red-300 hover:scale-105 rounded px-1 py-1 shadow-sm shadow-gray-600"
         onClick={() => verifyDelete(handleDelete)}
       >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          id="Layer_1"
-          data-name="Layer 1"
-          viewBox="0 0 24 24"
-          className="w-6 h-6 fill-white"
-        >
-          <path d="m17,4v-2c0-1.103-.897-2-2-2h-6c-1.103,0-2,.897-2,2v2H1v2h1.644l1.703,15.331c.169,1.521,1.451,2.669,2.982,2.669h9.304c1.531,0,2.813-1.147,2.981-2.669l1.703-15.331h1.682v-2h-6Zm-8-2h6v2h-6v-2Zm6.957,14.543l-1.414,1.414-2.543-2.543-2.543,2.543-1.414-1.414,2.543-2.543-2.543-2.543,1.414-1.414,2.543,2.543,2.543-2.543,1.414,1.414-2.543,2.543,2.543,2.543Z" />
-        </svg>
+        <Trash2 className="h-6 w-6 " />
       </button>
     </div>
   )

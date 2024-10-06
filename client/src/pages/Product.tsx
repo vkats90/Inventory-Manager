@@ -8,6 +8,7 @@ import { verifyDelete } from '../utils/notify'
 import { deleteProduct, editProduct } from '../actionFunctions'
 import { useReadQuery, QueryRef } from '@apollo/client'
 import SelectComponent from '../components/selectComponent'
+import { Trash2 } from 'lucide-react'
 
 interface loaderData {
   findProduct: Product
@@ -184,18 +185,10 @@ const SingleProductPage: React.FC = () => {
         )}
       </form>
       <button
-        className=" absolute bottom-4 right-4 w-fit bg-red-600 hover:bg-red-700 mt-4 text-white rounded px-1 py-1 shadow-sm shadow-gray-600"
+        className=" absolute bottom-4 right-4 w-fit mt-4 text-red-500 hover:text-red-300 hover:scale-105 rounded px-1 py-1 shadow-sm shadow-gray-600"
         onClick={() => verifyDelete(handleDelete)}
       >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          id="Layer_1"
-          data-name="Layer 1"
-          viewBox="0 0 24 24"
-          className="w-6 h-6 fill-white"
-        >
-          <path d="m17,4v-2c0-1.103-.897-2-2-2h-6c-1.103,0-2,.897-2,2v2H1v2h1.644l1.703,15.331c.169,1.521,1.451,2.669,2.982,2.669h9.304c1.531,0,2.813-1.147,2.981-2.669l1.703-15.331h1.682v-2h-6Zm-8-2h6v2h-6v-2Zm6.957,14.543l-1.414,1.414-2.543-2.543-2.543,2.543-1.414-1.414,2.543-2.543-2.543-2.543,1.414-1.414,2.543,2.543,2.543-2.543,1.414,1.414-2.543,2.543,2.543,2.543Z" />
-        </svg>
+        <Trash2 className="h-6 w-6 " />
       </button>
     </div>
   )
