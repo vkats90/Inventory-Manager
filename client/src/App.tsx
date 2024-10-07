@@ -49,7 +49,7 @@ function App() {
     if (error && error.graphQLErrors[0].extensions.code === 'UNAUTHORIZED') {
       navigate('/login')
     }
-    if (!loaderData?.currentLocation) {
+    if (user && !loaderData?.currentLocation) {
       navigate('/no-location')
     }
   }, [])
