@@ -86,18 +86,18 @@ const StartServer = async () => {
         profile: any,
         done: VerifyCallback
       ) {
-        const matchingUser: HashedUser | null = await UserModel.findOne({
-          email: profile._json.email.toLowerCase(),
-        })
-        if (matchingUser) {
-          done(null, matchingUser)
-          return
-        }
-        const newUser = new UserModel({
-          name: profile.displayName,
-          email: profile.email._json.email,
-        })
         try {
+          const matchingUser: HashedUser | null = await UserModel.findOne({
+            email: profile._json.email.toLowerCase(),
+          })
+          if (matchingUser) {
+            done(null, matchingUser)
+            return
+          }
+          const newUser = new UserModel({
+            name: profile.displayName,
+            email: profile.email._json.email,
+          })
           ;(await newUser.save()) as unknown as HashedUser
           done(null, newUser)
         } catch (error) {
@@ -158,24 +158,25 @@ const StartServer = async () => {
     })
   )
 
+  app.get('/auth/google', passport.authenticate('google', { scope: ['email', 'profile'] }))
+  app.get(
+    '/auth/google/callback',
+    passport.authenticate('google', {
+      failureRedirect:
+        process.env.NODE_ENV === 'production' ? '/login' : 'http://localhost:5173/login',
+    }),
+    (req, res) => {
+      req.session.currentLocation = (req.user as User)?.permissions[0].location
+      res.redirect(process.env.NODE_ENV === 'production' ? '/' : 'http://localhost:5173/')
+    }
+  )
+
   if (process.env.NODE_ENV === 'production') {
     app.use(express.static(path.join(__dirname, '../../client/dist')))
     app.get('*', (_req, res) => {
       res.sendFile(path.resolve(__dirname, '../../client/dist/index.html'))
     })
   }
-
-  app.get('/auth/google', passport.authenticate('google', { scope: ['email', 'profile'] }))
-  app.get(
-    '/auth/google/callback',
-    passport.authenticate('google', {
-      failureRedirect: 'http://localhost:5173/login',
-    }),
-    (req, res) => {
-      req.session.currentLocation = (req.user as User)?.permissions[0].location
-      res.redirect('http://localhost:5173/')
-    }
-  )
 
   await new Promise<void>((resolve) => httpServer.listen({ port: 4000 }, resolve))
   console.log(`🚀 Server ready at http://localhost:4000/graphql`)

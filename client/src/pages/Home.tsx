@@ -30,6 +30,16 @@ const Home = () => {
   const { user } = useContext(AppContext)
   const navigate = useNavigate()
 
+  useEffect(() => {
+    if (error && error.graphQLErrors[0].extensions.code === 'UNAUTHORIZED') {
+      navigate('/login')
+    }
+  }, [error])
+
+  if (error) {
+    return <div>Cannot display page</div>
+  }
+
   const totalOrders = useMemo(() => loaderData.allOrders.length, [loaderData.allOrders])
   const {
     ordersByStatus,
@@ -39,12 +49,10 @@ const Home = () => {
     totalParts,
     lowStockParts,
   } = useMemo(() => {
-    const ordersByStatus = loaderData.allOrders.reduce((acc, order) => {
+    const ordersByStatus = loaderData.allOrders?.reduce((acc, order) => {
       acc[order.status] = (acc[order.status] || 0) + 1
       return acc
     }, {} as OrderStatus)
-
-    console.log(ordersByStatus)
 
     const highPriorityCreatedOrders = loaderData.allOrders.filter(
       (order) => order.status === 'Created' && order.priority === 1
@@ -65,16 +73,6 @@ const Home = () => {
       lowStockParts,
     }
   }, [loaderData.allOrders, loaderData.allProducts, loaderData.allComponents])
-
-  useEffect(() => {
-    if (error && error.graphQLErrors[0].extensions.code === 'UNAUTHORIZED') {
-      navigate('/login')
-    }
-  }, [error])
-
-  if (error) {
-    return <div>Cannot display page</div>
-  }
 
   return (
     <div className="container ">

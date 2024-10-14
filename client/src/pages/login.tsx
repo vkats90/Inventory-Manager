@@ -44,7 +44,14 @@ export default function Login() {
         </Link>
       </Form>
       <div className="text-center mt-4 m-auto w-fit">
-        <Link type="button" to="http://localhost:4000/auth/google">
+        <Link
+          type="button"
+          to={
+            process.env.NODE_ENV === 'production'
+              ? '/auth/google'
+              : 'http://localhost:4000/auth/google'
+          }
+        >
           <GoogleLoginButton />
         </Link>
       </div>
