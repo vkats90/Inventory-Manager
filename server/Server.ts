@@ -173,7 +173,10 @@ const StartServer = async () => {
 
   if (process.env.NODE_ENV === 'production') {
     app.use(express.static(path.join(__dirname, '../../client/dist')))
-    app.get('*', (_req, res) => {
+    app.get('*', (req, res, next) => {
+      if (req.path === '/auth/google') {
+        return next()
+      }
       res.sendFile(path.resolve(__dirname, '../../client/dist/index.html'))
     })
   }

@@ -435,8 +435,10 @@ export const EDIT_ORDER = gql`
             cost
             price
             SKU
+            id
           }
           ... on Component {
+            id
             name
             stock
             cost

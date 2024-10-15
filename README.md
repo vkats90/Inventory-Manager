@@ -1,7 +1,5 @@
 # Inventory-Manager
 
-# Inventory Manager
-
 Inventory Manager is a web application designed to help you manage your inventory efficiently. It provides features such as sorting, searching, and input management for various inventory columns.
 
 ## Usage

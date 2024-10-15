@@ -72,10 +72,11 @@ const SingleOrderPage: React.FC = () => {
         })
         navigate('/orders')
       } else if (
+        (console.log(res.items, order.items),
         isEqual(
           { ...res, updated_on: '', location: '' },
           { ...order, updated_on: '', location: '' }
-        )
+        ))
       ) {
         setVisible(false)
         notify({ success: 'Order edited successfully' })
