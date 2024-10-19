@@ -1,6 +1,7 @@
 import Logo from '../assets/Inventory Manager copy.png'
-import { useSubmit, Form, Link } from 'react-router-dom'
+import { useSubmit, Form, Link, redirect } from 'react-router-dom'
 import GoogleLoginButton from '@/components/google-login-button'
+import { Button } from '@/components/ui/button'
 
 export default function Login() {
   const submit = useSubmit()
@@ -44,16 +45,18 @@ export default function Login() {
         </Link>
       </Form>
       <div className="text-center mt-4 m-auto w-fit">
-        <Link
+        <Button
           type="button"
-          to={
-            process.env.NODE_ENV === 'production'
-              ? '/auth/google'
-              : 'http://localhost:4000/auth/google'
-          }
+          onClick={() => {
+            redirect(
+              process.env.NODE_ENV === 'production'
+                ? '/auth/google'
+                : 'http://localhost:4000/auth/google'
+            )
+          }}
         >
           <GoogleLoginButton />
-        </Link>
+        </Button>
       </div>
     </div>
   )

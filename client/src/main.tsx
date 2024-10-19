@@ -29,6 +29,7 @@ import {
   findProductLoader,
   findOrderLoader,
   appLoader,
+  allProductsandComponentsLoader,
 } from './loaderFunctions.ts'
 import {
   addComponent,
@@ -126,6 +127,7 @@ const router = createBrowserRouter([
             path: '/orders/add-order',
             element: <AddOrder />,
             action: addOrder,
+            loader: allProductsandComponentsLoader,
           },
         ],
       },

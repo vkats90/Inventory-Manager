@@ -211,15 +211,25 @@ export const editOrder = async (
   }
 }
 
+interface newItemType {
+  item: String
+  itemType: String
+  quantity: Number
+}
+
 export const addOrder = async ({ request }: ActionFunctionArgs) => {
   const formData = await request.formData()
-  const name = formData.get('name') as string
-  const quantity = parseInt(formData.get('quantity') as string)
+  let items = JSON.parse(formData.get('items') as string) as newItemType[]
+  const supplier = formData.get('supplier') as string
   const priority = parseInt(formData.get('priority') as string)
+  items = items.filter((item) => item.quantity)
+  items = items.map((item) => {
+    return { item: item.item, itemType: item.itemType, quantity: Number(item.quantity) }
+  })
   try {
     const { data } = await client.mutate({
       mutation: ADD_ORDER,
-      variables: { name, quantity, priority, status, location },
+      variables: { items, priority, supplier },
     })
 
     notify({ success: 'Order added successfully' })

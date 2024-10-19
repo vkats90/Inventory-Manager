@@ -24,6 +24,21 @@ export const ALL_PRODUCTS = gql`
   }
 `
 
+export const ALL_PRODUCTS_AND_COMPONENTS = gql`
+  query AllProductsAndComponents {
+    allProducts {
+      name
+      id
+      stock
+    }
+    allComponents {
+      id
+      name
+      stock
+    }
+  }
+`
+
 // Query to find a specific product by name
 export const FIND_PRODUCT = gql`
   query FindProduct($id: ID!) {
@@ -369,39 +384,38 @@ export const FIND_ORDER = gql`
 
 // Mutation to add a new order
 export const ADD_ORDER = gql`
-  mutation AddOrder($quantity: Int, $priority: Int, $item: ID, $supplier: String) {
-    addOrder(quantity: $quantity, priority: $priority, item: $item, supplier: $supplier) {
+  mutation AddOrder($items: [newItemType], $priority: Int, $supplier: String) {
+    addOrder(items: $items, priority: $priority, supplier: $supplier) {
       id
-
-      quantity
       priority
       status
       created_on
       created_by {
-        email
-        id
         name
+        email
       }
       updated_on
       updated_by {
         email
-        id
         name
       }
       location {
         name
       }
       supplier
-      item {
-        ... on Product {
-          components {
+      items {
+        item {
+          ... on Product {
             name
+            stock
+            cost
+            price
           }
-          stock
-        }
-        ... on Component {
-          name
-          cost
+          ... on Component {
+            name
+            stock
+            cost
+          }
         }
       }
     }

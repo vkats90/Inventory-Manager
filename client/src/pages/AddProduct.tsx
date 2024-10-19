@@ -27,7 +27,6 @@ const AddProduct: React.FC = () => {
   const [setData]: [React.Dispatch<React.SetStateAction<Product[]>>] = useOutletContext()
 
   useEffect(() => {
-    console.log(actionData)
     if (actionData && actionData.addProduct.__typename == 'Product') {
       setData((prev: Product[]) => [...prev, actionData.addProduct])
       navigate('/products')

@@ -217,14 +217,14 @@ export const OrderList: React.FC<{ orders: Order[]; InitColumns?: typeof initial
         <div className="text-center text-lg font-medium text-gray-500 my-8">No orders yet</div>
       )}
       <div className="flex justify-end">
-        {/*<button
+        <button
           className="bg-primary hover:bg-primary/80 text-white font-regular my-4 py-1 px-4 rounded shadow-md focus:outline-none focus:shadow-outline"
           onClick={() => {
             navigate('/orders/add-order')
           }}
         >
           Add Order
-        </button>*/}
+        </button>
       </div>
     </Card>
   )

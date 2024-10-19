@@ -1,7 +1,13 @@
+export type ItemType = {
+  item: Product | Component | string
+  quantity: number
+  itemType: 'ProductModel' | 'ComponentModel'
+}
+
 // Order type
 export type Order = {
-  items: [{ item: Product | Component; quantity: number }]
-  priority: 1 | 2 | 3 | null
+  items: [ItemType]
+  priority: 1 | 2 | 3
   status: 'Created' | 'Ordered' | 'Shipped' | 'Finished'
   created_on: Date
   created_by: User

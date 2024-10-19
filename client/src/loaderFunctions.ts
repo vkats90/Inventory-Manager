@@ -8,6 +8,7 @@ import {
   SUMMARY,
   FIND_PRODUCT_AND_COMPONENTS,
   ME_LOCATIONS,
+  ALL_PRODUCTS_AND_COMPONENTS,
 } from './queries'
 import { client } from './client'
 import { redirect, LoaderFunctionArgs } from 'react-router-dom'
@@ -17,6 +18,13 @@ const preloadQuery = createQueryPreloader(client)
 
 export const allComponentsLoader = async () => {
   return preloadQuery(ALL_COMPONENTS, {
+    errorPolicy: 'all',
+    fetchPolicy: 'cache-and-network',
+  })
+}
+
+export const allProductsandComponentsLoader = async () => {
+  return preloadQuery(ALL_PRODUCTS_AND_COMPONENTS, {
     errorPolicy: 'all',
     fetchPolicy: 'cache-and-network',
   })
