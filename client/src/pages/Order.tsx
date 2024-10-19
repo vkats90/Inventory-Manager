@@ -128,7 +128,7 @@ const SingleOrderPage: React.FC = () => {
                       <ImagePlus className="h-8 w-8 text-gray-400" />
                     </div>
                   </TableCell>
-                  <TableCell className="font-medium">{item.item.name}</TableCell>
+                  <TableCell className="font-medium">{item.item as string}</TableCell>
                   <TableCell>{item.quantity}</TableCell>
                   <TableCell>
                     <Button

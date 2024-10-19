@@ -96,7 +96,7 @@ const StartServer = async () => {
           }
           const newUser = new UserModel({
             name: profile.displayName,
-            email: profile.email._json.email,
+            email: profile._json.email,
           })
           ;(await newUser.save()) as unknown as HashedUser
           done(null, newUser)
@@ -139,6 +139,12 @@ const StartServer = async () => {
   const corsOptions = {
     origin: 'http://localhost:5173',
     credentials: true,
+    server: {
+      proxy: {
+        '/auth': 'http://localhost:4000',
+        '/graphql': 'http://localhost:4000',
+      },
+    },
   }
 
   app.use(
@@ -166,7 +172,8 @@ const StartServer = async () => {
         process.env.NODE_ENV === 'production' ? '/login' : 'http://localhost:5173/login',
     }),
     (req, res) => {
-      req.session.currentLocation = (req.user as User)?.permissions[0].location
+      if (req.user && (req.user as User).permissions.length != 0)
+        req.session.currentLocation = (req.user as User).permissions[0].location
       res.redirect(process.env.NODE_ENV === 'production' ? '/' : 'http://localhost:5173/')
     }
   )
@@ -174,14 +181,15 @@ const StartServer = async () => {
   if (process.env.NODE_ENV === 'production') {
     app.use(express.static(path.join(__dirname, '../../client/dist')))
     app.get('*', (req, res, next) => {
-      if (req.path === '/auth/google') {
+      if (req.path.startsWith('/auth/') || req.path.startsWith('/graphql')) {
         return next()
       }
       res.sendFile(path.resolve(__dirname, '../../client/dist/index.html'))
     })
   }
 
-  await new Promise<void>((resolve) => httpServer.listen({ port: 4000 }, resolve))
+  const port = process.env.PORT || 4000
+  await new Promise<void>((resolve) => httpServer.listen({ port }, resolve))
   console.log(`🚀 Server ready at http://localhost:4000/graphql`)
 }
 
