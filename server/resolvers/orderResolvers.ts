@@ -207,20 +207,28 @@ const orderResolver = {
           },
         })
 
-      let item
-      let itemType
-
-      if (args.item) {
-        const componentItems = args.item.filter(
-          (i: { item: string; itemType: string }) => i.itemType === 'Component'
+      if (args.items) {
+        const componentItems = args.items.filter(
+          (i: { item: string; itemType: string }) => i.itemType === 'ComponentModel'
         )
-        const productItems = args.item.filter(
-          (i: { item: string; itemType: string }) => i.itemType === 'Product'
+        const productItems = args.items.filter(
+          (i: { item: string; itemType: string }) => i.itemType === 'ProductModel'
         )
 
         for (const item of componentItems) {
           const componentItem = await ComponentModel.findOne({ _id: item.item })
           if (!componentItem) {
+            throw new GraphQLError("item doesn't exist", {
+              extensions: {
+                code: 'BAD_USER_INPUT',
+                invalidArgs: item.item,
+              },
+            })
+          }
+        }
+        for (const item of productItems) {
+          const productItems = await ProductModel.findOne({ _id: item.item })
+          if (!productItems) {
             throw new GraphQLError("item doesn't exist", {
               extensions: {
                 code: 'BAD_USER_INPUT',
@@ -241,7 +249,6 @@ const orderResolver = {
             },
           })
       }
-
       try {
         const order = await OrderModel.findOneAndUpdate(
           { _id: args.id, location: context.currentLocation },
@@ -249,7 +256,7 @@ const orderResolver = {
             ...args,
             updated_by: currentUser.id,
             updated_on: Date.now(),
-            item: args.item,
+            items: args.items,
           },
           { new: true }
         )

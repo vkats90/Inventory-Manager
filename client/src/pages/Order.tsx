@@ -10,7 +10,7 @@ import {
   TableRow,
 } from '@/components/ui/table'
 import { Button } from '@/components/ui/button'
-import { Order } from '../types'
+import { Component, Order, Product } from '../types'
 import isEqual from 'react-fast-compare'
 import { notify } from '../utils/notify'
 import { verifyDelete } from '../utils/notify'
@@ -62,9 +62,10 @@ const SingleOrderPage: React.FC = () => {
         order.priority,
         order.status,
         order.supplier,
-        order.location as string
+        order.location as string,
+        order.items
       )
-      console.log(res, order)
+
       if (location?.id != res.location.id) {
         notify({ success: 'Order succesfully moved to the ' + res.location.name + ' location' })
         setData((prev: Order[]) => {
@@ -72,11 +73,10 @@ const SingleOrderPage: React.FC = () => {
         })
         navigate('/orders')
       } else if (
-        (console.log(res.items, order.items),
         isEqual(
           { ...res, updated_on: '', location: '' },
           { ...order, updated_on: '', location: '' }
-        ))
+        )
       ) {
         setVisible(false)
         notify({ success: 'Order edited successfully' })
@@ -107,6 +107,22 @@ const SingleOrderPage: React.FC = () => {
     setVisible(true)
   }
 
+  const handleqtyChange = (e: any) => {
+    setOrder(
+      (prev) =>
+        ({
+          ...prev,
+          items: prev.items.map((item, index) => {
+            if (index.toString() == e.target.id) {
+              return { ...item, quantity: Number(e.target.value) | 1 }
+            }
+            return item
+          }),
+        } as Order)
+    )
+    setVisible(true)
+  }
+
   return (
     <div className="container mx-auto px-4 py-8">
       <form>
@@ -128,13 +144,23 @@ const SingleOrderPage: React.FC = () => {
                       <ImagePlus className="h-8 w-8 text-gray-400" />
                     </div>
                   </TableCell>
-                  <TableCell className="font-medium">{item.item as string}</TableCell>
-                  <TableCell>{item.quantity}</TableCell>
+                  <TableCell className="font-medium">
+                    {(item.item as Product | Component).name}
+                  </TableCell>
+                  <TableCell>
+                    <input
+                      id={index.toString()}
+                      placeholder={item.quantity.toString()}
+                      onChange={handleqtyChange}
+                    />
+                  </TableCell>
                   <TableCell>
                     <Button
+                      type="button"
                       variant="ghost"
                       size="icon"
-                      onClick={() => {
+                      onClick={(e) => {
+                        e.preventDefault()
                         handleDeleteItem(index)
                       }}
                     >

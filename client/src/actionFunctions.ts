@@ -16,7 +16,7 @@ import {
   CHANGE_LOCATION,
   CREATE_LOCATION,
 } from './queries'
-import { Component } from './types'
+import { Component, Order, Product } from './types'
 import { notify } from './utils/notify'
 
 export const login = async ({ request }: ActionFunctionArgs) => {
@@ -193,16 +193,25 @@ export const deleteProduct = async (name: string) => {
 
 export const editOrder = async (
   id: string,
-
   priority: number | null,
   status: string,
   supplier: string,
-  location: string
+  location: string,
+  items: Order['items']
 ) => {
+  console.log(items)
+  let itemIDs = items.filter((item) => item.quantity)
+  itemIDs = items.map((item) => {
+    return {
+      item: (item.item as Component | Product).id,
+      itemType: item.itemType,
+      quantity: Number(item.quantity),
+    }
+  })
   try {
     const { data } = await client.mutate({
       mutation: EDIT_ORDER,
-      variables: { id, name, priority, status, supplier, location },
+      variables: { id, name, priority, status, supplier, location, items: itemIDs },
     })
 
     return data.editOrder

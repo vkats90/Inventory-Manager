@@ -194,7 +194,7 @@ const productResolver = {
       }
       return `Successfully deleted ${args.name}`
     },
-    uploadProductImage: async (
+    /*uploadProductImage: async (
       _: any,
       { productId, file }: UploadProductImageArgs
     ): Promise<Product> => {
@@ -247,7 +247,7 @@ const productResolver = {
           },
         })
       }
-    },
+    },*/
   },
   Product: {
     image: async (

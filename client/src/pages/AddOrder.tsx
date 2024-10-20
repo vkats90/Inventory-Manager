@@ -91,12 +91,12 @@ const AddOrder: React.FC = () => {
           />
         </div>
 
-        <div className="flex items-center align-middle justify-between">
+        <div className="flex items-center align-middle justify-between gap-2 my-2">
           <ul className="grid grid-cols-2 gap-1 w-full">
             {selectedItems.map((item) => (
               <li
                 key={item.id}
-                className="bg-gray-200 px-2 py-1 rounded flex hover:bg-red-300 transition duration-1000 cursor-pointer"
+                className="bg-gray-200 px-2 py-1 rounded flex hover:ring-2 ring-red-400 transition duration-700 cursor-pointer"
               >
                 <p
                   onClick={() =>
