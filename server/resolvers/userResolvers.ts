@@ -40,7 +40,8 @@ const userResolver = {
 
       await context.login(user as unknown as HashedUser)
 
-      context.req.session.currentLocation = user?.permissions[0].location
+      if (user && user.permissions.length != 0)
+        context.req.session.currentLocation = user?.permissions[0].location
       return user
 
       /*const user = await UserModel.findOne({ email: args.email })

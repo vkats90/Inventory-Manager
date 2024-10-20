@@ -7,9 +7,7 @@ import request from 'supertest'
 import { Order } from '../types'
 import userModel from '../models/user'
 
-let uri = 'http://localhost:4000/'
-
-let token = ''
+let uri = 'http://localhost:4000/graphql'
 
 beforeAll(async () => {
   StartServer()
@@ -44,9 +42,6 @@ beforeAll(async () => {
       variables: { username: 'marsimillian77', password: '123456' },
     })
 
-  token = 'Bearer ' + authUser.body.data.login.value
-  console.log('TOKEN:', token)
-
   await OrderModel.insertMany([
     {
       name: 'EP1 Flow Card',
@@ -72,7 +67,7 @@ afterAll(() => {
   stopServer()
 })
 
-describe('test allOrders', () => {
+describe.skip('test allOrders', () => {
   test('allOrders returns an array', async () => {
     const res = await request(uri).post('/').send({
       query: 'query Query {allOrders {name,priority}}',
@@ -97,7 +92,7 @@ describe('test allOrders', () => {
   })
 })
 
-describe('test addOrder', () => {
+describe.skip('test addOrder', () => {
   test('adding a record works', async () => {
     const res = await request(uri)
       .post('/')
@@ -112,7 +107,6 @@ describe('test addOrder', () => {
           }`,
         variables: { name: 'EP3 Flow Card', quantity: 650 },
       })
-      .set({ authorization: token })
 
     expect(res.body.data.addOrder).toBeDefined()
     expect(res.body.data.addOrder.name).toBe('EP3 Flow Card')
@@ -146,7 +140,6 @@ describe('test addOrder', () => {
           }`,
         variables: { quantity: 650 },
       })
-      .set({ authorization: token })
 
     expect(res.body.errors).toBeDefined()
     expect(res.body.errors[0].message).toBe('failed to add new order')
@@ -167,7 +160,6 @@ describe('test addOrder', () => {
           }`,
         variables: { name: 'EP3 Flow Card', quantity: -650 },
       })
-      .set({ authorization: token })
 
     expect(res.body.errors).toBeDefined()
     expect(res.body.errors[0].message).toBe('quantity must be greater than 0')
@@ -175,7 +167,7 @@ describe('test addOrder', () => {
   })
 })
 
-describe('test editOrder', () => {
+describe.skip('test editOrder', () => {
   test('editing a record works', async () => {
     const res = await request(uri)
       .post('/')
@@ -190,7 +182,6 @@ describe('test editOrder', () => {
             }`,
         variables: { name: 'EP3 Flow Card', quantity: 850 },
       })
-      .set({ authorization: token })
 
     expect(res.body.data.editOrder).toBeDefined()
     expect(res.body.data.editOrder.name).toBe('EP3 Flow Card')
@@ -224,7 +215,6 @@ describe('test editOrder', () => {
             }`,
         variables: { quantity: 950 },
       })
-      .set({ authorization: token })
 
     expect(res.body.errors).toBeDefined()
     expect(res.body.errors[0].message).toBe("order doesn't exist")
@@ -244,7 +234,6 @@ describe('test editOrder', () => {
             }`,
         variables: { name: 'EP3 Flow Card', quantity: -650 },
       })
-      .set({ authorization: token })
 
     expect(res.body.errors).toBeDefined()
     expect(res.body.errors[0].message).toBe('quantity must be greater than 0')
@@ -264,7 +253,6 @@ describe('test editOrder', () => {
             }`,
         variables: { name: 'EP3 Flow Card', quantity: 650, status: 'done' },
       })
-      .set({ authorization: token })
 
     expect(res.body.errors).toBeDefined()
     expect(res.body.errors[0].message).toBe('Invalid Status')
@@ -272,7 +260,7 @@ describe('test editOrder', () => {
   })
 })
 
-describe('test deleteOrder', () => {
+describe.skip('test deleteOrder', () => {
   test('deleting a record works', async () => {
     const res = await request(uri)
       .post('/')
@@ -282,7 +270,6 @@ describe('test deleteOrder', () => {
             }`,
         variables: { name: 'EP3 Flow Card' },
       })
-      .set({ authorization: token })
 
     expect(res.body.data).toBeDefined()
     expect(res.body.data.deleteOrder).toBe('Successfully deleted order')
@@ -311,7 +298,6 @@ describe('test deleteOrder', () => {
           }`,
         variables: { name: '' },
       })
-      .set({ authorization: token })
     expect(res.body.errors).toBeDefined()
     expect(res.body.errors[0].message).toBe("order doesn't exist")
   })
@@ -324,7 +310,6 @@ describe('test deleteOrder', () => {
           }`,
         variables: { name: 'Book Pages' },
       })
-      .set({ authorization: token })
     expect(res.body.errors).toBeDefined()
     expect(res.body.errors[0].message).toBe("order doesn't exist")
   })

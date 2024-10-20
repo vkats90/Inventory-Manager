@@ -2,7 +2,8 @@ import mongoose from 'mongoose'
 import dotenv from 'dotenv'
 dotenv.config()
 
-const MONGODB_URI = process.env.MONGODB_URI
+const MONGODB_URI =
+  process.env.NODE_ENV === 'test' ? process.env.MONGODB_URI_TEST : process.env.MONGODB_URI
 
 const StartDB = async () => {
   await mongoose
